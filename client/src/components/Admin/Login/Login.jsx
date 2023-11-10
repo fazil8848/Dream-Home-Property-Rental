@@ -1,78 +1,107 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from "react";
+import { useAdminLoginMutation } from "../../../Redux/Slices/adminApi/adminApislice";
+import { useDispatch, useSelector } from "react-redux";
+import { setAdminCredentials } from "../../../Redux/Slices/adminAuthSlice";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function Login() {
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [login, { isLoading }] = useAdminLoginMutation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const adminInfo = useSelector((state) => state.admin);
+
+  useEffect(() => {
+    if (adminInfo) {
+      navigate("/admin");
+    }
+  }, [navigate, adminInfo]);
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    try {
+      const res = login({ email, password }).unwrap();
+      console.log(res,'-------------');
+      dispatch(setAdminCredentials(...res));
+      navigate("/admin");
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
   return (
     <>
-      <div className="min-h-[84vh] bg-gray-100 flex justify-center items-center">
-      <div className="w-4/5 md:w-3/5 bg-white rounded-lg shadow-md px-6 pb-10">
-        <div className="mb-6">
-          <div className=" ml-6 pt-10 font-semibold text-[#252525] text-2xl leading-[48px]">
-            Log In
-          </div>
-          <div className=" flex ml-8">
-            <div className="font-normal text-[#696969] text-base">
-              Not a User...
+      <div className="min-h-[84vh] bg-bannerImg bg-cover bg-center flex justify-center items-center">
+        <div className="min-h-[84vh] w-screen bg-gray-900 flex justify-center items-center">
+          <div className=" md:flex gap-5 w-4/6 md:w-3/6 px-10 py-6 bg-white rounded-lg shadow-md">
+            <div className="w-full md:w-1/2">
+              <div>
+                <div className=" font-semibold text-[#252525] text-2xl leading-[48px]">
+                  Admin LogIn
+                </div>
+                <div className="h-0.5 bg-blue-100 "></div>
+              </div>
+              <form onSubmit={submitHandler}>
+                <div className="flex-row justify-center py-2">
+                  <div className="w-full py-2 ">
+                    <label
+                      className="block mb-1 text-gray-700 text-base "
+                      htmlFor="email"
+                    >
+                      Email
+                    </label>
+                    <input
+                      className="w-full bg-gray-200 border border-gray-300 rounded px-4 py-3"
+                      type="email"
+                      name="email"
+                      id="email"
+                      autoComplete="username"
+                      placeholder="Your Email"
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+                  <div className="w-full py-2 ">
+                    <label
+                      className="block mb-1 text-gray-700 text-base"
+                      htmlFor="password"
+                    >
+                      Password
+                    </label>
+                    <input
+                      className="w-full bg-gray-200 border border-gray-300 rounded px-4 py-3"
+                      type="password"
+                      name="password"
+                      id="password"
+                      placeholder="Enter Password"
+                      autoComplete="current-password"
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="mt-2 flex justify-center items-center">
+                  <button
+                    type="submit"
+                    className="w-2/4 bg-blue-100 text-white text-base font-medium py-3 rounded hover:bg-blue-950"
+                  >
+                    Login
+                  </button>
+                </div>
+              </form>
             </div>
-            <Link
-              to={"/signup"}
-              className="font-normal text-[#333333] text-base ml-2 underline"
-            >
-              Sign up
-            </Link>
+
+            <div className="w-1/2 hidden md:block">
+              <img
+                className="w-full h-full"
+                src="https://res.cloudinary.com/dn6anfym7/image/upload/v1699543390/Login-rafiki_1_n50szc.png"
+                alt="mmm"
+              />
+            </div>
           </div>
         </div>
-        <div></div>
-        <form onSubmit={submitHandler}>
-          <div className="m-6 flex flex-col md:flex-row justify-between gap-4">
-            <div className="w-full md:w-1/2 m-2 md:m-6 mb-6 md:mb-12">
-              <label
-                className="block text-gray-700 text-base mb-1"
-                htmlFor="email"
-              >
-                Email
-              </label>
-              <input
-                className="w-full bg-gray-200 border border-gray-300 rounded px-4 py-3"
-                type="email"
-                name="email"
-                id="email"
-                autoComplete="username"
-                placeholder="Your Email"
-                // onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div className="w-full md:w-1/2 m-2 md:m-6">
-              <label
-                className="block text-gray-700 text-base mb-1"
-                htmlFor="password"
-              >
-                Password
-              </label>
-              <input
-                className="w-full bg-gray-200 border border-gray-300 rounded px-4 py-3"
-                type="password"
-                name="password"
-                id="password"
-                placeholder="Enter Password"
-                autoComplete="current-password"
-                // onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="flex justify-center items-center">
-            <button
-              type="submit"
-              className="w-full md:w-2/4  bg-blue-100 text-white text-base font-medium py-3 rounded hover:bg-blue-950"
-            >
-              Login
-            </button>
-          </div>
-        </form>
       </div>
-    </div>
     </>
-  )
+  );
 }
 
-export default Login
+export default Login;

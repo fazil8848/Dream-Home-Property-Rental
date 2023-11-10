@@ -2,12 +2,11 @@ import User from '../mongodb/models/user.js';
 import asyncHandler from 'express-async-handler';
 import generateToken from '../utils/generateToke.js';
 import { sendMail } from '../service/regMail.js';
-import { verifyLink } from '../middleware/authMiddleware.js';
+import { userVerification } from '../middleware/authMiddleware.js';
 
 
 
 export const registerUser = asyncHandler(async (req, res) => {
-
     const { fisrtName, lastName, email, password, mobile } = req.body;
 
     const userExists = await User.findOne({ email });
@@ -24,9 +23,7 @@ export const registerUser = asyncHandler(async (req, res) => {
             mobile,
         });
 
-
-
-        const verificationLink = `${process.env.BASE_URl}/verifyUser/${user._id}`;
+        const verificationLink = `${process.env.USER_BASE_URl}/verifyUser/${user._id}`;
 
         const mailsend = await sendMail(
             email,
@@ -65,11 +62,16 @@ export const registerUser = asyncHandler(async (req, res) => {
 export const verifyUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const result = await verifyLink(id);
+        const result = await userVerification(id);
         if (!result) {
             throw new Error("cannot verify the user");
-        }
-        res.json({ success: { status: true } });
+        } 
+        const user = {
+            _id: result._id,
+            name: result.fullName,
+            email: result.email,
+        };
+        res.status(200).json(user);
     } catch (error) {
         res.json({ error: error.message });
     }
@@ -80,10 +82,10 @@ export const loginUser = asyncHandler(async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user && (await user.matchPass(password))) {
-        generateToken(res, user._id);
+        generateToken.generateToken(res, user._id);
         res.status(201).json({
             _id: user._id,
-            name: user.userName,
+            name: user.fullName,
             email: user.email
         })
     } else {
@@ -94,7 +96,7 @@ export const loginUser = asyncHandler(async (req, res) => {
 });
 
 export const logOutUser = asyncHandler(async (req, res) => {
-    res.cookie('jwt', '', {
+    res.cookie('userToken', '', {
         httpOnly: true,
         expires: new Date(0)
     });
@@ -104,7 +106,7 @@ export const logOutUser = asyncHandler(async (req, res) => {
 export const userProfile = asyncHandler(async (req, res) => {
     const user = {
         _id: req.user._id,
-        name: req.user.userName,
+        name: req.user.fullName,
         email: req.user.email,
     };
     res.status(200).json(user);
@@ -124,7 +126,7 @@ export const updateUser = asyncHandler(async (req, res) => {
 
         res.status(200).json({
             _id: updatedUser._id,
-            name: updatedUser.userName,
+            name: updatedUser.fullName,
             email: updatedUser.email
         })
 

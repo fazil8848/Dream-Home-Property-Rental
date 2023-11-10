@@ -1,17 +1,18 @@
 import React from "react";
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import AdminRouter from "./Admin/AdminRoutes.jsx";
+import UserRouter from "./User/UserRoutes.jsx";
+import Verification from "../Pages/Verification/Verification.jsx";
 
-import { AdminRouter } from "./Admin/AdminRoutes.jsx";
-import { UserRouter } from "./User/Route.jsx";
+const MainRouter = () => {
+  return (
+    <Routes>
+      <Route path="/admin/*" element={<AdminRouter />} />
+      <Route path="/user/*" element={<UserRouter />} />
+      <Route path="/user/verifyUser/:id" element={<Verification />} />
+    </Routes>
+  );
+};
 
-export const router = createBrowserRouter(
-  createRoutesFromElements(
-    <>
-        <AdminRouter/>
-        <UserRouter/>
-    </>
-  )
-);
+export default MainRouter;
+

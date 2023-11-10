@@ -3,9 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useLoginMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
 import { setCredentials } from "../../../Redux/Slices/authSlice";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import Spinner from "../Spinner/Spinner";
- 
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -20,7 +19,7 @@ function Login() {
 
   useEffect(() => {
     if (userInfo) {
-      navigate("/");
+      navigate("/user");
     }
   }, [navigate, userInfo]);
 
@@ -28,10 +27,10 @@ function Login() {
     e.preventDefault();
     try {
       const res = await login({ email, password }).unwrap();
-      dispatch(setCredentials({...res}));
-      navigate('/')
+      dispatch(setCredentials({ ...res }));
+      navigate("/user");
     } catch (err) {
-      toast.error(err?.data?.message || err.error );
+      toast.error(err?.data?.message || err.error);
     }
   };
 
@@ -47,7 +46,7 @@ function Login() {
               Not a User...?
             </div>
             <Link
-              to={"/signup"}
+              to={"/user/signup"}
               className="font-normal text-[#333333] text-base ml-2 underline"
             >
               Sign up
@@ -56,7 +55,7 @@ function Login() {
         </div>
         <div></div>
         <form onSubmit={submitHandler}>
-          <div className="m-6 flex flex-col md:flex-row justify-between gap-4">
+          <div className="mx-6 flex flex-col md:flex-row justify-between">
             <div className="w-full md:w-1/2 m-2 md:m-6 mb-6 md:mb-12">
               <label
                 className="block text-gray-700 text-base mb-1"
@@ -95,11 +94,13 @@ function Login() {
           <div className="flex justify-center items-center">
             <button
               type="submit"
-              className="w-full md:w-2/4  bg-blue-100 text-white text-base font-medium py-3 rounded hover:bg-blue-950"
+              className="w-3/12 mt-6 md:w-2/4  bg-blue-100 text-white text-base font-medium py-3 rounded hover:bg-blue-950"
             >
-              {isLoading && <div className="mx-[50%]"><Spinner/></div>}
-              Login
+              {isLoading ? <div className="md:mx-[49%] mx-[38%]"><Spinner/></div> : "Login"}
             </button>
+          </div>
+          <div className="flex justify-center md:justify-start">
+            <p className="cursor-pointer md:mx-56 mt-1">Forgot Password...?</p>
           </div>
         </form>
       </div>

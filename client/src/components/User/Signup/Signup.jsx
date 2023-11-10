@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useRegisterMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
-import { setCredentials } from "../../../Redux/Slices/authSlice";
 import { toast } from "react-toastify";
 import Spinner from "../Spinner/Spinner";
 
@@ -15,7 +14,6 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const [register, { isLoading }] = useRegisterMutation();
 
@@ -35,9 +33,9 @@ const Signup = () => {
 
   useEffect(() => {
     if (userInfo) {
-      navigate("/");
+      navigate("/user");
     }
-  }, [navigate, userInfo]);
+  }),[userInfo];
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -69,12 +67,14 @@ const Signup = () => {
         });
 
         console.log(res);
-        if (res.data.user) {
+        if (res?.data?.user) {
           generateSuccess("Verification mail Send, check your email");
+          setTimeout(() => {
+            window.open("https://mail.google.com/", "_blank");
+          }, 2000);
         } else {
           generateError(res.error.data.error);
         }
-        // navigate("/");
       } catch (err) {
         toast.error(err?.data?.message || err.error);
       }
@@ -94,7 +94,7 @@ const Signup = () => {
                   Existing User..?
                 </div>
                 <Link
-                  to={"/login"}
+                  to={"/user/login"}
                   className="font-normal text-[#333333] text-base ml-2 underline"
                 >
                   Sign In

@@ -1,4 +1,3 @@
-import { ApiProvider } from '@reduxjs/toolkit/dist/query/react';
 import { apiSlice } from '../apiSlice';
 const USERS_URL = 'http://localhost:5000';
 
@@ -23,8 +22,14 @@ export const usersApiSclice = apiSlice.injectEndpoints({
                 url: `${USERS_URL}/logOutUser`,
                 method: 'POST',
             })
-        })
+        }),
+        verifyUser: builder.mutation({
+            query: (id) => ({
+                url: `${USERS_URL}/verifyUser/${id}`,
+                method: 'PUT',
+            })
+        }),
     })
-})
+}) 
 
-export const { useLoginMutation, useLogoutMutation, useRegisterMutation } = usersApiSclice;
+export const { useLoginMutation, useLogoutMutation, useRegisterMutation, useVerifyUserMutation } = usersApiSclice;

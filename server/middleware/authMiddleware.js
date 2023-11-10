@@ -26,9 +26,8 @@ const protect = asyncHandler(async (req, res, next) => {
 
 })
 
-const verifyLink = async (userId) => {
+const userVerification = async (userId) => {
     try {
-        console.log("staff verify link working...");
         let user = await User.findByIdAndUpdate(
             userId,
             { $set: { isVerified: true } },
@@ -37,9 +36,9 @@ const verifyLink = async (userId) => {
         return user;
 
     } catch (error) {
-        console.log({ status: true, message: "Verification is sucess" });
+        console.log('ERROR @userVerification middleware:- ',error.message);
 
     }
 };
 
-export { protect, verifyLink }
+export { protect, userVerification }

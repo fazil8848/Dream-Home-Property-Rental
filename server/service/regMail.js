@@ -21,5 +21,6 @@ export const sendMail = async (email, subject, msg) => {
     text: msg,
     html: `<p>${msg}</p><p>Click the above  link to activate your account</p>`
   })
+  console.log('Mail Send............');
   return true;
 }

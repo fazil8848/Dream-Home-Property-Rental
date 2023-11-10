@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import React, {  useState } from "react";
+import {  NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { FaUserTie } from "react-icons/fa";
 import { TbLogout2 } from "react-icons/tb";
 import { BiLogIn } from "react-icons/bi";
 import { BsFillBuildingsFill } from "react-icons/bs";
 import { useLogoutMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
-import { logout } from '../../../Redux/Slices/authSlice';
+import { logout } from "../../../Redux/Slices/authSlice";
 
 const Header = () => {
   const { userInfo } = useSelector((state) => state.user);
@@ -23,29 +23,28 @@ const Header = () => {
     try {
       await logoutCall().unwrap();
       dispatch(logout());
-      navigate('/')
+      navigate("/user");
     } catch (error) {
-      toast.error(err?.data?.message || err.error );
-      console.log(err?.data?.message || err.error );
+      toast.error(err?.data?.message || err.error);
     }
-  }
-
+  };
+ 
   return (
     <div>
-      <header className="bg-white">
+      <header className='bg-white fixed w-screen z-50 shadow-lg '>
         <nav
           className="mx-auto flex max-w-7xl items-center justify-between p-2.5 lg:px-8"
           aria-label="Global"
         >
           <div className="flex lg:flex-1">
-            <Link to={"/"} className="-m-1.5 p-1.5">
+            <NavLink to={"/user"} className="-m-1.5 p-1.5">
               <span className="sr-only">DreamHomes</span>
               <img
                 className="h-10 w-auto "
                 src="https://res.cloudinary.com/dn6anfym7/image/upload/v1698481855/dreamHome/crmkxhhd0fhhcb8kbk0x.png"
                 alt="logo"
               />
-            </Link>
+            </NavLink>
           </div>
           <div className="flex lg:hidden">
             <button
@@ -80,24 +79,24 @@ const Header = () => {
             >
               <li className="my-1">
                 <NavLink
-                  to="/properties"
-                  className="text-sm font-semibold leading-6 text-gray-900"
+                  to="/user/properties"
+                  className="text-sm font-semibold leading-6 text-gray-900 hover:text-black"
                 >
                   Properties
                 </NavLink>
               </li>
               <li className="my-1">
-                <a
-                  href="#"
-                  className="text-sm font-semibold leading-6 text-gray-900"
+                <NavLink
+                  to={"/user/ownerBenefiets"}
+                  className="text-sm font-semibold leading-6 text-gray-900 hover:text-black"
                 >
                   For Owners
-                </a>
+                </NavLink>
               </li>
               <li className="my-1">
                 <NavLink
-                  to="/blogs"
-                  className="text-sm font-semibold leading-6 text-gray-900"
+                  to="/user/blogs"
+                  className="text-sm font-semibold leading-6 text-gray-900 hover:text-black"
                 >
                   Blogs
                 </NavLink>
@@ -107,7 +106,7 @@ const Header = () => {
                   <>
                     <li className="my-1">
                       <NavLink
-                        to="/profile"
+                        to="/user/profile"
                         className={`flex justify-between gap-1 items-center text-sm font-semibold bg-White p-2 rounded leading-6 text-coolblue me-4 border-1 border-grey`}
                       >
                         Profile{" "}
@@ -133,7 +132,7 @@ const Header = () => {
                     <div className="lg:flex-1">
                       <li className="my-1">
                         <NavLink
-                          to="/login"
+                          to="/user/login"
                           className={`flex justify-between items-center text-sm font-semibold bg-White p-2 rounded leading-6 text-coolblue me-4 border-1 border-grey`}
                         >
                           Log in{" "}
@@ -144,7 +143,7 @@ const Header = () => {
                       </li>
                       <li className="my-1">
                         <NavLink
-                          to="/ownerlogin"
+                          to="/owner/ownerlogin"
                           className={`flex justify-between items-center text-sm font-semibold bg-blue-100 p-2 rounded leading-6 text-white border-1 border-white`}
                         >
                           Post Property
@@ -164,7 +163,7 @@ const Header = () => {
             {userInfo ? (
               <>
                 <NavLink
-                  to="/profile"
+                  to="/user/profile"
                   className={`flex justify-between gap-1 items-center text-sm font-semibold bg-White p-2 rounded leading-6 text-coolblue me-4 border-1 border-grey`}
                 >
                   Profile{" "}
@@ -173,8 +172,8 @@ const Header = () => {
                   </span>
                 </NavLink>
                 <NavLink
-                  to="/logout"
                   className={`flex justify-between items-center text-sm font-semibold bg-blue-100 p-2 rounded leading-6 text-white border-1 border-white`}
+                  onClick={logoutHandlder}
                 >
                   LogOut
                   <span aria-hidden="true">
@@ -185,7 +184,7 @@ const Header = () => {
             ) : (
               <>
                 <NavLink
-                  to="/login"
+                  to="/user/login"
                   className={`flex justify-between items-center text-sm font-semibold bg-White p-2 rounded leading-6 text-coolblue me-4 border-1 border-grey`}
                 >
                   Log in
@@ -194,7 +193,7 @@ const Header = () => {
                   </span>
                 </NavLink>
                 <NavLink
-                  to="/ownerlogin"
+                  to="/owner/ownerlogin"
                   className={`flex justify-between items-center text-sm font-semibold bg-blue-100 p-2 rounded leading-6 text-white border-1 border-white`}
                 >
                   Post Property
