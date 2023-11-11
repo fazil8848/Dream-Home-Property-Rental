@@ -14,7 +14,7 @@ const Header = () => {
   const [logoutCall] = useLogoutMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+ 
   const handleToggleNav = () => {
     setIsNavOpen(!isNavOpen);
   };

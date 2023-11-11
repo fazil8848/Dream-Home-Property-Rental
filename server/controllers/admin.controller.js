@@ -2,17 +2,17 @@ import Admin from '../mongodb/models/adminModel.js';
 import asyncHandler from 'express-async-handler';
 import generateToken from '../utils/generateToke.js';
 
-const getDashboard = async (req,res)=>{
+const getDashboard = async (req, res) => {
     try {
-        
+
     } catch (error) {
         console.log("geDashboard :-", error.message);
     }
 }
 
-const adminLogin = asyncHandler( async (req,res)=>{
-    const {email,password} = req.body;
-    const admin = await Admin.findOne({email});
+const adminLogin = asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+    const admin = await Admin.findOne({ email });
 
     if (admin && (await admin.matchPass(password))) {
         generateToken.generatAdminToken(res, admin._id);
@@ -27,7 +27,17 @@ const adminLogin = asyncHandler( async (req,res)=>{
 
 })
 
+
+const adminLogout = asyncHandler(async (req, res) => {
+    res.cookie('adminToken', '', {
+        httpOnly: true,
+        expires: new Date(0)
+    });
+    res.status(200).json({ message: 'Admin Logged Out' });
+})
+
 export default {
     getDashboard,
-    adminLogin
+    adminLogin,
+    adminLogout
 }

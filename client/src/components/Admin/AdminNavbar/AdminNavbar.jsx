@@ -13,15 +13,15 @@ import {
   UserCircleIcon,
   Cog6ToothIcon,
   InboxIcon,
-  PowerIcon,
 } from "@heroicons/react/24/solid";
 import { NavLink } from "react-router-dom";
 
 function AdminNavbar() {
   return (
-    <Card className="h-[88vh] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
-      <List>
-        <div className="px-2">
+    <Card className="sticky h-[88vh] w-64 p-4 shadow-xl shadow-blue-gray-900/5 ">
+    <List>
+      <div className="px-2">
+
           <NavLink
             to={"/admin"}
             className={({ isActive }) =>
@@ -77,14 +77,6 @@ function AdminNavbar() {
                 <Cog6ToothIcon className="h-5 w-5" />
               </ListItemPrefix>
               Settings
-            </ListItem>
-          </NavLink>
-          <NavLink>
-            <ListItem className=" p-2 hover:bg-gray-200">
-              <ListItemPrefix>
-                <PowerIcon className="h-5 w-5" />
-              </ListItemPrefix>
-              Log Out
             </ListItem>
           </NavLink>
         </div>

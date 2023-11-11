@@ -17,7 +17,7 @@ function Login() {
 
   const { userInfo } = useSelector((state) => state.user);
 
-  useEffect(() => {
+  useEffect(() => { 
     if (userInfo) {
       navigate("/user");
     }
