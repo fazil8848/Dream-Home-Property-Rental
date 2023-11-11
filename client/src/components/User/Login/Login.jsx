@@ -19,7 +19,7 @@ function Login() {
 
   useEffect(() => { 
     if (userInfo) {
-      navigate("/user");
+      navigate("/");
     }
   }, [navigate, userInfo]);
 
@@ -28,7 +28,7 @@ function Login() {
     try {
       const res = await login({ email, password }).unwrap();
       dispatch(setCredentials({ ...res }));
-      navigate("/user");
+      navigate("/");
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -46,7 +46,7 @@ function Login() {
               Not a User...?
             </div>
             <Link
-              to={"/user/signup"}
+              to={"/signup"}
               className="font-normal text-[#333333] text-base ml-2 underline"
             >
               Sign up

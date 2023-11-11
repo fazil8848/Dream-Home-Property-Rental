@@ -8,7 +8,7 @@ const MainRouter = () => {
   return (
     <Routes>
       <Route path="/admin/*" element={<AdminRouter />} />
-      <Route path="/user/*" element={<UserRouter />} />
+      <Route path="/*" element={<UserRouter />} />
       <Route path="/user/verifyUser/:id" element={<Verification />} />
     </Routes>
   );

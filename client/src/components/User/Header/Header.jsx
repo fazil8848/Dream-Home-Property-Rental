@@ -23,7 +23,7 @@ const Header = () => {
     try {
       await logoutCall().unwrap();
       dispatch(logout());
-      navigate("/user");
+      navigate("/");
     } catch (error) {
       toast.error(err?.data?.message || err.error);
     }
@@ -37,7 +37,7 @@ const Header = () => {
           aria-label="Global"
         >
           <div className="flex lg:flex-1">
-            <NavLink to={"/user"} className="-m-1.5 p-1.5">
+            <NavLink to={"/"} className="-m-1.5 p-1.5">
               <span className="sr-only">DreamHomes</span>
               <img
                 className="h-10 w-auto "
@@ -79,7 +79,7 @@ const Header = () => {
             >
               <li className="my-1">
                 <NavLink
-                  to="/user/properties"
+                  to="/properties"
                   className="text-sm font-semibold leading-6 text-gray-900 hover:text-black"
                 >
                   Properties
@@ -87,7 +87,7 @@ const Header = () => {
               </li>
               <li className="my-1">
                 <NavLink
-                  to={"/user/ownerBenefiets"}
+                  to={"/ownerBenefiets"}
                   className="text-sm font-semibold leading-6 text-gray-900 hover:text-black"
                 >
                   For Owners
@@ -95,7 +95,7 @@ const Header = () => {
               </li>
               <li className="my-1">
                 <NavLink
-                  to="/user/blogs"
+                  to="/blogs"
                   className="text-sm font-semibold leading-6 text-gray-900 hover:text-black"
                 >
                   Blogs
@@ -106,7 +106,7 @@ const Header = () => {
                   <>
                     <li className="my-1">
                       <NavLink
-                        to="/user/profile"
+                        to="/profile"
                         className={`flex justify-between gap-1 items-center text-sm font-semibold bg-White p-2 rounded leading-6 text-coolblue me-4 border-1 border-grey`}
                       >
                         Profile{" "}
@@ -132,7 +132,7 @@ const Header = () => {
                     <div className="lg:flex-1">
                       <li className="my-1">
                         <NavLink
-                          to="/user/login"
+                          to="/login"
                           className={`flex justify-between items-center text-sm font-semibold bg-White p-2 rounded leading-6 text-coolblue me-4 border-1 border-grey`}
                         >
                           Log in{" "}
@@ -163,7 +163,7 @@ const Header = () => {
             {userInfo ? (
               <>
                 <NavLink
-                  to="/user/profile"
+                  to="/profile"
                   className={`flex justify-between gap-1 items-center text-sm font-semibold bg-White p-2 rounded leading-6 text-coolblue me-4 border-1 border-grey`}
                 >
                   Profile{" "}
@@ -184,7 +184,7 @@ const Header = () => {
             ) : (
               <>
                 <NavLink
-                  to="/user/login"
+                  to="/login"
                   className={`flex justify-between items-center text-sm font-semibold bg-White p-2 rounded leading-6 text-coolblue me-4 border-1 border-grey`}
                 >
                   Log in

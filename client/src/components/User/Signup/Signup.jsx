@@ -33,7 +33,7 @@ const Signup = () => {
 
   useEffect(() => {
     if (userInfo) {
-      navigate("/user");
+      navigate("/");
     }
   }),[userInfo];
 
@@ -94,7 +94,7 @@ const Signup = () => {
                   Existing User..?
                 </div>
                 <Link
-                  to={"/user/login"}
+                  to={"/login"}
                   className="font-normal text-[#333333] text-base ml-2 underline"
                 >
                   Sign In
