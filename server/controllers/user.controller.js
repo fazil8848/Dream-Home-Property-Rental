@@ -81,6 +81,11 @@ export const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
 
+    if (user.is_Blocked) {
+        res.status(401);
+        throw new Error('Your Account is Blocked');
+    }
+
     if (user && (await user.matchPass(password))) {
         generateToken.generateToken(res, user._id);
         res.status(201).json({

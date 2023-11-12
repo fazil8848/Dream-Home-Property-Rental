@@ -36,7 +36,12 @@ function AdminNavbar() {
             </ListItem>
           </NavLink>
 
-          <NavLink>
+          <NavLink
+             to={"/admin/users"}
+             className={({ isActive }) =>
+               isActive ? `bg-gray-200 text-gray-700 font-semibold` : ""
+             }
+          >
             <ListItem className=" p-2 hover:bg-gray-200">
               <ListItemPrefix>
                 <ShoppingBagIcon className="h-5 w-5" />

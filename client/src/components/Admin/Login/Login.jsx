@@ -15,7 +15,6 @@ function Login() {
 
   useEffect(() => {
     if (adminInfo) {
-      console.log(adminInfo);
       navigate("/admin");
     }
   }, [navigate, adminInfo]);
@@ -24,7 +23,6 @@ function Login() {
     e.preventDefault();
     try {
       const res = await login({ email, password }).unwrap();
-      console.log(res);
       dispatch(setAdminCredentials(res));
       navigate("/admin");
     } catch (err) {

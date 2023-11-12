@@ -5,15 +5,17 @@ import { adminLogout } from "../../../Redux/Slices/adminAuthSlice";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { useAdminLogoutMutation } from "../../../Redux/Slices/adminApi/adminApislice";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
   const dispatch = useDispatch();
   const [logoutCall] = useAdminLogoutMutation();
+  const navigate = useNavigate()
 
   const logoutHandlder = async () => {
     try {
-      await logoutCall().unwrap().catch((err)=> console.log('Admin logout',err));
-      dispatch(adminLogout());
+      const res = await logoutCall().unwrap().catch((err)=> console.log('Admin logout',err));
+      const data = dispatch(adminLogout());
       navigate("/admin/login");
     } catch (err) {
       toast.error(err?.data?.message || err.error);

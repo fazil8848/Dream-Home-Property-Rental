@@ -1,14 +1,17 @@
 import Admin from '../mongodb/models/adminModel.js';
 import asyncHandler from 'express-async-handler';
 import generateToken from '../utils/generateToke.js';
+import User from '../mongodb/models/user.js'
 
-const getDashboard = async (req, res) => {
-    try {
-
-    } catch (error) {
-        console.log("geDashboard :-", error.message);
+const getUsers = asyncHandler(async (req, res) => {
+    const users = await User.find();
+    if (!users) {
+        throw new Error('Error Finding the Users');
+    } else {
+        res.status(200).json({ users });
     }
-}
+})
+
 
 const adminLogin = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
@@ -29,6 +32,7 @@ const adminLogin = asyncHandler(async (req, res) => {
 
 
 const adminLogout = asyncHandler(async (req, res) => {
+    console.log('its here --------------- ');
     res.cookie('adminToken', '', {
         httpOnly: true,
         expires: new Date(0)
@@ -36,8 +40,29 @@ const adminLogout = asyncHandler(async (req, res) => {
     res.status(200).json({ message: 'Admin Logged Out' });
 })
 
+const blockUser = asyncHandler(async (req, res) => {
+    const { userId } = req.body;
+
+    const user = await User.findById(userId);
+
+    if (user) {
+        const setBlocked = !user.is_Blocked;
+        const result = await User.findByIdAndUpdate(userId, {
+            $set: { is_Blocked: setBlocked }
+        })
+
+        res.status(201).json({ message: 'User Updated Successfully',result});
+    } else {
+        res.status(404)
+        throw new Error('User Not Found');
+    }
+
+
+})
+
 export default {
-    getDashboard,
+    getUsers,
     adminLogin,
-    adminLogout
+    adminLogout,
+    blockUser
 }
