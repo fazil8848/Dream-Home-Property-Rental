@@ -47,7 +47,8 @@ function OwnerList() {
     try {
       const res = await blockUserCall({ ownerId });
       if (res.data.result) {
-        setBlocked(!blocked);
+        setOwners(res.data.owners)
+        setBlocked(res.data.result.is_Blocked);
         setOpen(!open);
       }
     } catch (err) {

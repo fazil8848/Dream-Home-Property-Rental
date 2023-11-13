@@ -112,3 +112,15 @@ export const logOutOwner = asyncHandler(async (req, res) => {
     res.status(200).json({ message: 'owner Logged Out' })
 })
 
+export const getOwner = asyncHandler(async (req, res) => {
+    console.log(id,'----------------');
+    const {id} = req.body
+     const owner  = await Owner.findById(id)
+     if (owner) {
+        res.status(201).json({owner});
+     } else {
+        res.status(401);
+        throw new Error('Error finding Owner'); 
+     }
+})
+

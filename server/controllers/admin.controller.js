@@ -61,7 +61,9 @@ const blockUser = asyncHandler(async (req, res) => {
             $set: { is_Blocked: setBlocked }
         })
 
-        res.status(201).json({ message: 'User Updated Successfully',result});
+        const users = await User.find()
+
+        res.status(201).json({ message: 'User Updated Successfully', result, users });
     } else {
         res.status(404)
         throw new Error('User Not Found');
@@ -79,7 +81,11 @@ const blockOwner = asyncHandler(async (req, res) => {
         const result = await Owner.findByIdAndUpdate(ownerId, {
             $set: { is_Blocked: setBlocked }
         })
-        res.status(201).json({ message: 'Owner Updated Successfully',result});
+
+        const owners = await Owner.find();
+
+        res.status(201).json({ message: 'Owner Updated Successfully', result, owners });
+        
     } else {
         res.status(404)
         throw new Error('Owner Not Found');

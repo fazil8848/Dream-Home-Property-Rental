@@ -44,15 +44,6 @@ const OwnerHeader = () => {
           <div className={`hidden lg:flex lg:flex-1 lg:justify-end `}>
               <>
                 <NavLink
-                  to="/owner/profile"
-                  className={`flex justify-between gap-1 items-center text-sm font-semibold bg-White p-2 rounded leading-6 text-coolblue me-4 border-1 border-grey`}
-                >
-                  Profile{" "}
-                  <span aria-hidden="true">
-                    <FaUserTie />
-                  </span>
-                </NavLink>
-                <NavLink
                   className={`flex justify-between items-center text-sm font-semibold bg-blue-100 p-2 rounded leading-6 text-white border-1 border-white`}
                   onClick={logoutHandlder}
                 >

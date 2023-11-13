@@ -38,7 +38,7 @@ function UserList() {
   }, [getUsersCall]);
 
   const handleOpen = (is_Blocked, _id) => {
-    setBlocked(is_Blocked);
+    setBlocked(is_Blocked)
     setUserId(_id);
     setOpen(!open);
   };
@@ -47,15 +47,13 @@ function UserList() {
     try {
       const res = await blockUserCall({ userId });
       if (res.data.result) {
-        setBlocked(res.data.result.is_Blocked);
+        setUsers(res.data.users)
         setOpen(!open);
       }
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
   };
-
-  console.log("Blocked State:", blocked);
 
   return (
     <>

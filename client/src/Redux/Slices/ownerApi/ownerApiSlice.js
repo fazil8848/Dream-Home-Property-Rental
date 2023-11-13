@@ -28,8 +28,22 @@ const ownerApiSlice = apiSlice.injectEndpoints({
                 url: `${OWNER_URL}/logout`,
                 method: 'POST'
             })
-        })
+        }),
+        addKyc: builder.mutation({
+            query: (data)=>({
+                url:`${OWNER_URL}/kyc`,
+                method:'POST',
+                body: data,
+            })
+        }),
+        getOwner: builder.mutation({
+            query: (id) => ({
+                url: `${OWNER_URL}/getOwner`,
+                method: 'POST',
+                body: {id},
+            })
+        }),
     })
 })
 
-export const { useOwnerLoginMutation, useOwnerSignupMutation, useOwnerVerifyMutation, useOwnerLogoutMutation } = ownerApiSlice;
+export const { useOwnerLoginMutation, useOwnerSignupMutation, useOwnerVerifyMutation, useOwnerLogoutMutation, useAddKycMutation, useGetOwnerMutation } = ownerApiSlice;

@@ -42,11 +42,11 @@ const Signup = () => {
     const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
 
     if (
-      fisrtName === "" ||
-      lastName === "" ||
-      email === "" ||
-      mobile === "" ||
-      password === ""
+      fisrtName.trim() === "" ||
+      lastName.trim() === "" ||
+      email.trim() === "" ||
+      mobile.trim() === "" ||
+      password.trim() === ""
     ) {
       generateError("Please fill all the required fields");
     } else if (
@@ -65,6 +65,9 @@ const Signup = () => {
           password,
           mobile,
         });
+
+
+
 
         console.log(res);
         if (res?.data?.user) {
