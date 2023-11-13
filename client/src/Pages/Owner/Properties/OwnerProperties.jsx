@@ -1,8 +1,12 @@
 import React from 'react'
+import OwnerNav from '../../../components/Owner/OwnerNav/OwnerNav'
+import Properties from '../../../components/Owner/Properties/Properties'
 
 function OwnerProperties() {
   return (
-    <div>OwnerProperties</div>
+    <>
+      <Properties/>
+    </>
   )
 }
 

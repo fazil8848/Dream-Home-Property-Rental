@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import OwnerLogin from "../../../components/Owner/OwnerLogin/OwnerLogin";
 
 function OwnerLoginPage() {
   return (
-    <div>OwnerLogin</div>
-  )
+    <>
+      <OwnerLogin />
+    </>
+  );
 }
 
-export default OwnerLoginPage
+export default OwnerLoginPage;

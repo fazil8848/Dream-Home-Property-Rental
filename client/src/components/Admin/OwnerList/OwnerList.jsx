@@ -9,45 +9,45 @@ import {
   DialogFooter,
 } from "@material-tailwind/react";
 import {
-  useBlockUserMutation,
-  useGetUsersMutation,
+    useBlockOwnerMutation,
+  useGetOwnersMutation,
 } from "../../../Redux/Slices/adminApi/adminApislice";
 import { toast } from "react-toastify";
 
 const TABLE_HEAD = ["Name", "Email", "Phone", "Block"];
 
-function UserList() {
-  const [users, setUsers] = useState([]);
-  const [userId, setUserId] = useState("");
+function OwnerList() {
+  const [owners, setOwners] = useState([]);
+  const [ownerId, setOwnerId] = useState("");
   const [blocked, setBlocked] = useState(null);
-  const [getUsersCall] = useGetUsersMutation();
+  const [getOwnersCall] = useGetOwnersMutation();
   const [open, setOpen] = React.useState(false);
-  const [blockUserCall, { isLoading }] = useBlockUserMutation();
+  const [blockUserCall, { isLoading }] = useBlockOwnerMutation();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getUsersCall();
-        setUsers(response.data.users);
+        const response = await getOwnersCall();
+        setOwners(response.data.owners);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
     };
 
     fetchData();
-  }, [getUsersCall]);
+  }, [getOwnersCall]);
 
   const handleOpen = (is_Blocked, _id) => {
     setBlocked(is_Blocked);
-    setUserId(_id);
+    setOwnerId(_id);
     setOpen(!open);
   };
 
   const handleBlocking = async () => {
     try {
-      const res = await blockUserCall({ userId });
+      const res = await blockUserCall({ ownerId });
       if (res.data.result) {
-        setBlocked(res.data.result.is_Blocked);
+        setBlocked(!blocked);
         setOpen(!open);
       }
     } catch (err) {
@@ -80,9 +80,9 @@ function UserList() {
             </tr>
           </thead>
           <tbody>
-            {users.map(
+            {owners?.map(
               ({ _id, fullName, email, mobile, is_Blocked }, index) => {
-                const isLast = index === users.length - 1;
+                const isLast = index === owners.length - 1;
                 const classes = isLast
                   ? "p-4"
                   : "p-4 border-b border-blue-gray-50";
@@ -251,4 +251,4 @@ function UserList() {
   );
 }
 
-export default UserList;
+export default OwnerList;

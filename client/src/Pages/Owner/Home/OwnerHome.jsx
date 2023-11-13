@@ -1,8 +1,11 @@
 import React from 'react'
+import OwnerDashboard from '../../../components/Owner/DashBoard/OwnerDashboard'
 
 function OwnerHome() {
   return (
-    <div>OwnerHome</div>
+    <div>
+      <OwnerDashboard/>
+    </div>
   )
 }
 

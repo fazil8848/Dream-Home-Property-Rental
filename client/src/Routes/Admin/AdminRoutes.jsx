@@ -5,6 +5,7 @@ import AdminLogin from "../../Pages/Admin/AdminLogin/AdminLogin";
 import AdminLayout from "../../Layouts/AdminLayout";
 import UserListing from "../../Pages/Admin/UserListing/UserListing";
 import PrivateRoutes from "./Private/PrivateRoutes";
+import OwnerListing from "../../Pages/Admin/OwnerListingPage/OwnerListingPage";
 
 const AdminRouter = () => {
   return (
@@ -14,6 +15,7 @@ const AdminRouter = () => {
         <Route path="" element={<PrivateRoutes />}>
           <Route index element={<AdminHome />} />
           <Route path="users" element={<UserListing />} />
+          <Route path="owners" element={<OwnerListing />} />
         </Route>
       </Route>
     </Routes>

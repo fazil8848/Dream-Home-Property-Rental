@@ -11,10 +11,10 @@ const OwnerRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<OwnerLayout />}>
-        {/* <Route path="" element={<PrivateRoutesOwner />}> */}
+        <Route path="" element={<PrivateRoutesOwner />}>
           <Route index element={<OwnerHome />} />
           <Route path="properties" element={<OwnerProperties />} />
-        {/* </Route> */}
+        </Route>
         <Route path="login" element={<OwnerLoginPage/>} />
         <Route path="signup" element={<OwnerSignupPage/>} />
       </Route>

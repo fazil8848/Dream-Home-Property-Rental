@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import connectDB from './mongodb/connect.js';
 import userRouter from './Routes/user.routes.js';
 import adminRouter from './Routes/admin.routes.js';
+import ownerRouter from './Routes/owner.routes.js'
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use(cookieParser())
 
 app.use('/', userRouter);
 app.use('/admin', adminRouter);
+app.use('/owner',ownerRouter);
 
 
 app.use(notfound);

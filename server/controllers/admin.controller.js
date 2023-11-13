@@ -2,6 +2,7 @@ import Admin from '../mongodb/models/adminModel.js';
 import asyncHandler from 'express-async-handler';
 import generateToken from '../utils/generateToke.js';
 import User from '../mongodb/models/user.js'
+import Owner from '../mongodb/models/owner.js'
 
 const getUsers = asyncHandler(async (req, res) => {
     const users = await User.find();
@@ -9,6 +10,15 @@ const getUsers = asyncHandler(async (req, res) => {
         throw new Error('Error Finding the Users');
     } else {
         res.status(200).json({ users });
+    }
+})
+
+const getOwners = asyncHandler(async (req, res) => {
+    const owners = await Owner.find();
+    if (!owners) {
+        throw new Error('Error Finding the owners');
+    } else {
+        res.status(200).json({ owners });
     }
 })
 
@@ -60,9 +70,29 @@ const blockUser = asyncHandler(async (req, res) => {
 
 })
 
+const blockOwner = asyncHandler(async (req, res) => {
+    const { ownerId } = req.body;
+
+    const owner = await Owner.findById(ownerId);
+    if (owner) {
+        const setBlocked = !owner.is_Blocked;
+        const result = await Owner.findByIdAndUpdate(ownerId, {
+            $set: { is_Blocked: setBlocked }
+        })
+        res.status(201).json({ message: 'Owner Updated Successfully',result});
+    } else {
+        res.status(404)
+        throw new Error('Owner Not Found');
+    }
+
+
+})
+
 export default {
     getUsers,
     adminLogin,
     adminLogout,
-    blockUser
+    blockUser,
+    getOwners,
+    blockOwner,
 }

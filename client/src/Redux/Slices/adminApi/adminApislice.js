@@ -28,8 +28,22 @@ const adminApiSlice = apiSlice.injectEndpoints({
                 method: 'PUT',
                 body: data,
             })
+        }),
+        getOwners: builder.mutation({
+            query: ()=>({
+                url: `${ADMIN_URL}/getOwners`,
+                method: 'GET'
+            })
+        })
+        ,
+        blockOwner: builder.mutation({
+            query: (data) => ({
+                url: `${ADMIN_URL}/blockOwner`,
+                method: 'PUT',
+                body: data,
+            })
         })
     })
 })
 
-export const { useAdminLoginMutation, useAdminLogoutMutation, useGetUsersMutation, useBlockUserMutation } = adminApiSlice
+export const { useAdminLoginMutation, useAdminLogoutMutation, useGetUsersMutation, useBlockUserMutation, useBlockOwnerMutation, useGetOwnersMutation } = adminApiSlice

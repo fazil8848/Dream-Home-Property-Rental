@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import asyncHandler from 'express-async-handler';
 import User from '../mongodb/models/user.js'
+import Owner from '../mongodb/models/owner.js'
 
 const protect = asyncHandler(async (req, res, next) => {
     let token;
@@ -41,4 +42,19 @@ const userVerification = async (userId) => {
     }
 };
 
-export { protect, userVerification }
+const ownerVerification = async (ownerId) => {
+    try {
+        let owner = await Owner.findByIdAndUpdate(
+            ownerId,
+            { $set: { isVerified: true } },
+            { new: true }
+        );
+        return owner;
+
+    } catch (error) {
+        console.log('ERROR @ownerVerification middleware:- ',error.message);
+
+    }
+};
+
+export { protect, userVerification, ownerVerification }
