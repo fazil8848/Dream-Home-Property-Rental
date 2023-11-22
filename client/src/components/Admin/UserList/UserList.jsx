@@ -38,7 +38,7 @@ function UserList() {
   }, [getUsersCall]);
 
   const handleOpen = (is_Blocked, _id) => {
-    setBlocked(is_Blocked)
+    setBlocked(is_Blocked);
     setUserId(_id);
     setOpen(!open);
   };
@@ -47,8 +47,12 @@ function UserList() {
     try {
       const res = await blockUserCall({ userId });
       if (res.data.result) {
-        setUsers(res.data.users)
+        setUsers(res.data.users);
         setOpen(!open);
+      }
+      if (res.error) {
+        toast.error(res.error.data.message);
+        return;
       }
     } catch (err) {
       toast.error(err?.data?.message || err.error);
@@ -57,7 +61,7 @@ function UserList() {
 
   return (
     <>
-      <Card className="h-full w-full m-10 rounded-md shadow-2xl border px-4 ms-72">
+      <Card className="h-full w-full  rounded-md shadow-2xl border px-4">
         <table className="w-full min-w-max table-auto text-left">
           <thead>
             <tr>

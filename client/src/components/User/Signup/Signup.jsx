@@ -31,11 +31,16 @@ const Signup = () => {
     });
   };
 
+  const handleMobileChange = (e) => {
+    const numericValue = e.target.value.replace(/\D/g, "");
+    setMobile(numericValue);
+  };
   useEffect(() => {
     if (userInfo) {
       navigate("/");
     }
-  }),[userInfo];
+  }),
+    [userInfo];
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -66,9 +71,6 @@ const Signup = () => {
           mobile,
         });
 
-
-
-
         console.log(res);
         if (res?.data?.user) {
           generateSuccess("Verification mail Send, check your email");
@@ -79,6 +81,7 @@ const Signup = () => {
           generateError(res.error.data.error);
         }
       } catch (err) {
+        console.log(err.data);
         toast.error(err?.data?.message || err.error);
       }
     }
@@ -157,7 +160,8 @@ const Signup = () => {
                           type="text"
                           className="w-full bg-gray-200 border border-gray-300 rounded px-4 py-3"
                           placeholder="Mobile...."
-                          onChange={(e) => setMobile(e.target.value)}
+                          onChange={handleMobileChange}
+                          value={mobile}
                         />
                       </div>
                     </div>

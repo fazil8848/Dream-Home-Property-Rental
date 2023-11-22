@@ -38,6 +38,11 @@ const OwnerSignup = () => {
   }),
     [ownerInfo];
 
+  const handleMobileChange = (e) => {
+    const numericValue = e.target.value.replace(/\D/g, "");
+    setMobile(numericValue);
+  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
     const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
@@ -156,7 +161,8 @@ const OwnerSignup = () => {
                           type="text"
                           className="w-full bg-gray-200 border border-gray-300 rounded px-4 py-3"
                           placeholder="Mobile...."
-                          onChange={(e) => setMobile(e.target.value)}
+                          onChange={handleMobileChange}
+                          value={mobile}
                         />
                       </div>
                     </div>

@@ -5,9 +5,9 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server/index.js",
-    "server": "nodemon server/index.js",
-    "client": " npm run dev --prefix client",
+    "start": "nodemon --experimental-modules server/index.js",
+    "server": "nodemon --experimental-modules server/index.js",
+    "client": " npm run dev --experimental-modules --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\" "
   },
   "keywords": [],
@@ -23,6 +23,7 @@
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.6.3",
+    "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.7",
     "nodemon": "^3.0.1"
   },

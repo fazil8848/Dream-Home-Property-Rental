@@ -2,14 +2,14 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 const ObjectId = mongoose.Types.ObjectId;
 
-const userSchema = new mongoose.Schema({
+const ownerSchema = new mongoose.Schema({
   fullName: {
     type: String,
     required: true
   }, 
   email: {
     type: String,
-    required: true
+    required: true,
   },
   password: {
     type: String,
@@ -19,11 +19,23 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  properties:{
+    type: [ObjectId],
+    ref: 'Properties'
+  },
   details_id: {
     type: ObjectId,
     ref: "details",
   },
   isVerified:{
+    type: Boolean,
+    default: false
+  },
+  kycAdded:{
+    type: Boolean,
+    default: false
+  },
+  kycApproved:{
     type: Boolean,
     default: false
   },
@@ -33,7 +45,7 @@ const userSchema = new mongoose.Schema({
   }
 });
 
-userSchema.pre('save', async function (next) {
+ownerSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     next();
   }
@@ -41,10 +53,10 @@ userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, salt)
 })
 
-userSchema.methods.matchPass = async function (enteredPass) {
+ownerSchema.methods.matchPass = async function (enteredPass) {
   return await bcrypt.compare(enteredPass, this.password);
 }
 
-const userModel = mongoose.model('Owner', userSchema)
+const ownerModel = mongoose.model('Owner', ownerSchema)
 
-export default userModel;
+export default ownerModel;

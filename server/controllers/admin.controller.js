@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import generateToken from '../utils/generateToke.js';
 import User from '../mongodb/models/user.js'
 import Owner from '../mongodb/models/owner.js'
+import KYC from '../mongodb/models/kycModel.js';
 
 const getUsers = asyncHandler(async (req, res) => {
     const users = await User.find();
@@ -42,7 +43,6 @@ const adminLogin = asyncHandler(async (req, res) => {
 
 
 const adminLogout = asyncHandler(async (req, res) => {
-    console.log('its here --------------- ');
     res.cookie('adminToken', '', {
         httpOnly: true,
         expires: new Date(0)
@@ -85,7 +85,7 @@ const blockOwner = asyncHandler(async (req, res) => {
         const owners = await Owner.find();
 
         res.status(201).json({ message: 'Owner Updated Successfully', result, owners });
-        
+
     } else {
         res.status(404)
         throw new Error('Owner Not Found');
@@ -94,6 +94,68 @@ const blockOwner = asyncHandler(async (req, res) => {
 
 })
 
+const getKYCs = async (req, res) => {
+    try {
+
+        const kycs = await KYC.find();
+
+        if (kycs) {
+            return res.status(200).json({ success: true, message: 'KYCs retrived successfully', kycs });
+        }
+
+    } catch (error) {
+        console.log('Error While Getting Kycs:-', error.message);
+        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+}
+
+const approveKyc = async (req, res) => {
+    try {
+        const { kycId, approval } = req.body;
+        const result = await KYC.findByIdAndUpdate(kycId,
+                {$set: { isApproved: approval }},
+                {new: true}
+            )
+        if (result && approval === 'Approved') {
+            const ownerUpdated = await Owner.findByIdAndUpdate(result.owner,
+                { $set: { kycApproved: true }, },
+                { new: true }
+            )
+
+            const kycs = await KYC.find()
+
+            if (ownerUpdated && kycs) {
+                
+                res.status(201).json({ success: true, message: 'KYC Updated successfully', result,kycs })
+            } else {
+                return res.status(401).json({ success: false, error: 'Error While Approving Kycs ' });
+            }
+
+        } else if (result && approval === 'Disapproved') {
+            const ownerUpdated = await Owner.findByIdAndUpdate(result.owner,
+                 {$set: { kycApproved: false }},
+                 { new: true }
+            );
+
+            const kycs = await KYC.find({},{new: true})
+            console.log(kycs);
+
+            if (ownerUpdated && kycs) {
+                res.status(201).json({ success: true, message: 'KYC Updated successfully', result,kycs })
+            } else {
+                return res.status(401).json({ success: false, error: 'Error While Approving Kycs ' });
+            }
+
+        } else {
+            return res.status(401).json({ success: false, error: 'Error While Approving Kycs ' });
+        }
+
+    } catch (error) {
+        console.log('Error While Approving Kycs:-', error.message);
+        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+}
+
 export default {
     getUsers,
     adminLogin,
@@ -101,4 +163,7 @@ export default {
     blockUser,
     getOwners,
     blockOwner,
+    getKYCs,
+    approveKyc,
+
 }

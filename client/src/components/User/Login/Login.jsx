@@ -17,7 +17,7 @@ function Login() {
 
   const { userInfo } = useSelector((state) => state.user);
 
-  useEffect(() => { 
+  useEffect(() => {
     if (userInfo) {
       navigate("/");
     }
@@ -26,6 +26,9 @@ function Login() {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
+      if (email.trim() === "" || password.trim() === "") {
+        toast.error('Please Fill all the fields');
+      }
       const res = await login({ email, password }).unwrap();
       dispatch(setCredentials({ ...res }));
       navigate("/");
@@ -96,7 +99,13 @@ function Login() {
               type="submit"
               className="w-3/12 mt-6 md:w-2/4  bg-blue-100 text-white text-base font-medium py-3 rounded hover:bg-blue-950"
             >
-              {isLoading ? <div className="md:mx-[49%] mx-[38%]"><Spinner/></div> : "Login"}
+              {isLoading ? (
+                <div className="md:mx-[49%] mx-[38%]">
+                  <Spinner />
+                </div>
+              ) : (
+                "Login"
+              )}
             </button>
           </div>
           <div className="flex justify-center md:justify-start">

@@ -7,6 +7,7 @@ const router  = express.Router();
 //GET
 router.get('/getUsers',adminController.getUsers);
 router.get('/getOwners',adminController.getOwners);
+router.get('/getKycs',adminController.getKYCs);
 
 //POST
 router.post('/login',adminController.adminLogin);
@@ -15,6 +16,9 @@ router.post('/logout',adminController.adminLogout);
 //PUT
 router.put('/blockUser',adminController.blockUser);
 router.put('/blockOwner',adminController.blockOwner);
+
+//PATCH 
+router.patch('/approveKyc',adminController.approveKyc)
 
 
 export default router;

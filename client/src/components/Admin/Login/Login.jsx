@@ -11,7 +11,7 @@ function Login() {
   const [login, { isLoading }] = useAdminLoginMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const adminInfo = useSelector((state) => state.admin.adminInfo);
+  const {adminInfo} = useSelector((state) => state.admin);
 
   useEffect(() => {
     if (adminInfo) {
@@ -22,7 +22,13 @@ function Login() {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
+
+      if (email.trim() === '' || password.trim() === '') {
+        toast.error('Please fill all the fields');
+      }
       const res = await login({ email, password }).unwrap();
+
+
       dispatch(setAdminCredentials(res));
       navigate("/admin");
     } catch (err) {
@@ -32,7 +38,7 @@ function Login() {
 
   return (
     <>
-      <div className="min-h-[84vh] bg-loginBg bg-cover bg-center flex justify-center items-center">
+      <div className="min-h-[84vh] bg-adminLogBg bg-cover bg-center flex justify-center items-center">
         <div className=" md:flex gap-5 w-4/6 md:w-3/6 px-10 py-6 bg-white-50 rounded-lg shadow-md">
           <div className="w-full md:w-1/2">
             <div>

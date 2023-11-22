@@ -2,20 +2,29 @@ import mongoose from 'mongoose';
 const ObjectId = mongoose.Types.ObjectId;
 
 const propertySchema = new mongoose.Schema({
+    owner: {
+        type: ObjectId,
+        ref: "User",
+        required: true
+    },
     property_name: {
         type: String,
         required: true
     },
-    property_price: {
+    property_type: {
         type: String,
         required: true
     },
-    property_defenition: {
+    property_rent: {
+        type: Number,
+        required: true
+    },
+    property_description: {
         type: String,
         required: true
     },
-    property_address: {
-        type: String,
+    ImageUrls: {
+        type: [String],
         required: true
     },
     property_location: {
@@ -28,30 +37,28 @@ const propertySchema = new mongoose.Schema({
         district: {
             type: String
         },
-        localty: {
+        locality: {
             type: String
         },
         address: {
             type: String
         },
         pin_code: {
-            type: String
+            type: Number
         },
         longitude: {
             type: String
+        },
+        latitude: {
+            type: String
         }
-    },
-    owner_details: {
-        type: ObjectId, 
-        ref: "User",
-        required: true
     },
     details: {
         built_up_area: {
-            type: String
+            type: Number
         },
         carpet_area: {
-            type: String
+            type: Number
         },
         number_bedrooms: {
             type: Number
@@ -63,64 +70,56 @@ const propertySchema = new mongoose.Schema({
             type: Number
         },
         furinishing_status: {
-            type: Number
+            type: String
         },
         road_accessibility: {
-            type: Number
+            type: String
         },
         water_accessibilty: {
-            type: Number
+            type: String
         },
         power_backup: {
-            type: Number
+            type: String
         },
         number_floors: {
             type: Number
         },
         type_flooring: {
-            type: Number
+            type: String
         }
-    },
-    type: {
-        type: String,
-        required: true
     },
     amenities: {
         Wifi: {
             type: Boolean
         },
         AC: {
-            type: Boolean
+            type: Number
         },
         parking: {
-            type: Boolean
+            type: Number
         },
         pool: {
             type: Boolean
         },
         shoping_facility: {
-            type: String
+            type: Boolean
+        },
+        hospital_facility: {
+            type: Boolean
         },
         play_area: {
             type: Boolean
         }
     },
     is_available: {
-        type: String
+        type: Boolean,
+        default: true
     },
-    start_date: {
-        type: Date
+    isApproved: {
+        type: Boolean,
+        default: false
     },
-    end_date: {
-        type: Date
-    },
-    higlights: {
-        type: Array,
-    },
-    images: {
-        type: String,
-    }
-});
+}, { timestamps: true });
 
 const propertyModel = mongoose.model('Property', propertySchema);
 

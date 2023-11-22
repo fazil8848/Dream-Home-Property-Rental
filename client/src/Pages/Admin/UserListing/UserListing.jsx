@@ -4,8 +4,7 @@ import AdminNavbar from "../../../components/Admin/AdminNavbar/AdminNavbar";
 
 function UserListing() {
   return (
-    <div className="flex">
-      <AdminNavbar />
+    <div >
       <UserList />
     </div>
   );

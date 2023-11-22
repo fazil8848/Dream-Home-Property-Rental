@@ -31,7 +31,7 @@ const Header = () => {
  
   return (
     <div>
-      <header className='bg-white fixed w-screen z-50 shadow-lg '>
+      <header className='bg-white w-screen z-50 shadow-lg '>
         <nav
           className="mx-auto flex max-w-7xl items-center justify-between p-2.5 lg:px-8"
           aria-label="Global"
@@ -143,7 +143,7 @@ const Header = () => {
                       </li>
                       <li className="my-1">
                         <NavLink
-                          to="/owner/ownerlogin"
+                          to="/owner/login"
                           className={`flex justify-between items-center text-sm font-semibold bg-blue-100 p-2 rounded leading-6 text-white border-1 border-white`}
                         >
                           Post Property
@@ -193,7 +193,7 @@ const Header = () => {
                   </span>
                 </NavLink>
                 <NavLink
-                  to="/owner/ownerlogin"
+                  to="/owner/login"
                   className={`flex justify-between items-center text-sm font-semibold bg-blue-100 p-2 rounded leading-6 text-white border-1 border-white`}
                 >
                   Post Property

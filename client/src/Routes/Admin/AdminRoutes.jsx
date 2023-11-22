@@ -6,6 +6,7 @@ import AdminLayout from "../../Layouts/AdminLayout";
 import UserListing from "../../Pages/Admin/UserListing/UserListing";
 import PrivateRoutes from "./Private/PrivateRoutes";
 import OwnerListing from "../../Pages/Admin/OwnerListingPage/OwnerListingPage";
+import KycListingPage from "../../Pages/Admin/KycListingPage/KycListingPage";
 
 const AdminRouter = () => {
   return (
@@ -16,6 +17,7 @@ const AdminRouter = () => {
           <Route index element={<AdminHome />} />
           <Route path="users" element={<UserListing />} />
           <Route path="owners" element={<OwnerListing />} />
+          <Route path="kycs" element={<KycListingPage />} />
         </Route>
       </Route>
     </Routes>

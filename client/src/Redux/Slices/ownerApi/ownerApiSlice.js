@@ -1,5 +1,5 @@
 import { apiSlice } from "../apiSlice";
-const OWNER_URL = 'http://localhost:5000/owner';
+const OWNER_URL = process.env.REACT_APP_OWNER_URL
 
 const ownerApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -30,20 +30,64 @@ const ownerApiSlice = apiSlice.injectEndpoints({
             })
         }),
         addKyc: builder.mutation({
-            query: (data)=>({
-                url:`${OWNER_URL}/kyc`,
-                method:'POST',
+            query: (data) => ({
+                url: `${OWNER_URL}/kyc`,
+                method: 'POST',
                 body: data,
             })
         }),
         getOwner: builder.mutation({
             query: (id) => ({
-                url: `${OWNER_URL}/getOwner`,
-                method: 'POST',
-                body: {id},
+                url: `${OWNER_URL}/getOwner?id=${id}`,
+                method: 'GET',
             })
         }),
+        updateOwner: builder.mutation({
+            query: (data) => ({
+                url: `${OWNER_URL}/updateOwner`,
+                method: 'POST',
+                body: data,
+            })
+        }),
+        addProperties: builder.mutation({
+            query: (data) => ({
+                url: `${OWNER_URL}/addProperties`,
+                method: 'POST',
+                body: data,
+            })
+        }),
+        getProperties: builder.mutation({
+            query: ({ id }) => ({
+                url: `${OWNER_URL}/getProperties/${id}`,
+                method: 'GET',
+            })
+        }),
+        getProperty: builder.mutation({
+            query: (id) => ({
+                url: `${OWNER_URL}/getProperty/${id}`,
+                method: 'GET',
+            })
+        }),
+        editProperty: builder.mutation({
+            query: ({ propertyData, id }) => ({
+                url: `${OWNER_URL}/editProperty?id=${id}`,
+                method: 'POST',
+                body: propertyData,
+            })
+        }),
+        deleteImage: builder.mutation({
+            query: (data) => ({
+                url: `${OWNER_URL}/deleteImage`,
+                method: "DELETE",
+                body: data
+            })
+        })  
     })
 })
 
-export const { useOwnerLoginMutation, useOwnerSignupMutation, useOwnerVerifyMutation, useOwnerLogoutMutation, useAddKycMutation, useGetOwnerMutation } = ownerApiSlice;
+export const {
+    useOwnerLoginMutation, useOwnerSignupMutation, useOwnerVerifyMutation,
+    useOwnerLogoutMutation, useAddKycMutation, useGetOwnerMutation,
+    useUpdateOwnerMutation, useAddPropertiesMutation, useGetPropertiesMutation,
+    useGetPropertyMutation, useEditPropertyMutation, useDeleteImageMutation
+} = ownerApiSlice;

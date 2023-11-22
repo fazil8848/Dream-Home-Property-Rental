@@ -1,5 +1,5 @@
 import { apiSlice } from '../apiSlice';
-const ADMIN_URL = 'http://localhost:5000/admin';
+const ADMIN_URL = process.env.REACT_APP_ADMIN_URL
 
 const adminApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -30,7 +30,7 @@ const adminApiSlice = apiSlice.injectEndpoints({
             })
         }),
         getOwners: builder.mutation({
-            query: ()=>({
+            query: () => ({
                 url: `${ADMIN_URL}/getOwners`,
                 method: 'GET'
             })
@@ -42,8 +42,25 @@ const adminApiSlice = apiSlice.injectEndpoints({
                 method: 'PUT',
                 body: data,
             })
+        }),
+        getKYCs: builder.mutation({
+            query: () => ({
+                url: `${ADMIN_URL}/getKycs`,
+                method: 'GET'
+            })
+        }),
+        approveKyc: builder.mutation({
+            query: (data)=>({
+                url:`${ADMIN_URL}/approveKyc`,
+                method:'PATCH',
+                body:data
+            })
         })
     })
 })
 
-export const { useAdminLoginMutation, useAdminLogoutMutation, useGetUsersMutation, useBlockUserMutation, useBlockOwnerMutation, useGetOwnersMutation } = adminApiSlice
+export const { 
+    useAdminLoginMutation, useAdminLogoutMutation, useGetUsersMutation,
+    useBlockUserMutation, useBlockOwnerMutation, useGetOwnersMutation,
+    useGetKYCsMutation, useApproveKycMutation,
+} = adminApiSlice

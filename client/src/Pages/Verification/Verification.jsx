@@ -31,7 +31,7 @@ const Verification = () => {
         }, 2000);
 
         setTimeout(() => {
-          navigate('/user/login')
+          navigate('/login')
         }, 4000);
         
       } catch (err) {
@@ -42,7 +42,7 @@ const Verification = () => {
     verify();
   }, [id, verifyUser, dispatch]);
   return (
-    <div>
+    <div >
       <VerificationSpinner msg={msg} />
     </div>
   );

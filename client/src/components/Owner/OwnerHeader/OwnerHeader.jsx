@@ -1,16 +1,18 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import {  useDispatch } from "react-redux";
-import { FaUserTie } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 import { TbLogout2 } from "react-icons/tb";
 import { useOwnerLogoutMutation } from "../../../Redux/Slices/ownerApi/ownerApiSlice";
 import { ownerLogout } from "../../../Redux/Slices/ownerApi/ownerAuthSlicel";
+import { VscThreeBars } from "react-icons/vsc";
+import { TbLayoutSidebarRightExpand } from "react-icons/tb";
+import { AiOutlineCloseCircle } from "react-icons/ai";
 
-const OwnerHeader = () => {
+const OwnerHeader = ({ sidebarOpen, setSidebarOpen }) => {
   const [logoutCall] = useOwnerLogoutMutation();
   const dispatch = useDispatch();
-  const navigate = useNavigate(); 
-
+  const navigate = useNavigate();
+  const { ownerInfo } = useSelector((state) => state.owner);
 
   const logoutHandlder = async () => {
     try {
@@ -22,6 +24,10 @@ const OwnerHeader = () => {
     }
   };
 
+  const handleToggle = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
     <div>
       <header className="fixed px-8 top-0 z-50 flex w-full bg-white drop-shadow-md">
@@ -29,7 +35,7 @@ const OwnerHeader = () => {
           className="mx-auto flex w-full justify-between p-2.5 lg:px-8"
           aria-label="Global"
         >
-          <div className="flex  lg:flex-1">
+          <div className="flex  ">
             <NavLink to={"/owner"} className="-m-1.5 p-1.5">
               <span className="sr-only">DreamHomes</span>
               <img
@@ -39,20 +45,34 @@ const OwnerHeader = () => {
               />
             </NavLink>
           </div>
-          
 
-          <div className={`hidden lg:flex lg:flex-1 lg:justify-end `}>
-              <>
-                <NavLink
-                  className={`flex justify-between items-center text-sm font-semibold bg-blue-100 p-2 rounded leading-6 text-white border-1 border-white`}
-                  onClick={logoutHandlder}
-                >
-                  LogOut
-                  <span aria-hidden="true">
-                    <TbLogout2 />
-                  </span>
-                </NavLink>
-              </>
+          <div className={`flex gap-4`}>
+            <>
+              {ownerInfo && (
+                <>
+                  <NavLink
+                    className={` flex gap-2 items-center text-sm font-semibold border border-gray-500 hover:shadow-2xl hover:drop-shadow-2xl hover:bg-blue-100 p-2 rounded leading-6 hover:text-white `}
+                    onClick={logoutHandlder}
+                  >
+                    LogOut
+                    <span aria-hidden="true">
+                      <TbLogout2 />
+                    </span>
+                  </NavLink>
+
+                  <NavLink
+                    onClick={handleToggle}
+                    className={`flex justify-between items-center text-sm font-semibold`}
+                  >
+                    {sidebarOpen ? (
+                      <AiOutlineCloseCircle className="w-8 h-8 mt-1 text-blue-100 my-auto" />
+                    ) : (
+                      <TbLayoutSidebarRightExpand className="w-8 h-8 mt-1 text-blue-100 my-auto" />
+                    )}
+                  </NavLink>
+                </>
+              )}
+            </>
           </div>
         </nav>
       </header>

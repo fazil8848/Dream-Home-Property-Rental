@@ -9,13 +9,16 @@ export default {
       ...require('tailwindcss/colors'),
       'blue-100': '#1e1d85',
       'gray-900': 'rgba(0,0,0,0.35)',
-      'indigo-750':'#6d6cb0',
-      'white-100' : 'rgba(255, 255, 255, 0.4)',
-      'white-50' : 'rgba(255, 255, 255, 0.85)'
+      'gray-999': 'rgba(0,0,0,0.75)',
+      'indigo-750': '#6d6cb0',
+      'white-100': 'rgba(255, 255, 255, 0.4)',
+      'white-50': 'rgba(255, 255, 255, 0.85)',
+      'ownFormbg': '#EBEBEB'
     },
     backgroundImage: {
       'bannerImg': "url('https://res.cloudinary.com/dn6anfym7/image/upload/v1698482035/dreamHome/h4vnyiujlnurhzhjn98u.jpg')",
-      'loginBg' : 'url(https://res.cloudinary.com/dn6anfym7/image/upload/v1699693210/ezgif.com-resize_osqicn.gif)'
+      'loginBg': 'url(https://res.cloudinary.com/dn6anfym7/image/upload/v1699693210/ezgif.com-resize_osqicn.gif)',
+      'adminLogBg': 'url(https://www.pixground.com/wp-content/uploads/2023/10/Floating-City-Pixel-World-AI-Generated-4K-Wallpaper-1536x864.webp)'
     },
 
     extend: {
@@ -23,8 +26,12 @@ export default {
         '128': '85vh',
         '120': '65vw',
       },
-        fontFamily: {
-          'poppins': ['Poppins', 'sans-serif'], // Add 'Poppins' font family
+      fontFamily: {
+        'poppins': ['Poppins', 'sans-serif'], // Add 'Poppins' font family,
+        'promt': ['Prompt', 'sans-serif']
+        },
+        transitionProperty: {
+          'margin': 'margin',
         },
     },
   },

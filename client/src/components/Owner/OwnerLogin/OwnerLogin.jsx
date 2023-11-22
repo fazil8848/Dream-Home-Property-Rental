@@ -4,22 +4,24 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { setOwnerCredentials } from "../../../Redux/Slices/ownerApi/ownerAuthSlicel";
 import { useOwnerLoginMutation } from "../../../Redux/Slices/ownerApi/ownerApiSlice";
+import Spinner from "../Spinner/Spinner";
+
 
 function OwnerLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [login, { isLoading }] = useOwnerLoginMutation();
+  const [login, { isLoading, isError, isSuccess }] = useOwnerLoginMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {ownerInfo} = useSelector((state) => state.owner);
+  const { ownerInfo } = useSelector((state) => state.owner);
 
-    const generateError = (err) => {
+  const generateError = (err) => {
     toast.error(err, {
       position: "top-center",
     });
   };
 
-  useEffect(() => { 
+  useEffect(() => {
     if (ownerInfo) {
       navigate("/owner");
     }
@@ -28,20 +30,21 @@ function OwnerLogin() {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      if (email === "" || password === "") {
-        generateError('Please fill out all the fields')
+      if (email.trim() === "" || password.trim() === "") {
+        return toast.error("Please fill out all the fields");
       }
       const res = await login({ email, password }).unwrap();
       dispatch(setOwnerCredentials(res));
       navigate("/owner");
     } catch (err) {
+      console.log(err);
       generateError(err?.data?.message || err.error);
     }
   };
 
   return (
     <>
-      <div className="min-h-[84vh] bg-loginBg bg-cover bg-center flex justify-center items-center">
+      <div className="min-h-[94vh] bg-loginBg bg-cover bg-center flex justify-center items-center">
         <div className=" md:flex gap-5 w-4/6 md:w-3/6 px-10 py-6 bg-white-50 rounded-lg shadow-md">
           <div className="w-full md:w-1/2">
             <div>
@@ -50,7 +53,7 @@ function OwnerLogin() {
                   Log in
                 </div>
                 <div className=" flex ml-8">
-                  <div className="font-normal text-[#696969] text-base">
+                  <div className="font-promt text-[#696969] text-base">
                     Not a User...?
                   </div>
                   <Link
@@ -100,12 +103,12 @@ function OwnerLogin() {
                   />
                 </div>
               </div>
-              <div className="mt-2 flex justify-center items-center">
+              <div className="mt-2 flex justify-center text-center items-center">
                 <button
                   type="submit"
                   className="w-2/4 bg-blue-100 text-white text-base font-medium py-3 rounded hover:bg-blue-950"
                 >
-                  Login
+                 { isLoading? <div className=' mx-[40%]'><Spinner /></div> :'Login'} 
                 </button>
               </div>
             </form>

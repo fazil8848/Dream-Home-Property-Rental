@@ -16,15 +16,28 @@ import {
 } from "@heroicons/react/24/solid";
 import { NavLink } from "react-router-dom";
 
-function OwnerNav() {
+function OwnerNav({ sidebarOpen, setSidebarOpen }) {
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
-    <Card className=" fixed top-0 left-0 z-40 w-64 mt-16 h-screen drop-shadow-lg transition-transform -translate-x-full sm:translate-x-0 ">
+    <Card
+      className={`${
+        !sidebarOpen
+          ? "hidden fixed top-0 left-0 z-40 w-64 mt-[3.8rem] h-screen drop-shadow-lg transition-transform -translate-x-full sm:translate-x-0"
+          : "block fixed top-0 left-0 z-40 w-64 mt-[3.8rem] h-screen drop-shadow-lg transition-transform sm:translate-x-0"
+      }`}
+    >
       <List>
         <div className="px-2 pt-4">
           <NavLink
             to={"/owner"}
+            end
             className={({ isActive }) =>
-              isActive ? `bg-gray-200 text-gray-700 font-semibold` : ""
+              isActive
+                ? `bg-gray-200 text-gray-700 font-semibold shadow-2xl`
+                : ""
             }
           >
             <ListItem className=" p-2 hover:bg-gray-200">

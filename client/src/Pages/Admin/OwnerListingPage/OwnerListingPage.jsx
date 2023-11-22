@@ -4,8 +4,7 @@ import OwnerList from "../../../components/Admin/OwnerList/OwnerList";
 
 function OwnerListing() {
   return (
-    <div className="flex">
-      <AdminNavbar />
+    <div>
       <OwnerList />
     </div>
   );

@@ -28,6 +28,10 @@ function OwnerList() {
     const fetchData = async () => {
       try {
         const response = await getOwnersCall();
+        if (response.error) {
+          toast.error(res.error.data.message);
+          return;
+        }
         setOwners(response.data.owners);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -56,11 +60,9 @@ function OwnerList() {
     }
   };
 
-  console.log("Blocked State:", blocked);
-
   return (
     <>
-      <Card className="h-full w-full m-10 rounded-md shadow-2xl border px-4 ms-72">
+      <Card className="h-full w-full rounded-md shadow-2xl border px-4">
         <table className="w-full min-w-max table-auto text-left">
           <thead>
             <tr>
@@ -189,6 +191,7 @@ function OwnerList() {
         </table>
       </Card>
 
+      
       <Dialog className="w-5/12 " open={open} handler={handleOpen}>
         <DialogHeader>
           {blocked ? (

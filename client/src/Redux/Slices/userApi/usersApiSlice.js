@@ -1,5 +1,5 @@
 import { apiSlice } from '../apiSlice';
-const USERS_URL = 'http://localhost:5000';
+const USERS_URL = process.env.REACT_APP_USERS_URL;
 
 export const usersApiSclice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -30,6 +30,6 @@ export const usersApiSclice = apiSlice.injectEndpoints({
             })
         }),
     })
-}) 
+})
 
 export const { useLoginMutation, useLogoutMutation, useRegisterMutation, useVerifyUserMutation } = usersApiSclice;
