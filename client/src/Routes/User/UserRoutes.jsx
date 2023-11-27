@@ -5,6 +5,7 @@ import LoginPage from "../../Pages/User/LoginPage/LoginPage.jsx";
 import SignupPage from "../../Pages/User/SignupPage/SignupPage.jsx";
 import Layout from "../../Layouts/Layout.jsx";
 import PrivateRoutes from "./Private/PrivateRoutes.jsx";
+import SinglePropertyPage from "../../Pages/User/SinglePropertyPage/SinglePropertyPage.jsx";
 
 const UserRouter = () => {
   return (
@@ -13,6 +14,7 @@ const UserRouter = () => {
         <Route index element={<HomePage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="signup" element={<SignupPage />} />
+        <Route path="property/:id" element={<SinglePropertyPage />} />
         <Route path="" element={<PrivateRoutes />}>
           <></>
         </Route>

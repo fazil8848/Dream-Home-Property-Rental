@@ -8,14 +8,14 @@ function Layout() {
   return (
     <>
       <div>
-        <div className="fixed z-10">
+        <div className="fixed z-10 top-0 left-0">
           <Header />
           <ToastContainer />
         </div>
-        <div className="pt-[3.8rem]">
+        <div className="pt-[3.8rem] min-h-[50vh]">
           <Outlet />
-          <Footer />
         </div>
+          <div className=""><Footer /></div>
       </div>
     </>
   );

@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { TbLogout2 } from "react-icons/tb";
 import { useOwnerLogoutMutation } from "../../../Redux/Slices/ownerApi/ownerApiSlice";
 import { ownerLogout } from "../../../Redux/Slices/ownerApi/ownerAuthSlicel";
-import { VscThreeBars } from "react-icons/vsc";
 import { TbLayoutSidebarRightExpand } from "react-icons/tb";
 import { AiOutlineCloseCircle } from "react-icons/ai";
+import { generateError } from "../../Dependencies/toast";
 
 const OwnerHeader = ({ sidebarOpen, setSidebarOpen }) => {
   const [logoutCall] = useOwnerLogoutMutation();
@@ -16,11 +16,16 @@ const OwnerHeader = ({ sidebarOpen, setSidebarOpen }) => {
 
   const logoutHandlder = async () => {
     try {
-      await logoutCall().unwrap();
-      dispatch(ownerLogout());
+      const res = await logoutCall().unwrap();
+      if (res.error) {
+        generateError(res.error)
+      } else {
+        dispatch(ownerLogout());
       navigate("/owner/login");
+      }
+      
     } catch (error) {
-      toast.error(err?.data?.message || err.error);
+      generateError(err?.data?.message || err.error);
     }
   };
 

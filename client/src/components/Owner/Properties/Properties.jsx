@@ -3,10 +3,7 @@ import { Link } from "react-router-dom";
 import { MdVilla } from "react-icons/md";
 import { useGetPropertiesMutation } from "../../../Redux/Slices/ownerApi/ownerApiSlice";
 import { useSelector } from "react-redux";
-import {
-  IoMdCheckmarkCircleOutline,
-  IoMdCloseCircleOutline,
-} from "react-icons/io";
+import { generateError } from "../../Dependencies/toast";
 
 const Properties = () => {
   const [getProperties, { isLoading }] = useGetPropertiesMutation();
@@ -16,8 +13,13 @@ const Properties = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const res = await getProperties({ id: ownerInfo._id });
-        setProperties(res.data.properties);
+        const res = await getProperties({ id: ownerInfo._id }).unwrap();
+        if (res.error) {
+          generateError(res.error);
+          return;
+        } else {
+          setProperties(res.properties);
+        }
       } catch (error) {
         console.log(error.message);
       }
@@ -40,10 +42,13 @@ const Properties = () => {
       </div>
       {properties.map((property) => {
         return (
-          <div key={property._id} className="bg-white rounded border shadow-md p-3 w-full flex gap-3">
+          <div
+            key={property._id}
+            className="bg-white rounded border shadow-md p-3 w-full flex gap-3 mb-3"
+          >
             <div className="w-4/12 ">
               <img
-                className="rounded w-full"
+                className="rounded w-full max-h-80 "
                 src={property?.ImageUrls[0]}
                 alt=""
               />
@@ -57,8 +62,9 @@ const Properties = () => {
                 </p>
                 <p className="font-bold mt-1 mb-2">₹{property.property_rent}</p>
                 <Link
-                to={`/owner/properties/editProperties/${property._id}`}
-                className="bg-blue-100 text-sm rounded px-2 py-1 text-white ">
+                  to={`/owner/properties/editProperties/${property._id}`}
+                  className="bg-blue-100 text-sm rounded px-2 py-1 text-white "
+                >
                   More Actions ↓
                 </Link>
               </div>
@@ -74,7 +80,10 @@ const Properties = () => {
                   <p className="text-red-500 font-medium">Not Approved</p>
                 )}
                 <p className="text-sm font-medium font-poppins text-gray-500">
-                POSTED ON: {property.createdAt ? new Date (property.createdAt).toISOString().slice(0,10) : 'N/A'}
+                  POSTED ON:{" "}
+                  {property.createdAt
+                    ? new Date(property.createdAt).toISOString().slice(0, 10)
+                    : "N/A"}
                 </p>
               </div>
             </div>

@@ -7,7 +7,7 @@ import AdminNavbar from "../components/Admin/AdminNavbar/AdminNavbar";
 function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   return (
-    <div className=" overflow-hidden">
+    <div className=" overflow-hidden bg-gray-100">
 
       <div className="flex h-screen overflow-hidden">
         <AdminNavbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
@@ -24,7 +24,7 @@ function AdminLayout() {
             }`}
           >
             <ToastContainer />
-            <main className="bg-gray-100 w-full">
+            <main className=" w-full h-screen">
               <div className="mx-auto my-16 max-w-screen-2xl p-4 md:p-6 2xl:px-10">
                 <Outlet />
               </div>

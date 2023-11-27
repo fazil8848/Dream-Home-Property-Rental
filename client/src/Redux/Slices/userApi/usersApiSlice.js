@@ -29,7 +29,19 @@ export const usersApiSclice = apiSlice.injectEndpoints({
                 method: 'PUT',
             })
         }),
+        getPropertiesuser: builder.mutation({
+            query:()=>({
+                url:`${USERS_URL}/getPropertiesuser`,
+                method: 'GET',
+            })
+        }),
+        getSingleProperty: builder.mutation({
+            query: (id)=>({
+                url :`${USERS_URL}/getSingleProperty?id=${id}`,
+                method: 'GET'
+            })
+        })
     })
 })
 
-export const { useLoginMutation, useLogoutMutation, useRegisterMutation, useVerifyUserMutation } = usersApiSclice;
+export const { useLoginMutation, useLogoutMutation, useRegisterMutation, useVerifyUserMutation, useGetPropertiesuserMutation, useGetSinglePropertyMutation } = usersApiSclice;

@@ -6,7 +6,6 @@ import { setOwnerCredentials } from "../../../Redux/Slices/ownerApi/ownerAuthSli
 import { useOwnerLoginMutation } from "../../../Redux/Slices/ownerApi/ownerApiSlice";
 import Spinner from "../Spinner/Spinner";
 
-
 function OwnerLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,10 +33,15 @@ function OwnerLogin() {
         return toast.error("Please fill out all the fields");
       }
       const res = await login({ email, password }).unwrap();
-      dispatch(setOwnerCredentials(res));
-      navigate("/owner");
+      console.log(res);
+      if (res._id) {
+        dispatch(setOwnerCredentials(res));
+        navigate("/owner");
+      } else {
+        toast.error(res.error);
+        return;
+      }
     } catch (err) {
-      console.log(err);
       generateError(err?.data?.message || err.error);
     }
   };
@@ -46,7 +50,7 @@ function OwnerLogin() {
     <>
       <div className="min-h-[94vh] bg-loginBg bg-cover bg-center flex justify-center items-center">
         <div className=" md:flex gap-5 w-4/6 md:w-3/6 px-10 py-6 bg-white-50 rounded-lg shadow-md">
-          <div className="w-full md:w-1/2">
+          <div className="w-full lg:w-1/2">
             <div>
               <div className="mb-6">
                 <div className=" ml-6 pt-10 font-semibold text-[#252525] text-2xl leading-[48px]">
@@ -108,13 +112,19 @@ function OwnerLogin() {
                   type="submit"
                   className="w-2/4 bg-blue-100 text-white text-base font-medium py-3 rounded hover:bg-blue-950"
                 >
-                 { isLoading? <div className=' mx-[40%]'><Spinner /></div> :'Login'} 
+                  {isLoading ? (
+                    <div className=" mx-[40%]">
+                      <Spinner />
+                    </div>
+                  ) : (
+                    "Login"
+                  )}
                 </button>
               </div>
             </form>
           </div>
 
-          <div className="w-1/2 hidden md:block">
+          <div className="w-0 lg:w-1/2 hidden lg:block">
             <img
               className="w-full h-full"
               src="https://res.cloudinary.com/dn6anfym7/image/upload/v1699543390/Login-rafiki_1_n50szc.png"

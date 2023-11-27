@@ -5,6 +5,7 @@ import { useLoginMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
 import { setCredentials } from "../../../Redux/Slices/authSlice";
 import { toast } from "react-toastify";
 import Spinner from "../Spinner/Spinner";
+import { generateError } from "../../Dependencies/toast";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -27,13 +28,17 @@ function Login() {
     e.preventDefault();
     try {
       if (email.trim() === "" || password.trim() === "") {
-        toast.error('Please Fill all the fields');
+        toast.error("Please Fill all the fields");
       }
       const res = await login({ email, password }).unwrap();
-      dispatch(setCredentials({ ...res }));
-      navigate("/");
+      if (res.error) {
+        generateError(res.error);
+      } else {
+        dispatch(setCredentials({ ...res }));
+        navigate("/");
+      }
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      generateError(err?.data?.message || err.error);
     }
   };
 

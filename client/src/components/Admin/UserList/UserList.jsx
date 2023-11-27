@@ -12,7 +12,7 @@ import {
   useBlockUserMutation,
   useGetUsersMutation,
 } from "../../../Redux/Slices/adminApi/adminApislice";
-import { toast } from "react-toastify";
+import { generateError, generateSuccess } from "../../Dependencies/toast";
 
 const TABLE_HEAD = ["Name", "Email", "Phone", "Block"];
 
@@ -27,10 +27,15 @@ function UserList() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getUsersCall();
-        setUsers(response.data.users);
+        const response = await getUsersCall().unwrap();
+        if (response.error) {
+          generateError(response.error);
+        } else {
+          setUsers(response.users);
+          
+        }
       } catch (error) {
-        console.error("Error fetching users:", error);
+        generateError("Error fetching users", error);
       }
     };
 
@@ -45,23 +50,23 @@ function UserList() {
 
   const handleBlocking = async () => {
     try {
-      const res = await blockUserCall({ userId });
-      if (res.data.result) {
-        setUsers(res.data.users);
+      const res = await blockUserCall({ userId }).unwrap();
+      if (res.error) {
+        generateError(res.error);
+        return;
+      } else {
+        generateSuccess('User updated successfully')
+        setUsers(res.users);
         setOpen(!open);
       }
-      if (res.error) {
-        toast.error(res.error.data.message);
-        return;
-      }
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      generateError(err?.data?.message || err.error);
     }
   };
 
   return (
     <>
-      <Card className="h-full w-full  rounded-md shadow-2xl border px-4">
+      <Card className="h-full w-screen lg:w-full rounded-md shadow-2xl border px-4">
         <table className="w-full min-w-max table-auto text-left">
           <thead>
             <tr>

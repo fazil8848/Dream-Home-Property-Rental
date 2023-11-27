@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import Spinner from "../Spinner/Spinner";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { generateError, generateSuccess } from "../../Dependencies/toast";
 
 const KYC_form = () => {
   const [full_name, setFull_name] = useState("");
@@ -41,7 +42,7 @@ const KYC_form = () => {
         ZipCode.trim() === "" ||
         City.trim() === ""
       ) {
-        toast.error("Please fill all the fields");
+        generateError("Please fill all the fields");
         return;
       }
   
@@ -62,12 +63,13 @@ const KYC_form = () => {
         portrate: url,
       };
   
-      const result = await addKYCCall({ KYC });
+      const result = await addKYCCall({ KYC }).unwrap();
   
       if (result.error) {
-        console.log(result.error);
+        generateError(result.error);
+        return;
       } else {
-        toast.success("KYC added successfully");
+        generateSuccess("KYC added successfully");
         navigate('/owner/profile')
       }
     } catch (error) {
@@ -76,8 +78,7 @@ const KYC_form = () => {
       if (error.response) {
         console.error("Server responded with:", error.response.data);
       }
-  
-      toast.error("An error occurred while processing your request");
+      generateError("An error occurred while processing your request");
     }
   };
 
@@ -97,7 +98,7 @@ const KYC_form = () => {
       const cloudinaryData = await cloudinaryResponse.json();
 
       if (cloudinaryData.error) {
-        toast.error(
+        generateError(
           `Failed to upload image to Cloudinary: ${cloudinaryData.error.message}`
         );
         return;
@@ -106,7 +107,7 @@ const KYC_form = () => {
 
       return uploadedImageUrl;
     } catch (error) {
-      toast.error(
+      generateError(
         `Failed to upload image to Cloudinary: ${cloudinaryData.error.message}`
       );
     }

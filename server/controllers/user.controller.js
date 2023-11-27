@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import generateToken from '../utils/generateToke.js';
 import { sendMail } from '../service/regMail.js';
 import { userVerification } from '../middleware/authMiddleware.js';
+import Properties from '../mongodb/models/property.js';
 
 
 
@@ -13,8 +14,8 @@ export const registerUser = asyncHandler(async (req, res) => {
     const fullName = fisrtName + ' ' + lastName;
 
     if (userExists) {
-        res.status(409).json({ error: "Existing Email", created: false });
-        throw new Error('User already Exists');
+        res.json({ error: "Existing Email", created: false }).status(409);
+        return
     } else {
         const user = new User({
             fullName,
@@ -50,8 +51,8 @@ export const registerUser = asyncHandler(async (req, res) => {
                 });
 
             } else {
-                res.status(400);
-                throw new Error('Invalid user Data')
+                res.json({ error:'Invalid User Data' }).status(404);
+                return;
             }
         }
 
@@ -64,8 +65,9 @@ export const verifyUser = async (req, res) => {
         const { id } = req.params;
         const result = await userVerification(id);
         if (!result) {
-            throw new Error("cannot verify the user");
-        } 
+            res.json({ error:'Cannot verify User' }).status(404);
+            return;
+        }
         const user = {
             _id: result._id,
             name: result.fullName,
@@ -81,10 +83,10 @@ export const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
 
-    // if (user.is_Blocked) {
-    //     res.status(401);
-    //     throw new Error('Your Account is Blocked');
-    // }
+    if (user.is_Blocked) {
+        res.json({ success: false, error: 'Your Account is Blocked' }).status(401)
+        return;
+    }
 
     if (user && (await user.matchPass(password))) {
         generateToken.generateToken(res, user._id);
@@ -94,8 +96,8 @@ export const loginUser = asyncHandler(async (req, res) => {
             email: user.email
         })
     } else {
-        res.status(401);
-        throw new Error('Invalid Email or Password');
+        res.json({ error:'Invalid Email or Password' }).status(401);
+        return;
     }
 
 });
@@ -105,7 +107,7 @@ export const logOutUser = asyncHandler(async (req, res) => {
         httpOnly: true,
         expires: new Date(0)
     });
-    res.status(200).json({ message: 'User Logged Out' })
+    res.json({ message: 'User Logged Out' }).status(200)
 })
 
 export const userProfile = asyncHandler(async (req, res) => {
@@ -133,10 +135,43 @@ export const updateUser = asyncHandler(async (req, res) => {
             _id: updatedUser._id,
             name: updatedUser.fullName,
             email: updatedUser.email
-        })
+        });
 
     } else {
-        res.status(404);
-        throw new Error('User Not Found');
+        res.json({ error:'User not found' }).status(401);
+        return;
     }
 })
+
+export const getPropertiesUser = async (req, res) => {
+    try {
+        const properties = await Properties.find({ isApproved: true, is_available: true });
+
+        if (properties) {
+            res.status(201).json({ success: true, message: 'Properties successfully retrieved',properties });
+        } else {
+            return res.json({ success: false, error: 'Cannot retrieve Properties' }).status(500);
+        }
+
+    } catch (error) {
+        console.log('Error While getting properties :-', error.message);
+        return res.json({ success: false, error: 'Internal Server Error' }).status(500);
+    }
+}
+
+export const getSingleProperty = async (req,res) =>{
+    try {
+        const {id} = req.query
+        const property = await Properties.findById(id);
+        if (property) {
+            res.status(201).json({success:true, message :"Property Retrieved Successfully", property});
+            return;
+        } else {
+            res.json({success:false, error :"Property Does not Exist"}).status(404);
+            return
+        }        
+    } catch (error) {
+        console.log('Error While getting single property :-', error.message);
+        return res.json({ success: false, error: 'Internal Server Error' }).status(500);
+    }
+}

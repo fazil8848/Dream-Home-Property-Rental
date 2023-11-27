@@ -1,5 +1,5 @@
-import React, {  useState } from "react";
-import {  NavLink, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { FaUserTie } from "react-icons/fa";
 import { TbLogout2 } from "react-icons/tb";
@@ -7,6 +7,7 @@ import { BiLogIn } from "react-icons/bi";
 import { BsFillBuildingsFill } from "react-icons/bs";
 import { useLogoutMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
 import { logout } from "../../../Redux/Slices/authSlice";
+import { generateError } from "../../Dependencies/toast";
 
 const Header = () => {
   const { userInfo } = useSelector((state) => state.user);
@@ -14,24 +15,28 @@ const Header = () => {
   const [logoutCall] = useLogoutMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
- 
+
   const handleToggleNav = () => {
     setIsNavOpen(!isNavOpen);
   };
 
   const logoutHandlder = async () => {
     try {
-      await logoutCall().unwrap();
-      dispatch(logout());
-      navigate("/");
+      const res = await logoutCall().unwrap();
+      if (resizeBy.error) {
+        generateError(res.error);
+      } else {
+        dispatch(logout());
+        navigate("/");
+      }
     } catch (error) {
-      toast.error(err?.data?.message || err.error);
+      generateError(err?.data?.message || err.error);
     }
   };
- 
+
   return (
     <div>
-      <header className='bg-white w-screen z-50 shadow-lg '>
+      <header className="bg-white w-screen z-50 shadow-lg ">
         <nav
           className="mx-auto flex max-w-7xl items-center justify-between p-2.5 lg:px-8"
           aria-label="Global"

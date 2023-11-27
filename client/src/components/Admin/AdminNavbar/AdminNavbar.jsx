@@ -5,7 +5,6 @@ import {
   ListItem,
   ListItemPrefix,
   ListItemSuffix,
-  Chip,
   AccordionHeader,
   Typography,
   AccordionBody,
@@ -22,7 +21,7 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { BsBuildingsFill } from "react-icons/bs";
 import { FaUsers } from "react-icons/fa6";
 
-import { NavLink, useMatch } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 function AdminNavbar({ sidebarOpen, setSidebarOpen }) {
   const [open, setOpen] = React.useState(0);
@@ -31,11 +30,6 @@ function AdminNavbar({ sidebarOpen, setSidebarOpen }) {
     setOpen(open === value ? 0 : value);
   };
 
-  const parentIsActive = useMatch({
-    path: '/admin/owners',
-  }) || useMatch({
-    path: '/admin/kycs',
-  });
 
   return (
     <Card
@@ -49,9 +43,7 @@ function AdminNavbar({ sidebarOpen, setSidebarOpen }) {
 
           <NavLink
             to={"/admin"}
-            className={({ isActive }) =>
-              (isActive || parentIsActive) ? `bg-gray-200 text-gray-700 font-semibold ` : ""
-            }
+            end
           >
             <ListItem className=" p-2 hover:bg-gray-200">
               <ListItemPrefix>

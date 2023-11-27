@@ -5,7 +5,6 @@ import { FaParking, FaWifi } from "react-icons/fa";
 import { MdLocalMall, MdOutlinePool } from "react-icons/md";
 import { CiHospital1 } from "react-icons/ci";
 import { GiTreeSwing } from "react-icons/gi";
-import { toast } from "react-toastify";
 
 import {
   useDeleteImageMutation,
@@ -15,6 +14,8 @@ import {
 import { useSelector } from "react-redux";
 import Spinner from "../Spinner/Spinner";
 import { IoMdCloseCircleOutline } from "react-icons/io";
+import { generateError, generateSuccess } from "../../Dependencies/toast";
+import GoogleMapComponent from "../../Dependencies/GoogleMap/GoogleMpa";
 
 const EditProperties = () => {
   const [editLoading, setEditLoading] = useState(false);
@@ -27,6 +28,7 @@ const EditProperties = () => {
   const [options, setOptions] = useState(1);
   const { ownerInfo } = useSelector((state) => state.owner);
   const navigate = useNavigate();
+  const [mapChoice, setMapChoice] = useState("");
 
   const [tittle, setTittle] = useState("");
   const [type, setType] = useState("");
@@ -40,8 +42,8 @@ const EditProperties = () => {
   const [locality, setLocality] = useState("");
   const [zip, setZip] = useState(0);
   const [address, setAddress] = useState("");
-  const [longitude, setLongitude] = useState("");
-  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState(0);
+  const [latitude, setLatitude] = useState(0);
   const [area, setArea] = useState(0);
   const [rooms, setRooms] = useState(0);
   const [furnishing, setFurnishing] = useState("");
@@ -60,6 +62,8 @@ const EditProperties = () => {
   const [road, setRoad] = useState("");
   const [balconies, setBalconies] = useState(0);
   const [floors, setFloors] = useState(0);
+  const [security, setSecurity] = useState(null);
+  const [cctv, setCCTV] = useState(null);
   const { id } = useParams();
 
   const handleOptions = () => {
@@ -103,13 +107,15 @@ const EditProperties = () => {
         hospital === null ||
         floors <= 0 ||
         balconies <= 0 ||
-        road === null
+        road === null ||
+        security === null ||
+        cctv === null
       ) {
-        toast.error("Please Fill all the  Fields");
+        generateError("Please Fill all the  Fields");
         return;
       }
       if (images.length < 1 && ImageUrls < 1) {
-        toast.error("Please insert Images");
+        generateError("Please insert Images");
         return;
       }
 
@@ -156,23 +162,24 @@ const EditProperties = () => {
           shoping_facility: shopping,
           hospital_facility: hospital,
           play_area: playArea,
+          cctv,
+          security
         },
       };
 
       // Update property using backend API
-      const res = await editproperties({ propertyData, id });
+      const res = await editproperties({ propertyData, id }).unwrap();
 
       // Handle API response
-      if (isError) {
-        toast.error("Error while Editing Property please try again");
-      } else if (res.data.propertyEdited) {
+      if (res.error) {
+        generateError("Error while Editing Property please try again");
+        return;
+      } else {
         setEditLoading(false);
-        toast.success("Property updated Successfully");
+        generateSuccess("Property updated Successfully");
         setTimeout(() => {
           navigate("/owner/properties");
         }, 2000);
-      } else {
-        toast.error(res.error.error);
       }
     } catch (error) {
       console.log(error.message);
@@ -182,7 +189,8 @@ const EditProperties = () => {
   };
 
   const uploadImagesToCloudinary = async () => {
-    const urls = [];
+    const urls = [...ImageUrls];
+    console.log(urls);
 
     for (let i = 0; i < images.length; i++) {
       const formData = new FormData();
@@ -216,40 +224,46 @@ const EditProperties = () => {
 
   const getPropertyData = async () => {
     try {
-      const res = await getProperty(id);
-      const { property } = res.data;
-
-      setTittle(property.property_name);
-      setType(property.property_type);
-      setRent(property.property_rent);
-      setDetails(property.property_description);
-      setImageUrls(property.ImageUrls);
-      setCountry(property.property_location.country);
-      setState(property.property_location.state);
-      setDistrict(property.property_location.district);
-      setLocality(property.property_location.locality);
-      setZip(property.property_location.pin_code);
-      setAddress(property.property_location.address);
-      setLongitude(property.property_location.longitude);
-      setLatitude(property.property_location.latitude);
-      setArea(property.details.built_up_area);
-      setRooms(property.details.number_bedrooms);
-      setFurnishing(property.details.furinishing_status);
-      setWater(property.details.water_accessibilty);
-      setCarpetArea(property.details.carpet_area);
-      setBathrooms(property.details.number_bathrooms);
-      setPowerBackup(property.details.power_backup);
-      setFlooring(property.details.type_flooring);
-      setAc(property.amenities.AC);
-      setWifi(property.amenities.Wifi);
-      setParking(property.amenities.parking);
-      setShopping(property.amenities.shoping_facility);
-      setPool(property.amenities.pool);
-      setPlayArea(property.amenities.play_area);
-      setHospital(property.amenities.hospital_facility);
-      setRoad(property.details.road_accessibility);
-      setBalconies(property.details.number_balconies);
-      setFloors(property.details.number_floors);
+      const res = await getProperty(id).unwrap();
+      const { property } = res;
+      if (res.error) {
+        generateError(res.error);
+        return;
+      } else {
+        setTittle(property.property_name);
+        setType(property.property_type);
+        setRent(property.property_rent);
+        setDetails(property.property_description);
+        setImageUrls(property.ImageUrls);
+        setCountry(property.property_location.country);
+        setState(property.property_location.state);
+        setDistrict(property.property_location.district);
+        setLocality(property.property_location.locality);
+        setZip(property.property_location.pin_code);
+        setAddress(property.property_location.address);
+        setLongitude(property.property_location.longitude);
+        setLatitude(property.property_location.latitude);
+        setArea(property.details.built_up_area);
+        setRooms(property.details.number_bedrooms);
+        setFurnishing(property.details.furinishing_status);
+        setWater(property.details.water_accessibilty);
+        setCarpetArea(property.details.carpet_area);
+        setBathrooms(property.details.number_bathrooms);
+        setPowerBackup(property.details.power_backup);
+        setFlooring(property.details.type_flooring);
+        setAc(property.amenities.AC);
+        setWifi(property.amenities.Wifi);
+        setParking(property.amenities.parking);
+        setShopping(property.amenities.shoping_facility);
+        setPool(property.amenities.pool);
+        setPlayArea(property.amenities.play_area);
+        setHospital(property.amenities.hospital_facility);
+        setRoad(property.details.road_accessibility);
+        setBalconies(property.details.number_balconies);
+        setFloors(property.details.number_floors);
+        setSecurity(property.amenities.security);
+        setCCTV(property.amenities.cctv);
+      }
     } catch (e) {
       console.log("error Getting the property data", e.message);
     }
@@ -276,14 +290,17 @@ const EditProperties = () => {
   const handleDeleteImage = async (imgUrl) => {
     try {
       setDeleteImageLoading(true);
-      const res = await deleteImage({ imgUrl, id });
+      const res = await deleteImage({ imgUrl, id }).unwrap();
 
-      if (res.data.imageDeleted) {
+      if (res.imageDeleted) {
         setImageUrls((prevImageUrls) =>
           prevImageUrls.filter((url) => url !== imgUrl)
         );
         setDeleteImageLoading(false);
         toast.done("Image deleted Succesfully");
+      } else {
+        generateError(res.error);
+        return;
       }
     } catch (error) {
       console.log(error.message);
@@ -291,6 +308,9 @@ const EditProperties = () => {
       setDeleteImageLoading(false);
     }
   };
+
+  const isMapSelected = mapChoice === "map";
+  const isManualSelected = mapChoice === "manual";
 
   return (
     <>
@@ -349,8 +369,8 @@ const EditProperties = () => {
           <div className="w-full p-2">
             <form onSubmit={handleSubmit}>
               {options === 1 && (
-                <div className=" w-full md:flex md:justify-between gap-3 ">
-                  <div className=" border w-full rounded-md bg-white p-4 md:w-7/12 block">
+                <div className=" w-full lg:flex md:justify-between gap-3 ">
+                  <div className=" border w-full rounded-md bg-white p-4 lg:w-7/12 block">
                     <div className="my-2">
                       <h1 className=" text-xl font-poppins">Property Info</h1>
                       <p className="text-xs text-gray-400">
@@ -406,7 +426,7 @@ const EditProperties = () => {
                     </div>
                   </div>
 
-                  <div className="mt-5 md:mt-0 border w-full  rounded-md bg-white p-4 md:w-5/12">
+                  <div className="mt-5 md:mt-0 border w-full  rounded-md bg-white p-4 lg:w-5/12">
                     <div className="mb-4">
                       <label
                         for="dropzone-file"
@@ -437,7 +457,7 @@ const EditProperties = () => {
                           </p>
                         </div>
                         <input
-                          onClick={handleFileChange}
+                          onChange={handleFileChange}
                           id="dropzone-file"
                           multiple
                           type="file"
@@ -565,63 +585,105 @@ const EditProperties = () => {
                   <div className="border rounded-md bg-white p-4 w-full lg:w-5/12">
                     <div className="my-2">
                       <h1 className="text-xl font-poppins">
-                        Save the current Location
+                        Set Location Of the property
                       </h1>
-                      <p className="text-xs text-gray-400">
-                        Select your location from the map
-                      </p>
+                      <div className="my-2">
+                        <label className="block mb-1" htmlFor="">
+                          Select Choice
+                        </label>
+                        <select
+                          value={mapChoice}
+                          onChange={(e) => setMapChoice(e.target.value)}
+                          className="form-select block w-full border-none bg-ownFormbg rounded-md py-3"
+                        >
+                          <option selected value="" disabled>
+                            Select--
+                          </option>
+                          <option value="map">Map</option>
+                          <option value="manual">Manually</option>
+                        </select>
+                      </div>
                     </div>
 
-                    <div className="h-40 bg-green-500"></div>
+                    <div
+                      id="map"
+                      style={{ filter: isMapSelected ? "none" : "blur(4px)" }}
+                    >
+                      <div className="my-2">
+                        <h1 className="text-xl font-poppins">
+                          Save the current Location
+                        </h1>
+                        <p className="text-xs text-gray-400">
+                          Select your location from the map
+                        </p>
+                      </div>
+
+                      <div className="w-full h-80 mx-auto">
+                        <GoogleMapComponent
+                          longitude={longitude}
+                          latitude={latitude}
+                          setLatitude={setLatitude}
+                          setLongitude={setLongitude}
+                        />
+                      </div>
+                    </div>
 
                     <div className="flex justify-between items-center my-6">
                       <div className="w-2/5 h-[1px] bg-gray-400" /> or{" "}
                       <div className="h-[1px] bg-gray-400 w-2/5" />
                     </div>
 
-                    <div className="my-2">
-                      <h1 className="text-xl font-poppins">
-                        Enter location manually
-                      </h1>
-                      <p className="text-xs text-gray-400">
-                        Get your longitude and latitude from the below website
-                        and paste it in the field
-                      </p>
-                    </div>
-
-                    <div className="my-2">
-                      <label className="block mb-1" htmlFor="">
-                        Longitude
-                      </label>
-                      <input
-                        type="text"
-                        value={longitude}
-                        onChange={(e) => setLongitude(e.target.value)}
-                        className="form-input block w-full border-none bg-ownFormbg rounded-md"
-                      />
-                      <div
-                        className="text-sky-500 text-xs cursor-pointer m-1 underline"
-                        onClick={handLatLongWidowOpen}
-                      >
-                        Get longitude from this website
+                    <div
+                      id="manual"
+                      style={{
+                        filter: !isManualSelected ? "blur(4px)" : "none",
+                        pointerEvents: !isManualSelected ? "none" : "auto",
+                      }}
+                    >
+                      <div className="my-2">
+                        <h1 className="text-xl font-poppins">
+                          Enter location manually
+                        </h1>
+                        <p className="text-xs text-gray-400">
+                          Get your longitude and latitude from the below website
+                          and paste it in the field
+                        </p>
                       </div>
-                    </div>
 
-                    <div className="my-2">
-                      <label className="block mb-1" htmlFor="">
-                        Latitude
-                      </label>
-                      <input
-                        type="text"
-                        value={latitude}
-                        onChange={(e) => setLatitude(e.target.value)}
-                        className="form-input block w-full border-none bg-ownFormbg rounded-md"
-                      />
-                      <div
-                        className="text-sky-500 text-xs cursor-pointer m-1 underline"
-                        onClick={handLatLongWidowOpen}
-                      >
-                        Get latitude from this website
+                      <div className="my-2">
+                        <label className="block mb-1" htmlFor="">
+                          Longitude
+                        </label>
+                        <input
+                          type="text"
+                          value={longitude}
+                          onChange={(e) => setLongitude(e.target.value)}
+                          className="form-input block w-full border-none bg-ownFormbg rounded-md"
+                        />
+                        <div
+                          className="text-sky-500 text-xs cursor-pointer m-1 underline"
+                          onClick={handLatLongWidowOpen}
+                        >
+                          Get longitude from this website
+                        </div>
+                      </div>
+
+                      <div className="my-2">
+                        <label className="block mb-1" htmlFor="">
+                          Latitude
+                        </label>
+                        <input
+                          type="text"
+                          value={latitude}
+                          onChange={(e) => setLatitude(e.target.value)}
+                          className="form-input block w-full border-none bg-ownFormbg rounded-md"
+                        />
+                        <div
+                          className="text-sky-500 text-xs cursor-pointer m-1 underline"
+                          onClick={handLatLongWidowOpen}
+                        >
+                          Get latitude from this website
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -805,8 +867,8 @@ const EditProperties = () => {
                       </p>
                     </div>
 
-                    <div className="w-full flex justify-between gap-5">
-                      <div className="w-full font-semibold ms-5">
+                    <div className="w-full lg:flex justify-between gap-5">
+                      <div className="w-full font-semibold lg:px-2">
                         <div className="my-2">
                           <label className="block mb-1" htmlFor="">
                             <div className="flex items-center gap-2">
@@ -871,7 +933,7 @@ const EditProperties = () => {
                         </div>
                       </div>
 
-                      <div className="w-full font-semibold">
+                      <div className="w-full font-semibold lg:px-2">
                         <div className="my-2">
                           <label className="block mb-1" htmlFor="">
                             <div className="flex items-center gap-2">
@@ -926,8 +988,45 @@ const EditProperties = () => {
                             <option value={false}>No</option>
                           </select>
                         </div>
+                        <div className="my-2">
+                          <label className="block mb-1" htmlFor="">
+                            <div className="flex items-center gap-2">
+                              <GiTreeSwing /> Security
+                            </div>
+                          </label>
+                          <select
+                            value={security}
+                            onChange={(e) => setSecurity(e.target.value)}
+                            className="form-select block w-full border-none bg-ownFormbg rounded-md py-3"
+                          >
+                            <option selected value="" disabled>
+                              Select--
+                            </option>
+                            <option value={true}>Yes</option>
+                            <option value={false}>No</option>
+                          </select>
+                        </div>
                       </div>
-                      <div className="md:w-full font-semibold"></div>
+                      <div className="w-full font-semibold lg:px-2">
+                        <div className="my-2">
+                          <label className="block mb-1" htmlFor="">
+                            <div className="flex items-center gap-2">
+                              <GiTreeSwing /> CCTV
+                            </div>
+                          </label>
+                          <select
+                            value={cctv}
+                            onChange={(e) => setCCTV(e.target.value)}
+                            className="form-select block w-full border-none bg-ownFormbg rounded-md py-3"
+                          >
+                            <option selected value="" disabled>
+                              Select--
+                            </option>
+                            <option value={true}>Yes</option>
+                            <option value={false}>No</option>
+                          </select>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

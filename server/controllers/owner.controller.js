@@ -16,8 +16,8 @@ export const ownerSignup = asyncHandler(async (req, res) => {
     const fullName = fisrtName + ' ' + lastName;
 
     if (userExists) {
-        res.status(409).json({ error: "Existing Email", created: false });
-        throw new Error('User already Exists');
+        res.json({ error: "Existing Email", created: false }).status(409);
+        return;
     } else {
         const owner = new Owner({
             fullName,
@@ -54,8 +54,8 @@ export const ownerSignup = asyncHandler(async (req, res) => {
                 });
 
             } else {
-                res.status(400);
-                throw new Error('Invalid user Data')
+                res.json({ error: 'Invalid user Data' }).status(400);
+                return
             }
         }
 
@@ -69,10 +69,8 @@ export const verifyOwner = async (req, res) => {
         const { id } = req.params;
         const result = await ownerVerification(id);
         if (!result) {
-            res.status(404).json({
-                success: false,
-                message: 'Error while verifying the User'
-            });
+            res.json({ error: 'Cannot verify user' }).status(404);
+            return
         }
         const owner = {
             _id: result._id,
@@ -82,44 +80,45 @@ export const verifyOwner = async (req, res) => {
 
         res.status(200).json(owner);
     } catch (error) {
-        res.json({ error: error.message });
+        res.json({ error: 'Cannot verify user' }).status(404);
     }
 };
 
 
 export const loginOwner = async (req, res) => {
-
     try {
-
-
         const { email, password } = req.body;
         const owner = await Owner.findOne({ email });
 
-        // if (user.is_Blocked) {
-        //     res.status(401);
-        //     throw new Error('Your Account is Blocked');
-        // }
+        if (!owner) {
+            res.json({ error: 'Invalid Email or Password' });
+            return;
+        }
 
-        const result = await owner.matchPass(password)
-        if (owner && result) {
+        if (owner.is_Blocked) {
+            res.json({ error: 'The account is currently blocked By the admin' });
+            return;
+        }
+
+        const result = await owner.matchPass(password);
+
+        if (result) {
             const token = generateToken.generatOwnerToken(res, owner._id);
             res.status(201).json({
                 _id: owner._id,
                 name: owner.fullName,
                 email: owner.email
-            })
-        } else {
-            res.status(401).json({
-                success: false,
-                message: 'Invalid email or password'
             });
+        } else {
+            res.json({ error: 'Invalid Email or Password' });
+            return;
         }
     } catch (error) {
-        res.status(401);
-        throw new Error('Invalid Email or Password');
+        console.error(error);
+        res.json({ error: 'Invalid Email or Password' });
     }
-
 };
+
 
 
 export const logOutOwner = asyncHandler(async (req, res) => {
@@ -141,13 +140,13 @@ export const getOwner = async (req, res) => {
         } else {
             res.status(401).json({
                 success: false,
-                message: 'Error while finding'
+                error: 'Error while finding'
             });
         }
     }
     catch (error) {
         res.status(401);
-        throw new Error('Error finding Owner');
+        console.log('Error in owner controller getOwner:-', error.message);
     }
 };
 
@@ -175,16 +174,18 @@ export const updateOwner = async (req, res) => {
                     owner: updatedOwner
                 })
             } else {
-                res.status(404).json({
+                res.json({
                     success: false,
-                    message: 'Error while Updating owner'
+                    error: 'Error while Updating owner'
                 });
+                return;
             }
         } else {
-            res.status(404).json({
+            res.json({
                 success: false,
-                message: 'Error while finding Owner'
+                error: 'Error while finding Owner'
             });
+            return;
         }
     } catch (error) {
         res.status(401);
@@ -194,7 +195,6 @@ export const updateOwner = async (req, res) => {
 
 
 export const addKyc = async (req, res) => {
-
 
     try {
         const {
@@ -225,8 +225,6 @@ export const addKyc = async (req, res) => {
             pin_code: ZipCode
         };
 
-        console.log(kycData);
-
         const kycAdded = await KYCmodel.create(kycData);
 
         await Owner.findByIdAndUpdate(owner, {
@@ -241,19 +239,20 @@ export const addKyc = async (req, res) => {
             });
 
         } else {
-            res.status(500).json({
+            res.json({
                 success: false,
-                message: 'Error while adding KYC details'
-            });
+                error: 'Error while adding KYC details'
+            }).status(500);
+            return;
         }
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({
+        console.error('Error in owner controller addKyc:- ', error.message);
+        res.json({
             success: false,
-            message: 'Error while adding KYC details'
-        });
-        throw new Error('Error while adding KYC details')
+            error: 'Error while adding KYC details'
+        }).status(500);
+        return;
     }
 };
 
@@ -266,10 +265,11 @@ export const addProperties = async (req, res) => {
         const owner = await Owner.findById(property_data.owner)
 
         if (!owner.kycApproved) {
-            res.status(401).json({
+            res.json({
                 success: false,
-                message: "Please wait till the KYC is approved",
-            })
+                error: "Please wait till the KYC is approved",
+            }).status(401);
+            return;
         }
 
         const propertyAdded = await Property.create(property_data)
@@ -286,23 +286,25 @@ export const addProperties = async (req, res) => {
                     propertyAdded,
                 })
             } else {
-                res.status(401).json({
+                res.json({
                     success: false,
-                    message: " Error while adding the property please try again",
-                })
+                    error: " Error while adding the property please try again",
+                }).status(401)
+                return;
             }
 
         } else {
-            res.status(401).json({
+            res.json({
                 success: false,
-                message: " Error while adding the property please try again",
-            })
+                error: " Error while adding the property please try again",
+            }).status(401)
+            return;
         }
     } catch (error) {
-        console.log('Addproperties Method', error.message);
+        console.log('Error in owner controller Addproperties Method:-', error.message);
         res.status(401).json({
             success: false,
-            message: " Error while adding the property please try again",
+            error: " Error while adding the property please try again",
         })
     }
 };
@@ -318,7 +320,7 @@ export const getProperties = async (req, res) => {
             properties
         })
     } catch (error) {
-        console.log(error.message);
+        console.log('Error in owner controller getProperties Method:-', error.message);
     }
 };
 
@@ -333,7 +335,7 @@ export const getProperty = async (req, res) => {
             property
         })
     } catch (error) {
-        console.log(error.message);
+        console.log('Error in owner controller getProperty Method:-', error.message);
     }
 };
 
@@ -358,12 +360,12 @@ export const deleteImage = async (req, res) => {
         if (imageDeleted) {
             res.status(200).json({ success: true, message: 'Image deleted succesfully', imageDeleted })
         } else {
-            return res.status(500).json({ success: false, error: 'Internal Server Error' });
+            return res.json({ success: false, error: 'Internal Server Error' }).status(500);
         }
 
     } catch (error) {
         console.log('Error While Deleteing Image,:-', error.message);
-        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+        return res.json({ success: false, error: 'Internal Server Error' }).status(500);
     }
 };
 
@@ -375,7 +377,7 @@ export const editProperty = async (req, res) => {
 
         const property = await Property.findById(id);
         if (!property) {
-            return res.status(404).json({ success: false, error: 'Property not found' });
+            return res.json({ success: false, error: 'Property not found' }).status(404);
         }
 
         property.property_name = propertyData.property_name;
@@ -389,12 +391,12 @@ export const editProperty = async (req, res) => {
         property.details = propertyData.details
 
         property.amenities = propertyData.amenities
-
+        
         const propertyEdited = await property.save();
 
         return res.status(200).json({ success: true, message: 'Property updated successfully', propertyEdited });
     } catch (error) {
         console.log('Error While Editing Property:-', error.message);
-        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+        return res.json({ success: false, error: 'Internal Server Error' }).status(500);
     }
 };

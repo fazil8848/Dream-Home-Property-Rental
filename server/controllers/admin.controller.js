@@ -8,7 +8,8 @@ import KYC from '../mongodb/models/kycModel.js';
 const getUsers = asyncHandler(async (req, res) => {
     const users = await User.find();
     if (!users) {
-        throw new Error('Error Finding the Users');
+        res.json({ error:'Error Finding Users' }).status(404);
+        return
     } else {
         res.status(200).json({ users });
     }
@@ -17,7 +18,8 @@ const getUsers = asyncHandler(async (req, res) => {
 const getOwners = asyncHandler(async (req, res) => {
     const owners = await Owner.find();
     if (!owners) {
-        throw new Error('Error Finding the owners');
+        res.json({ error:'Error finding Owners' }).status(404);
+        return;
     } else {
         res.status(200).json({ owners });
     }
@@ -35,8 +37,8 @@ const adminLogin = asyncHandler(async (req, res) => {
             email: admin.email
         });
     } else {
-        res.status(401);
-        throw new Error('Invalid Email or Password');
+        res.json({ error:'Invalid email or password' }).status(404);
+        return;
     }
 
 })
@@ -65,8 +67,8 @@ const blockUser = asyncHandler(async (req, res) => {
 
         res.status(201).json({ message: 'User Updated Successfully', result, users });
     } else {
-        res.status(404)
-        throw new Error('User Not Found');
+         res.json({ error:'User not found' }).status(404);
+        return;
     }
 
 
@@ -87,8 +89,8 @@ const blockOwner = asyncHandler(async (req, res) => {
         res.status(201).json({ message: 'Owner Updated Successfully', result, owners });
 
     } else {
-        res.status(404)
-        throw new Error('Owner Not Found');
+        res.json({ error:'Owner not found' }).status(404);
+        return;
     }
 
 
@@ -105,7 +107,7 @@ const getKYCs = async (req, res) => {
 
     } catch (error) {
         console.log('Error While Getting Kycs:-', error.message);
-        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+        return res.json({ success: false, error: 'Internal Server Error' }).status(500);
     }
 }
 
@@ -128,7 +130,7 @@ const approveKyc = async (req, res) => {
                 
                 res.status(201).json({ success: true, message: 'KYC Updated successfully', result,kycs })
             } else {
-                return res.status(401).json({ success: false, error: 'Error While Approving Kycs ' });
+                return res.json({ success: false, error: 'Error While Approving Kycs ' }).status(401);
             }
 
         } else if (result && approval === 'Disapproved') {
@@ -143,16 +145,16 @@ const approveKyc = async (req, res) => {
             if (ownerUpdated && kycs) {
                 res.status(201).json({ success: true, message: 'KYC Updated successfully', result,kycs })
             } else {
-                return res.status(401).json({ success: false, error: 'Error While Approving Kycs ' });
+                return res.json({ success: false, error: 'Error While Approving Kycs ' }).status(401);
             }
 
         } else {
-            return res.status(401).json({ success: false, error: 'Error While Approving Kycs ' });
+            return res.json({ success: false, error: 'Error While Approving Kycs ' }).status(401);
         }
 
     } catch (error) {
         console.log('Error While Approving Kycs:-', error.message);
-        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+        return res.json({ success: false, error: 'Internal Server Error' }).status(500);
     }
 }
 

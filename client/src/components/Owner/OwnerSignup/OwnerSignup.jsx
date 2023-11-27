@@ -70,16 +70,16 @@ const OwnerSignup = () => {
           email,
           password,
           mobile,
-        });
+        }).unwrap();
 
-        console.log(res);
-        if (res?.data?.user) {
+        if (res.user) {
           generateSuccess("Verification mail Send, check your email");
           setTimeout(() => {
             window.open("https://mail.google.com/", "_blank");
           }, 2000);
         } else {
-          generateError(res.error.data.error);
+          generateError(res.error);
+          return
         }
       } catch (err) {
         toast.error(err?.data?.message || err.error);

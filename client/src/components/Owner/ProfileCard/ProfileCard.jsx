@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { toast } from "react-toastify";
 import {
   useGetOwnerMutation,
   useUpdateOwnerMutation,
 } from "../../../Redux/Slices/ownerApi/ownerApiSlice";
 import { setOwnerCredentials } from "../../../Redux/Slices/ownerApi/ownerAuthSlicel";
+import { generateError, generateSuccess } from "../../Dependencies/toast";
 
 const ProfileCard = () => {
   const [fisrtName, setFirstName] = useState("");
@@ -22,18 +22,21 @@ const ProfileCard = () => {
 
   const fetchOwner = async () => {
     try {
-      const result = await getOwnerCall(ownerInfo._id);
-      console.log("----------------------------", result);
+      const result = await getOwnerCall(ownerInfo._id).unwrap();
 
-      const { fullName, email, mobile, kycAdded } = result.data.owner;
-      const [fName, sName] = fullName.split(" ");
-      kycAdded ? setKYCAdded(true) : setKYCAdded(false);
-      setFirstName(fName);
-      setEmail(email);
-      setLastName(sName);
-      setMobile(mobile);
+      if (result.error) {
+        generateError(result.error);
+      } else {
+        const { fullName, email, mobile, kycAdded } = result.owner;
+        const [fName, sName] = fullName.split(" ");
+        kycAdded ? setKYCAdded(true) : setKYCAdded(false);
+        setFirstName(fName);
+        setEmail(email);
+        setLastName(sName);
+        setMobile(mobile);
+      }
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      generateError(err?.data?.message || err.error);
     }
   };
 
@@ -49,7 +52,7 @@ const ProfileCard = () => {
       lastName.trim() === "" ||
       mobile.trim() === ""
     ) {
-      return toast.error("Please fill all the fields");
+      return generateError("Please fill all the fields");
     }
 
     try {
@@ -59,40 +62,42 @@ const ProfileCard = () => {
         lastName,
         email,
         mobile,
-      });
+      }).unwrap();
 
-      const { owner, ownerinfo } = res.data;
-      const [first, sp, last] = owner.fullName.split(" ");
-
-      dispatch(setOwnerCredentials(ownerinfo));
-      setEmail(owner.email);
-      setFirstName(first);
-      setLastName(last);
-      setMobile(owner.mobile);
-
-      if (res.data.owner) {
-        toast.success("Account updation success");
+      if (res.error) {
+        generateError(res.error);
+        return;
       } else {
-        toast.error(res.error.data.error);
+        generateSuccess("Account updation success");
+        const { owner, ownerinfo } = res;
+        const [first, sp, last] = owner.fullName.split(" ");
+
+        dispatch(setOwnerCredentials(ownerinfo));
+        setEmail(owner.email);
+        setFirstName(first);
+        setLastName(last);
+        setMobile(owner.mobile);
       }
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      generateError(err?.data?.message || err.error);
     }
   };
   return (
     <>
       <div className="overflow-hidden rounded-md min-h-screen bg-gray-100 shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="p-5 ">
-          <div className="z-50 mx-auto bg-white w-4/5 shadow-xl min-h-full">
-            <div className=" mx-auto lg:p-8 w-full lg:w-3/4 ">
+        <div className="md:p-5 ">
+          <div className="z-50 mx-auto bg-white lg-10/12 md:w-11/12 shadow-xl min-h-full">
+            <div className=" mx-auto p-8 w-full lg:w-5/6 ">
               <div className="relative pb-16">
                 <div className="z-20 h-35 md:h-65">
-                  {!KYCAdded && <NavLink
-                    to={"/owner/profile/kyc"}
-                    className="float-right m-8 px-4 py-2 bg-blue-100 text-center rounded-md text-white hover:bg-blue-950 "
-                  >
-                    Add Kyc
-                  </NavLink>}
+                  {!KYCAdded && (
+                    <NavLink
+                      to={"/owner/profile/kyc"}
+                      className="float-right m-8 px-4 py-2 bg-blue-100 text-center rounded-md text-white hover:bg-blue-950 "
+                    >
+                      Add Kyc
+                    </NavLink>
+                  )}
                 </div>
                 <div className=" ml-8 pt-10 font-semibold text-[#252525] text-2xl leading-[48px]">
                   Profile

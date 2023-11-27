@@ -3,7 +3,6 @@ import {
   useApproveKycMutation,
   useGetKYCsMutation,
 } from "../../../Redux/Slices/adminApi/adminApislice";
-import { Link } from "react-router-dom";
 import {
   Button,
   Card,
@@ -15,6 +14,7 @@ import {
 } from "@material-tailwind/react";
 import { FcApprove, FcDisapprove } from "react-icons/fc";
 import { toast } from "react-toastify";
+import { generateError, generateSuccess } from "../../Dependencies/toast";
 
 const KycListing = () => {
   const [getKycs] = useGetKYCsMutation();
@@ -26,8 +26,13 @@ const KycListing = () => {
 
   const getData = async () => {
     try {
-      const result = await getKycs();
-      setKycs(result.data.kycs);
+      const result = await getKycs().unwrap();
+      console.log(result);
+      if (result.error) {
+        return generateError(result.error);
+      } else {
+        setKycs(result.kycs);
+      }
     } catch (error) {
       console.log("error getting kyc data", error.message);
     }
@@ -41,18 +46,18 @@ const KycListing = () => {
 
   const handleApproval = async () => {
     try {
-      const res = await approveKycCall({ approval, kycId });
-      if (res.data.result) {
-        setKycs(res.data.kycs);
+      const res = await approveKycCall({ approval, kycId }).unwrap();
+      console.log(res);
+      if (res.result) {
+        setKycs(res.kycs);
         setOpen(false);
-        toast.done(`KYC ${approval} successfully`);
-      }
-      if (res.error) {
-        toast.error(res.error.data.message);
+        generateSuccess(`KYC ${approval} successfully`);
+      } else {
+        generateError(res.error);
         return;
       }
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      generateError(err?.data?.message || err.error);
     }
   };
 
@@ -64,7 +69,7 @@ const KycListing = () => {
 
   return (
     <>
-      <Card className="h-full w-full rounded-md shadow-2xl border px-4">
+      <Card className="h-full w-screen lg:w-full rounded-md shadow-2xl border px-4">
         <table className="w-full min-w-max table-auto text-left">
           <thead>
             <tr>

@@ -1,20 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LiaFanSolid } from "react-icons/lia";
 import { FaParking, FaWifi } from "react-icons/fa";
-import { MdLocalMall, MdOutlinePool } from "react-icons/md";
+import { MdLocalMall, MdLocationCity, MdOutlinePool } from "react-icons/md";
 import { CiHospital1 } from "react-icons/ci";
 import { GiTreeSwing } from "react-icons/gi";
-import { toast } from "react-toastify";
 import { useAddPropertiesMutation } from "../../../Redux/Slices/ownerApi/ownerApiSlice";
 import { useSelector } from "react-redux";
 import Spinner from "../Spinner/Spinner";
+import { Stepper, Step, Button } from "@material-tailwind/react";
+import { HomeIcon, CogIcon } from "@heroicons/react/24/outline";
+import { generateError, generateSuccess } from "../../Dependencies/toast";
+import GoogleMapComponent from "../../Dependencies/GoogleMap/GoogleMpa";
 
 const AddPropertiesForm = () => {
   const [addproperties, { isLoading, isError }] = useAddPropertiesMutation();
-  const [options, setOptions] = useState(1);
+  const [options, setOptions] = useState(0);
   const { ownerInfo } = useSelector((state) => state.owner);
   const navigate = useNavigate();
+  const [isLastStep, setIsLastStep] = React.useState(false);
+  const [isFirstStep, setIsFirstStep] = React.useState(false);
+  const [mapChoice, setMapChoice] = useState("");
 
   const [tittle, setTittle] = useState("");
   const [type, setType] = useState("");
@@ -28,8 +34,8 @@ const AddPropertiesForm = () => {
   const [locality, setLocality] = useState("");
   const [zip, setZip] = useState(0);
   const [address, setAddress] = useState("");
-  const [longitude, setLongitude] = useState("");
-  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState(0);
+  const [latitude, setLatitude] = useState(0);
   const [area, setArea] = useState(0);
   const [rooms, setRooms] = useState(0);
   const [furnishing, setFurnishing] = useState("");
@@ -48,14 +54,8 @@ const AddPropertiesForm = () => {
   const [road, setRoad] = useState("");
   const [balconies, setBalconies] = useState(0);
   const [floors, setFloors] = useState(0);
-
-  const handleOptions = () => {
-    if (options >= 4) {
-      return;
-    } else {
-      setOptions(options + 1);
-    }
-  };
+  const [security, setSecurity] = useState(null);
+  const [cctv, setCCTV] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -89,9 +89,11 @@ const AddPropertiesForm = () => {
         hospital === null ||
         floors <= 0 ||
         balconies <= 0 ||
-        road === null
+        road === null ||
+        security === null ||
+        cctv === null
       ) {
-        toast.error("Please Fill all the  Fields");
+        generateError("Please Fill all the  Fields");
         return;
       }
 
@@ -152,25 +154,23 @@ const AddPropertiesForm = () => {
           shoping_facility: shopping,
           hospital_facility: hospital,
           play_area: playArea,
+          security,
+          cctv
         },
       };
 
-      const res = await addproperties(propertyData);
+      const res = await addproperties(propertyData).unwrap();
 
       console.log(res);
 
-      if (res.error) {
-        toast.error(res.error.data.message);
-        return;
-      }
-
-      if (res.data.propertyAdded) {
-        toast.success("Property added Successfully");
+      if (res.propertyAdded) {
+        generateSuccess("Property added Successfully");
         setTimeout(() => {
           navigate("/owner/properties");
         }, 2000);
       } else {
-        toast.error(res.error.error);
+        generateError(res.error);
+        return;
       }
     } catch (error) {
       console.log(error.message);
@@ -195,6 +195,12 @@ const AddPropertiesForm = () => {
     setImages(selectedImages);
   };
 
+  const handleNext = () => !isLastStep && setOptions((cur) => cur + 1);
+  const handlePrev = () => !isFirstStep && setOptions((cur) => cur - 1);
+
+  const isMapSelected = mapChoice === "map";
+  const isManualSelected = mapChoice === "manual";
+
   return (
     <>
       <div className="w-fullh-full p-4 ">
@@ -207,7 +213,38 @@ const AddPropertiesForm = () => {
           </p>
         </div>
         <div className="p-1">
-          <div className="border rounded-md mx-2 p-4 flex justify-between px-10 my-2">
+          <div className="w-full py-4 px-8">
+            <Stepper
+              className="bg-white rounded-full"
+              activeStep={options}
+              isLastStep={(value) => setIsLastStep(value)}
+              isFirstStep={(value) => setIsFirstStep(value)}
+            >
+              <Step className="h-10 w-10" onClick={() => setOptions(0)}>
+                <HomeIcon className="h-5 w-5 " />
+              </Step>
+              <Step className="h-10 w-10" onClick={() => setOptions(1)}>
+                <MdLocationCity className="h-5 w-5" />
+              </Step>
+              <Step className="h-10 w-10" onClick={() => setOptions(2)}>
+                <CogIcon className="h-5 w-5" />
+              </Step>
+              <Step className="h-10 w-10" onClick={() => setOptions(3)}>
+                <CogIcon className="h-5 w-5" />
+              </Step>
+            </Stepper>
+          </div>
+          {/* <div className="border rounded-md mx-2 p-4 flex justify-between px-10 my-2">
+            <button
+              onClick={() => setOptions(0)}
+              className={
+                options === 0
+                  ? "border border-gray-400 bg-white rounded-md py-1 px-4"
+                  : "border rounded-md py-1 px-4"
+              }
+            >
+              Basic
+            </button>
             <button
               onClick={() => setOptions(1)}
               className={
@@ -216,7 +253,7 @@ const AddPropertiesForm = () => {
                   : "border rounded-md py-1 px-4"
               }
             >
-              Basic
+              Location
             </button>
             <button
               onClick={() => setOptions(2)}
@@ -226,7 +263,7 @@ const AddPropertiesForm = () => {
                   : "border rounded-md py-1 px-4"
               }
             >
-              Location
+              Details
             </button>
             <button
               onClick={() => setOptions(3)}
@@ -236,22 +273,12 @@ const AddPropertiesForm = () => {
                   : "border rounded-md py-1 px-4"
               }
             >
-              Details
-            </button>
-            <button
-              onClick={() => setOptions(4)}
-              className={
-                options === 4
-                  ? "border border-gray-400 bg-white rounded-md py-1 px-4"
-                  : "border rounded-md py-1 px-4"
-              }
-            >
               Ameniteis
             </button>
-          </div>
+          </div> */}
           <div className="w-full p-2">
             <form onSubmit={handleSubmit}>
-              {options === 1 && (
+              {options === 0 && (
                 <div className=" w-full md:flex md:justify-between gap-3 ">
                   <div className=" border w-full rounded-md bg-white p-4 md:w-7/12 block">
                     <div className="my-2">
@@ -310,7 +337,6 @@ const AddPropertiesForm = () => {
                   </div>
 
                   <div className=" border w-full rounded-md bg-white p-4 md:w-5/12">
-                    
                     <label
                       htmlFor="dropzone-file"
                       className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
@@ -332,20 +358,26 @@ const AddPropertiesForm = () => {
                           />
                         </svg>
                         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                          <span className="font-semibold">Click to upload</span> or
-                          drag and drop
+                          <span className="font-semibold">Click to upload</span>{" "}
+                          or drag and drop
                         </p>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
                           SVG, PNG, JPG or GIF (MAX. 800x400px)
                         </p>
                       </div>
-                      <input onChange={handleFileChange} id="dropzone-file" multiple type="file" className="hidden" />
+                      <input
+                        onChange={handleFileChange}
+                        id="dropzone-file"
+                        multiple
+                        type="file"
+                        className="hidden"
+                      />
                     </label>
                   </div>
                 </div>
               )}
 
-              {options === 2 && (
+              {options === 1 && (
                 <div className="flex flex-col lg:flex-row justify-between gap-3">
                   <div className="border rounded-md bg-white p-4 w-full lg:w-7/12 mb-4 lg:mb-0">
                     <div className="my-2">
@@ -435,70 +467,112 @@ const AddPropertiesForm = () => {
                   <div className="border rounded-md bg-white p-4 w-full lg:w-5/12">
                     <div className="my-2">
                       <h1 className="text-xl font-poppins">
-                        Save the current Location
+                        Set Location Of the property
                       </h1>
-                      <p className="text-xs text-gray-400">
-                        Select your location from the map
-                      </p>
+                      <div className="my-2">
+                        <label className="block mb-1" htmlFor="">
+                          Select Choice
+                        </label>
+                        <select
+                          value={mapChoice}
+                          onChange={(e) => setMapChoice(e.target.value)}
+                          className="form-select block w-full border-none bg-ownFormbg rounded-md py-3"
+                        >
+                          <option selected value="" disabled>
+                            Select--
+                          </option>
+                          <option value="map">Map</option>
+                          <option value="manual">Manually</option>
+                        </select>
+                      </div>
                     </div>
 
-                    <div className="h-40 bg-green-500"></div>
+                    <div
+                      id="map"
+                      style={{ filter: isMapSelected ? "none" : "blur(4px)" }}
+                    >
+                      <div className="my-2">
+                        <h1 className="text-xl font-poppins">
+                          Save the current Location
+                        </h1>
+                        <p className="text-xs text-gray-400">
+                          Select your location from the map
+                        </p>
+                      </div>
+
+                      <div className="w-full h-80 mx-auto">
+                        <GoogleMapComponent
+                          longitude={longitude}
+                          latitude={latitude}
+                          setLatitude={setLatitude}
+                          setLongitude={setLongitude}
+                        />
+                      </div>
+                    </div>
 
                     <div className="flex justify-between items-center my-6">
                       <div className="w-2/5 h-[1px] bg-gray-400" /> or{" "}
                       <div className="h-[1px] bg-gray-400 w-2/5" />
                     </div>
 
-                    <div className="my-2">
-                      <h1 className="text-xl font-poppins">
-                        Enter location manually
-                      </h1>
-                      <p className="text-xs text-gray-400">
-                        Get your longitude and latitude from the below website
-                        and paste it in the field
-                      </p>
-                    </div>
-
-                    <div className="my-2">
-                      <label className="block mb-1" htmlFor="">
-                        Longitude
-                      </label>
-                      <input
-                        type="text"
-                        value={longitude}
-                        onChange={(e) => setLongitude(e.target.value)}
-                        className="form-input block w-full border-none bg-ownFormbg rounded-md"
-                      />
-                      <div
-                        className="text-sky-500 text-xs cursor-pointer m-1 underline"
-                        onClick={handLongLatWidowOpen}
-                      >
-                        Get longitude from this website
+                    <div
+                      id="manual"
+                      style={{
+                        filter: !isManualSelected ? "blur(4px)" : "none",
+                        pointerEvents: !isManualSelected ? "none" : "auto",
+                      }}
+                    >
+                      <div className="my-2">
+                        <h1 className="text-xl font-poppins">
+                          Enter location manually
+                        </h1>
+                        <p className="text-xs text-gray-400">
+                          Get your longitude and latitude from the below website
+                          and paste it in the field
+                        </p>
                       </div>
-                    </div>
 
-                    <div className="my-2">
-                      <label className="block mb-1" htmlFor="">
-                        Latitude
-                      </label>
-                      <input
-                        type="text"
-                        value={latitude}
-                        onChange={(e) => setLatitude(e.target.value)}
-                        className="form-input block w-full border-none bg-ownFormbg rounded-md"
-                      />
-                      <div
-                        className="text-sky-500 text-xs cursor-pointer m-1 underline"
-                        onClick={handLongLatWidowOpen}
-                      >
-                        Get latitude from this website
+                      <div className="my-2">
+                        <label className="block mb-1" htmlFor="">
+                          Longitude
+                        </label>
+                        <input
+                          type="text"
+                          value={longitude}
+                          onChange={(e) => setLongitude(e.target.value)}
+                          className="form-input block w-full border-none bg-ownFormbg rounded-md"
+                        />
+                        <div
+                          className="text-sky-500 text-xs cursor-pointer m-1 underline"
+                          onClick={handLongLatWidowOpen}
+                        >
+                          Get longitude from this website
+                        </div>
+                      </div>
+
+                      <div className="my-2">
+                        <label className="block mb-1" htmlFor="">
+                          Latitude
+                        </label>
+                        <input
+                          type="text"
+                          value={latitude}
+                          onChange={(e) => setLatitude(e.target.value)}
+                          className="form-input block w-full border-none bg-ownFormbg rounded-md"
+                        />
+                        <div
+                          className="text-sky-500 text-xs cursor-pointer m-1 underline"
+                          onClick={handLongLatWidowOpen}
+                        >
+                          Get latitude from this website
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               )}
 
-              {options === 3 && (
+              {options === 2 && (
                 <div className="w-full flex flex-col lg:flex-row justify-between gap-3">
                   <div className="border rounded-md bg-white p-4 w-full block">
                     <div className="my-5">
@@ -590,8 +664,8 @@ const AddPropertiesForm = () => {
                             Higway Accessibility
                           </label>
                           <select
-                            value={wifi}
-                            onChange={(e) => setWifi(e.target.value)}
+                            value={road}
+                            onChange={(e) => setRoad(e.target.value)}
                             className="form-select block w-full border-none bg-ownFormbg rounded-md py-3"
                           >
                             <option selected value="" disabled>
@@ -662,7 +736,7 @@ const AddPropertiesForm = () => {
                 </div>
               )}
 
-              {options === 4 && (
+              {options === 3 && (
                 <div className="w-full flex justify-between gap-3">
                   <div className="border rounded-md bg-white p-4 w-full block">
                     <div className="my-5">
@@ -675,8 +749,8 @@ const AddPropertiesForm = () => {
                       </p>
                     </div>
 
-                    <div className="w-full flex justify-between gap-5">
-                      <div className="w-full font-semibold ms-5">
+                    <div className="w-full lg:flex justify-between gap-5">
+                      <div className="w-full font-semibold lg:px-2">
                         <div className="my-2">
                           <label className="block mb-1" htmlFor="">
                             <div className="flex items-center gap-2">
@@ -741,7 +815,7 @@ const AddPropertiesForm = () => {
                         </div>
                       </div>
 
-                      <div className="w-full font-semibold">
+                      <div className="w-full font-semibold lg:px-2">
                         <div className="my-2">
                           <label className="block mb-1" htmlFor="">
                             <div className="flex items-center gap-2">
@@ -796,34 +870,85 @@ const AddPropertiesForm = () => {
                             <option value={false}>No</option>
                           </select>
                         </div>
+                        <div className="my-2">
+                          <label className="block mb-1" htmlFor="">
+                            <div className="flex items-center gap-2">
+                              <GiTreeSwing /> Security
+                            </div>
+                          </label>
+                          <select
+                            value={security}
+                            onChange={(e) => setSecurity(e.target.value)}
+                            className="form-select block w-full border-none bg-ownFormbg rounded-md py-3"
+                          >
+                            <option selected value="" disabled>
+                              Select--
+                            </option>
+                            <option value={true}>Yes</option>
+                            <option value={false}>No</option>
+                          </select>
+                        </div>
                       </div>
-                      <div className="md:w-full font-semibold"></div>
+                      <div className="w-full font-semibold lg:px-2">
+                        <div className="my-2">
+                          <label className="block mb-1" htmlFor="">
+                            <div className="flex items-center gap-2">
+                              <GiTreeSwing /> CCTV
+                            </div>
+                          </label>
+                          <select
+                            value={cctv}
+                            onChange={(e) => setCCTV(e.target.value)}
+                            className="form-select block w-full border-none bg-ownFormbg rounded-md py-3"
+                          >
+                            <option selected value="" disabled>
+                              Select--
+                            </option>
+                            <option value={true}>Yes</option>
+                            <option value={false}>No</option>
+                          </select>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               )}
 
-              {options < 4 ? (
-                <Link
-                  onClick={handleOptions}
-                  className=" float-right rounded-md bg-blue-100 hover:bg-blue-950 text-white py-2 px-8 mt-4 me-10"
-                >
-                  Next
-                </Link>
-              ) : (
-                <button
-                  type="submit"
-                  className=" float-right rounded-md bg-blue-100 hover:bg-blue-950 text-white py-2 px-8 mt-4 me-10"
-                >
-                  {isLoading ? (
-                    <div className="mx-auto">
-                      <Spinner />
-                    </div>
+              <>
+                <div className="mt-16 flex justify-between">
+                  <Button
+                    className=" float-right rounded-md bg-transparent hover:bg-black border border-black hover:text-white text-black "
+                    onClick={handlePrev}
+                    disabled={isFirstStep}
+                  >
+                    Prev
+                  </Button>
+                  {!isLastStep ? (
+                    <Button
+                      className=" float-right rounded-md bg-black hover:bg-transparent hover:border hover:border-black hover:text-black text-white "
+                      onClick={handleNext}
+                      disabled={isLastStep}
+                    >
+                      Next
+                    </Button>
                   ) : (
-                    "Submit"
+                    <>
+                      <Button
+                        type="submit"
+                        className=" float-right rounded-md bg-black hover:bg-transparent hover:border hover:border-black hover:text-black text-white "
+                      >
+                        {isLoading ? (
+                          <div className="mx-auto">
+                            <Spinner />
+                          </div>
+                        ) : (
+                          "Submit"
+                        )}
+                      </Button>
+                    </>
                   )}
-                </button>
-              )}
+                </div>
+              </>
             </form>
           </div>
         </div>

@@ -47,10 +47,10 @@ const propertySchema = new mongoose.Schema({
             type: Number
         },
         longitude: {
-            type: String
+            type: Number
         },
         latitude: {
-            type: String
+            type: Number
         }
     },
     details: {
@@ -73,13 +73,13 @@ const propertySchema = new mongoose.Schema({
             type: String
         },
         road_accessibility: {
-            type: String
+            type: Boolean
         },
         water_accessibilty: {
             type: String
         },
         power_backup: {
-            type: String
+            type: Boolean
         },
         number_floors: {
             type: Number
@@ -108,6 +108,12 @@ const propertySchema = new mongoose.Schema({
             type: Boolean
         },
         play_area: {
+            type: Boolean
+        },
+        security: {
+            type: Boolean
+        },
+        cctv: {
             type: Boolean
         }
     },
