@@ -73,7 +73,7 @@ const PropertyDetails = ({ property, setProperty }) => {
             ₹ {property_rent}
           </Typography>
           <Typography className="text-sm text-gray-500 font-light">
-            Built Area : {details.built_up_area}(sq.ft)
+            Built_Area:-{details.built_up_area}(sq.ft)
           </Typography>
         </div>
       </div>
@@ -81,9 +81,9 @@ const PropertyDetails = ({ property, setProperty }) => {
         <PropertyImageCarousal ImageUrls={ImageUrls} />
       </div>
       <div className="w-full justify-between flex">
-        {ImageUrls.map((url) => {
+        {ImageUrls.map((url, i) => {
           return (
-            <div className="m-4 w-1/5">
+            <div className="m-4 w-1/5" key={i}>
               <img src={url} alt="" className="h-28 w-full" />
             </div>
           );
@@ -291,7 +291,7 @@ const PropertyDetails = ({ property, setProperty }) => {
             </Typography>
           </div>
           <div className=" ">
-            <ul className="list-disc space-y-2 mb-5 flex justify-between">
+            <ul className="list-disc mb-5 flex justify-between">
               <div className="w-full">
                 <li className="flex items-center text-xs gap-3 my-2">
                   <span className="font-poppins font-medium text-sm text-black">
@@ -546,16 +546,15 @@ const PropertyDetails = ({ property, setProperty }) => {
                     {property_location.pin_code}
                   </span>
                 </li>
-                <li className="flex items-center text-xs gap-3 my-2">
+                <li className="flex text-xs gap-3 my-2">
                   <span className="font-poppins font-medium text-sm text-black">
                     {" "}
-                    Full Address:
+                    Full_Address:
                   </span>
                   <span className="font-poppins font-light text-sm text-gray-500">
                     {property_location.address}
                   </span>
                 </li>
-               
               </div>
 
               <div className="w-full">
@@ -565,7 +564,7 @@ const PropertyDetails = ({ property, setProperty }) => {
                     District:
                   </span>
                   <span className="font-poppins font-light text-sm text-gray-500">
-                    {property_location.district} Cars
+                    {property_location.district}
                   </span>
                 </li>
                 <li className="flex items-center text-xs gap-3 my-2">
@@ -580,12 +579,14 @@ const PropertyDetails = ({ property, setProperty }) => {
               </div>
             </ul>
             <div className="h-96">
-              <GoogleMapUser longitude={property_location.longitude} latitude={property_location.latitude}/>
+              <GoogleMapUser
+                longitude={property_location.longitude}
+                latitude={property_location.latitude}
+              />
             </div>
           </div>
         </div>
       </div>
-
     </div>
   );
 };

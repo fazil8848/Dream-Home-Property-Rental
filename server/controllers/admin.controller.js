@@ -4,6 +4,7 @@ import generateToken from '../utils/generateToke.js';
 import User from '../mongodb/models/user.js'
 import Owner from '../mongodb/models/owner.js'
 import KYC from '../mongodb/models/kycModel.js';
+import Property from '../mongodb/models/property.js';
 
 const getUsers = asyncHandler(async (req, res) => {
     const users = await User.find();
@@ -158,6 +159,46 @@ const approveKyc = async (req, res) => {
     }
 }
 
+const getProperties = async (req,res)=>{
+    try {
+        const properties = await Property.find();
+
+        if (properties) {
+            res.status(200).json({ success: true, message: 'Properties retrieved successfully', properties })
+        } else {
+            return res.json({ success: false, error: 'No  properties available' }).status(401);
+        }
+        
+    } catch (error) {
+        console.log('Error While Getting properties:-', error.message);
+        return res.json({ success: false, error: 'Internal Server Error' }).status(500);
+    }
+}
+
+const propertyApproval = async (req,res)=>{
+    try {
+        
+        const {id} = req.query;
+        const {option} = req.body;
+
+        const property = await Property.findById(id);
+         if (property) {
+            property.isApproved = option;
+
+            await property.save();
+            const properties = await Property.find()
+
+            res.status(200).json({ success: true, message: 'Property Updated successfully', properties });
+         } else {
+            return res.json({ success: false, error: 'Cannot Manage Property' }).status(500);
+         }
+
+    } catch (error) {
+        console.log('Error While managing property:-', error.message);
+        return res.json({ success: false, error: 'Internal Server Error' }).status(500);
+    }
+}
+
 export default {
     getUsers,
     adminLogin,
@@ -167,5 +208,8 @@ export default {
     blockOwner,
     getKYCs,
     approveKyc,
+    getProperties,
+    propertyApproval,
+
 
 }

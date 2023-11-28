@@ -7,6 +7,7 @@ import UserListing from "../../Pages/Admin/UserListing/UserListing";
 import PrivateRoutes from "./Private/PrivateRoutes";
 import OwnerListing from "../../Pages/Admin/OwnerListingPage/OwnerListingPage";
 import KycListingPage from "../../Pages/Admin/KycListingPage/KycListingPage";
+import PropertyManagementPage from "../../Pages/Admin/PropertyManagementPage/PropertyManagementPage";
 
 const AdminRouter = () => {
   return (
@@ -19,6 +20,7 @@ const AdminRouter = () => {
           <Route path="users" element={<UserListing />} />
           <Route path="owners" element={<OwnerListing />} />
           <Route path="kycs" element={<KycListingPage />} />
+          <Route path="properties" element={<PropertyManagementPage />} />
         </Route>
       </Route>
     </Routes>

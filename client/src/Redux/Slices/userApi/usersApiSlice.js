@@ -30,18 +30,51 @@ export const usersApiSclice = apiSlice.injectEndpoints({
             })
         }),
         getPropertiesuser: builder.mutation({
-            query:()=>({
-                url:`${USERS_URL}/getPropertiesuser`,
+            query: () => ({
+                url: `${USERS_URL}/getPropertiesuser`,
                 method: 'GET',
             })
         }),
         getSingleProperty: builder.mutation({
-            query: (id)=>({
-                url :`${USERS_URL}/getSingleProperty?id=${id}`,
+            query: (id) => ({
+                url: `${USERS_URL}/getSingleProperty?id=${id}`,
                 method: 'GET'
             })
+        }),
+        getUserInfo: builder.mutation({
+            query: (id) => ({
+                url: `${USERS_URL}/getUserInfo?id=${id}`,
+                method: 'GET',
+            })
+        }),
+        updateUser: builder.mutation({
+            query: ({id,data})=>({
+                url:`${USERS_URL}/profile?id=${id}`,
+                method:'PUT',
+                body:data,
+            })
+        }),
+        checkPass: builder.mutation({
+            query: ({id,data})=>({
+                url:`${USERS_URL}/checkPass?id=${id}`,
+                method:'POST',
+                body:data,
+            }) 
+        }),
+        updatePass: builder.mutation({
+            query: ({id,data})=>({
+                url:`${USERS_URL}/updatePass?id=${id}`,
+                method:'PUT',
+                body:data,
+            }) 
         })
     })
 })
 
-export const { useLoginMutation, useLogoutMutation, useRegisterMutation, useVerifyUserMutation, useGetPropertiesuserMutation, useGetSinglePropertyMutation } = usersApiSclice;
+export const {
+     useLoginMutation, useLogoutMutation, useRegisterMutation, 
+     useVerifyUserMutation, useGetPropertiesuserMutation, 
+     useGetSinglePropertyMutation, useGetUserInfoMutation,
+     useUpdateUserMutation, useCheckPassMutation, useUpdatePassMutation,
+     
+} = usersApiSclice;

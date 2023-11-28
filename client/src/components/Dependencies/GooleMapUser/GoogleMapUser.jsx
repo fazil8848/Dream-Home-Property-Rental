@@ -6,14 +6,13 @@ import { GiSkeleton } from "react-icons/gi";
 const GoogleMapUser = ({ longitude, latitude }) => {
 
     const [selectedLocation, setSelectedLocation] = useState({
-    lat: longitude,
-    lng: latitude,
+    lat: latitude,
+    lng: longitude,
   });
 
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
   });
-
 
   if (loadError) {
     return <div>Error loading Google Maps API: {loadError.message}</div>;
@@ -34,7 +33,6 @@ const GoogleMapUser = ({ longitude, latitude }) => {
           streetViewControl: true,
         }}
       >
-        {/* Display the selected location marker */}
         <Marker position={selectedLocation} />
       </GoogleMap>
     </>

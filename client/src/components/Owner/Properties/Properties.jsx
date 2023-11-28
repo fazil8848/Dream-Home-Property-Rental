@@ -97,56 +97,5 @@ const Properties = () => {
 export default Properties;
 
 {
-  /* <div className="grid grid-cols-6 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5">
-        <div className="col-span-3 flex items-center">
-          <p className="font-medium">Property Name</p>
-        </div>
-        <div className="col-span-2 hidden items-center sm:flex">
-          <p className="font-medium">Property Type</p>
-        </div>
-        <div className="col-span-1 flex items-center">
-          <p className="font-medium">Rent Amount</p>
-        </div>
-        <div className="col-span-1 flex items-center">
-          <p className="font-medium">Aprroval</p>
-        </div>
-        <div className="col-span-1 flex items-center">
-          <p className="font-medium">Details</p>
-        </div>
-      </div>
-
-      {properties.map((property) => {
-        return (
-          <div
-            className="grid grid-cols-6 border-t h-32 border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5"
-            key={property.id}
-          >
-            <div className="col-span-3 flex items-center">
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                <div className="h-12 w-16">
-                  <img className="rounded-md" src={property.ImageUrls[0]} alt="Product" />
-                </div>
-                <p className="text-sm text-black ">
-                  {property.property_name}
-                </p>
-              </div>
-            </div>
-            <div className="col-span-2 hidden items-center sm:flex">
-              <p className="text-sm text-black ">{property.property_type}</p>
-            </div>
-            <div className="col-span-1 flex items-center">
-              <p className="text-sm text-black ">{`₹${property.property_rent}`}</p>
-            </div>
-            <div className="col-span-1 jus flex items-center">
-              {property.isApproved ? (<IoMdCheckmarkCircleOutline  className="h-6 w-6 text-green-400" />):
-              (<IoMdCloseCircleOutline className="h-6 w-6  text-red-500 rounded-xl" />)}
-            </div>
-            <div className="col-span-1 flex items-center">
-              <Link className=" border hover:bg-black hover:text-white font-semibold hover:drop-shadow-xl border-gray-400 rounded py-2 px-4">
-                  Edit
-              </Link>
-            </div>
-          </div>
-        );
-      })} */
+  
 }

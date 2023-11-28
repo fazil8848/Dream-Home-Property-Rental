@@ -23,24 +23,25 @@ function UserList() {
   const [getUsersCall] = useGetUsersMutation();
   const [open, setOpen] = React.useState(false);
   const [blockUserCall, { isLoading }] = useBlockUserMutation();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getUsersCall().unwrap();
-        if (response.error) {
-          generateError(response.error);
-        } else {
-          setUsers(response.users);
-          
-        }
-      } catch (error) {
-        generateError("Error fetching users", error);
+ 
+ 
+  const fetchData = async () => {
+    try {
+      const response = await getUsersCall().unwrap();
+      if (response.error) {
+        generateError(response.error);
+      } else {
+        setUsers(response.users);
       }
-    };
-
+    } catch (error) {
+      generateError("Error fetching users", error);
+    }
+  };
+  
+  
+  useEffect(() => {
     fetchData();
-  }, [getUsersCall]);
+  }, []);
 
   const handleOpen = (is_Blocked, _id) => {
     setBlocked(is_Blocked);
@@ -55,7 +56,7 @@ function UserList() {
         generateError(res.error);
         return;
       } else {
-        generateSuccess('User updated successfully')
+        generateSuccess("User updated successfully");
         setUsers(res.users);
         setOpen(!open);
       }
@@ -95,7 +96,7 @@ function UserList() {
                   : "p-4 border-b border-blue-gray-50";
 
                 return (
-                  <tr key={fullName}>
+                  <tr key={_id}>
                     <td className={classes}>
                       <Typography
                         variant="small"

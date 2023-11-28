@@ -65,23 +65,23 @@ export const HomeCards = () => {
                     <div className="text-lg font-bold mb-2 border-b h-16">
                       {property.property_name}
                     </div>
-                    <div className="flex justify-between my-2">
-                      <div className="flex items-center mt-2">
-                        <IoIosBed className="w-6 h-6 mr-2 text-sky-500" />
+                    <div className="flex my-2 justify-between">
+                      <div className="flex mt-2  ">
+                        <IoIosBed className="w-full h-6 mr-1 text-sky-500" />
                         <div className="text-gray-700">
-                          {property.details.number_bedrooms} Br
+                          {property.details.number_bedrooms}Br
                         </div>
                       </div>
-                      <div className="flex items-center mt-2">
-                        <GiBathtub className="w-6 h-6 mr-2 text-sky-500" />
+                      <div className="flex mt-2 ">
+                        <GiBathtub className="w-full h-6 mr-1 text-sky-500" />
                         <div className="text-gray-700">
-                          {property.details.number_bathrooms} Ba
+                          {property.details.number_bathrooms}Ba
                         </div>
                       </div>
-                      <div className="flex items-center mt-2">
-                        <SiBlueprint className="w-6 h-6 mr-2 text-sky-500" />
+                      <div className="flex mt-2 ">
+                        <SiBlueprint className="w-full h-6 mr-1 text-sky-500" />
                         <div className="text-gray-700">
-                          {property.details.built_up_area} sq.ft.
+                          {property.details.built_up_area}sq.ft.
                         </div>
                       </div>
                     </div>

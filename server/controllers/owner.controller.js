@@ -107,7 +107,9 @@ export const loginOwner = async (req, res) => {
             res.status(201).json({
                 _id: owner._id,
                 name: owner.fullName,
-                email: owner.email
+                email: owner.email,
+                kycApproved: owner.kycApproved,
+                kycAdded: owner.kycAdded,
             });
         } else {
             res.json({ error: 'Invalid Email or Password' });
@@ -387,6 +389,7 @@ export const editProperty = async (req, res) => {
         property.ImageUrls = propertyData.ImageUrls;
 
         property.property_location = propertyData.property_location
+        console.log(property.property_location);
 
         property.details = propertyData.details
 

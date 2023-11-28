@@ -5,27 +5,23 @@ import Owner from '../mongodb/models/owner.js'
 
 const protect = asyncHandler(async (req, res, next) => {
     let token;
-
-    token = req.cookies.jwt;
-
-    if (token) {
-
+    console.log(req.cookies,'----cc--------');
+    if (req.cookies && req.cookies.userToken) {
+        token = req.cookies.userToken;
+        console.log(token);
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             req.user = await User.findById(decoded.userId).select('-password');
-
             next();
         } catch (error) {
             res.status(401);
-            throw new Error('Not authorized, Invalid token')
+            throw new Error('Not authorized, Invalid token');
         }
-
     } else {
         res.status(401);
-        throw new Error(' Not authorised, No token')
+        throw new Error('Not authorized, No token');
     }
-
-})
+});
 
 const userVerification = async (userId) => {
     try {

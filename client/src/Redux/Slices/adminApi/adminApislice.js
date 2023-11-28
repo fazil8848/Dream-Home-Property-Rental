@@ -55,12 +55,27 @@ const adminApiSlice = apiSlice.injectEndpoints({
                 method:'PATCH',
                 body:data
             })
+        }),
+        propertyManagement: builder.mutation({
+            query:()=>({
+                url: `${ADMIN_URL}/getProperties`,
+                method: 'GET'
+            })
+        }),
+        propertyApproval: builder.mutation({
+            query: ({option,id})=>({
+                url: `${ADMIN_URL}/propertyApproval?id=${id}`,
+                method: 'PUT',
+                body:{option}
+            })
         })
+
     })
 })
 
 export const { 
     useAdminLoginMutation, useAdminLogoutMutation, useGetUsersMutation,
     useBlockUserMutation, useBlockOwnerMutation, useGetOwnersMutation,
-    useGetKYCsMutation, useApproveKycMutation,
+    useGetKYCsMutation, useApproveKycMutation, usePropertyManagementMutation,
+    usePropertyApprovalMutation,
 } = adminApiSlice

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropertyDetails from "../../../components/User/PropertyDetails/PropertyDetails";
 import { useGetSinglePropertyMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
 import { useParams } from "react-router-dom";
+import SiglePropertyCard from "../../../components/User/SiglePropertyCard/SiglePropertyCard";
 
 const SinglePropertyPage = () => {
   const [property, setProperty] = useState();
@@ -11,8 +12,8 @@ const SinglePropertyPage = () => {
 
   const fetchProperty = async () => {
     try {
-      const res = await getSinglePropertyCall(id);
-      setProperty(res.data.property);
+      const res = await getSinglePropertyCall(id).unwrap();
+      setProperty(res.property);
       
     } catch (error) {
       throw new Error('System Error:- "Error While Fetching Property Data"');
@@ -26,7 +27,9 @@ const SinglePropertyPage = () => {
   return (
     <div className="flex justify-center gap-3 mt-10 px-2 md:px-10 lg:px-30 xl:px-40">
       <PropertyDetails property={property} setProperty={setProperty} />
-      <div className="border w-3/12 h-80"></div>
+      <div className="border w-3/12 h-96">
+        <SiglePropertyCard property={property} setProperty={setProperty}/>
+      </div>
     </div>
   );
 };

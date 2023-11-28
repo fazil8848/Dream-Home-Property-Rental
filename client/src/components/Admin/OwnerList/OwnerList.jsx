@@ -92,7 +92,6 @@ function OwnerList() {
     const fetchData = async () => {
       try {
         const response = await getOwnersCall().unwrap();
-        console.log("response", response);
         if (response.error) {
           generateError(res.error);
           return;
@@ -104,7 +103,7 @@ function OwnerList() {
     };
 
     fetchData();
-  }, [getOwnersCall]);
+  }, []);
 
   const handleOpen = (is_Blocked, _id) => {
     setBlocked(is_Blocked);

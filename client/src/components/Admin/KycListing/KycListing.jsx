@@ -27,7 +27,6 @@ const KycListing = () => {
   const getData = async () => {
     try {
       const result = await getKycs().unwrap();
-      console.log(result);
       if (result.error) {
         return generateError(result.error);
       } else {
@@ -47,7 +46,6 @@ const KycListing = () => {
   const handleApproval = async () => {
     try {
       const res = await approveKycCall({ approval, kycId }).unwrap();
-      console.log(res);
       if (res.result) {
         setKycs(res.kycs);
         setOpen(false);

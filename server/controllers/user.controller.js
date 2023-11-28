@@ -51,7 +51,7 @@ export const registerUser = asyncHandler(async (req, res) => {
                 });
 
             } else {
-                res.json({ error:'Invalid User Data' }).status(404);
+                res.json({ error: 'Invalid User Data' }).status(404);
                 return;
             }
         }
@@ -65,7 +65,7 @@ export const verifyUser = async (req, res) => {
         const { id } = req.params;
         const result = await userVerification(id);
         if (!result) {
-            res.json({ error:'Cannot verify User' }).status(404);
+            res.json({ error: 'Cannot verify User' }).status(404);
             return;
         }
         const user = {
@@ -96,7 +96,7 @@ export const loginUser = asyncHandler(async (req, res) => {
             email: user.email
         })
     } else {
-        res.json({ error:'Invalid Email or Password' }).status(401);
+        res.json({ error: 'Invalid Email or Password' }).status(401);
         return;
     }
 
@@ -120,25 +120,20 @@ export const userProfile = asyncHandler(async (req, res) => {
 });
 
 export const updateUser = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
+    const { id } = req.query;
+    const { email, fullName, mobile, password } = req.body;
+    const user = await User.findById(id);
     if (user) {
-        user.userName = req.body.userName || user.userName;
-        user.email = req.body.email || user.email;
-
-        if (req.body.password) {
-            user.password = req.body.password;
-        }
-
+        user.fullName = fullName;
+        user.email = email;
+        user.mobile = mobile;
         const updatedUser = await user.save();
-
         res.status(200).json({
-            _id: updatedUser._id,
-            name: updatedUser.fullName,
-            email: updatedUser.email
+            updatedUser, message: 'User updated successfully'
         });
 
     } else {
-        res.json({ error:'User not found' }).status(401);
+        res.json({ error: 'User not found' }).status(401);
         return;
     }
 })
@@ -148,7 +143,7 @@ export const getPropertiesUser = async (req, res) => {
         const properties = await Properties.find({ isApproved: true, is_available: true });
 
         if (properties) {
-            res.status(201).json({ success: true, message: 'Properties successfully retrieved',properties });
+            res.status(201).json({ success: true, message: 'Properties successfully retrieved', properties });
         } else {
             return res.json({ success: false, error: 'Cannot retrieve Properties' }).status(500);
         }
@@ -159,19 +154,86 @@ export const getPropertiesUser = async (req, res) => {
     }
 }
 
-export const getSingleProperty = async (req,res) =>{
+export const getSingleProperty = async (req, res) => {
     try {
-        const {id} = req.query
+        const { id } = req.query
         const property = await Properties.findById(id);
         if (property) {
-            res.status(201).json({success:true, message :"Property Retrieved Successfully", property});
+            res.status(201).json({ success: true, message: "Property Retrieved Successfully", property });
             return;
         } else {
-            res.json({success:false, error :"Property Does not Exist"}).status(404);
+            res.json({ success: false, error: "Property Does not Exist" }).status(404);
             return
-        }        
+        }
     } catch (error) {
         console.log('Error While getting single property :-', error.message);
+        return res.json({ success: false, error: 'Internal Server Error' }).status(500);
+    }
+}
+
+export const getUserInfo = async (req, res) => {
+    try {
+        const { id } = req.query;
+        const user = await User.findById(id);
+
+        if (user) {
+            res.status(200).json({ success: true, message: "successfully retrieved user data", user })
+        } else {
+            res.json({ success: false, error: "Cannot find User" }).status(404);
+            return;
+        }
+    } catch (error) {
+        console.log('Error While getting userInfo :-', error.message);
+        return res.json({ success: false, error: 'Internal Server Error' }).status(500);
+    }
+}
+
+export const checkPass = async (req, res) => {
+    try {
+        const { id } = req.query;
+        const { password } = req.body;
+        const user = await User.findById(id);
+
+        if (user) {
+            const matchingPassword = await user.matchPass(password)
+            if (matchingPassword) {
+                user.password = password
+                await user.save();
+                res.status(200).json({ success: true, message: "Password Verified Successfully", matchingPassword });
+            } else {
+                res.json({ success: false, error: "Please Enter Correct Password" }).status(404);
+                return;
+            }
+        } else {
+            res.json({ success: false, error: "Cannot find User" }).status(404);
+            return;
+        }
+    } catch (error) {
+        console.log('Error While confirming password :-', error.message);
+        return res.json({ success: false, error: 'Internal Server Error' }).status(500);
+    }
+}
+
+export const updatePass = async (req, res) => {
+    try {
+
+        const { id } = req.query;
+        const { password } = req.body;
+        const user = await User.findById(id)
+
+        if (user) {
+            user.password = password;
+            const userUpdated = await user.save();
+
+            if (userUpdated) {
+                res.status(201).json({ success: true, message: "Password Updated Successfully", userUpdated })
+            } else {
+                res.json({ success: false, error: "Password Change Failed" }).status(404);
+                return;
+            }
+        }
+    } catch (error) {
+        console.log('Error While updating password :-', error.message);
         return res.json({ success: false, error: 'Internal Server Error' }).status(500);
     }
 }

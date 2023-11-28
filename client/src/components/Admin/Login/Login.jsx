@@ -9,8 +9,8 @@ import { generateError } from "../../Dependencies/toast";
 
 
 function Login() {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [login, { isLoading }] = useAdminLoginMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();

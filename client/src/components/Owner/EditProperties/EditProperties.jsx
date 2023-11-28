@@ -28,7 +28,6 @@ const EditProperties = () => {
   const [options, setOptions] = useState(1);
   const { ownerInfo } = useSelector((state) => state.owner);
   const navigate = useNavigate();
-  const [mapChoice, setMapChoice] = useState("");
 
   const [tittle, setTittle] = useState("");
   const [type, setType] = useState("");
@@ -163,7 +162,7 @@ const EditProperties = () => {
           hospital_facility: hospital,
           play_area: playArea,
           cctv,
-          security
+          security,
         },
       };
 
@@ -308,9 +307,6 @@ const EditProperties = () => {
       setDeleteImageLoading(false);
     }
   };
-
-  const isMapSelected = mapChoice === "map";
-  const isManualSelected = mapChoice === "manual";
 
   return (
     <>
@@ -583,32 +579,7 @@ const EditProperties = () => {
                   </div>
 
                   <div className="border rounded-md bg-white p-4 w-full lg:w-5/12">
-                    <div className="my-2">
-                      <h1 className="text-xl font-poppins">
-                        Set Location Of the property
-                      </h1>
-                      <div className="my-2">
-                        <label className="block mb-1" htmlFor="">
-                          Select Choice
-                        </label>
-                        <select
-                          value={mapChoice}
-                          onChange={(e) => setMapChoice(e.target.value)}
-                          className="form-select block w-full border-none bg-ownFormbg rounded-md py-3"
-                        >
-                          <option selected value="" disabled>
-                            Select--
-                          </option>
-                          <option value="map">Map</option>
-                          <option value="manual">Manually</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div
-                      id="map"
-                      style={{ filter: isMapSelected ? "none" : "blur(4px)" }}
-                    >
+                    <div id="map">
                       <div className="my-2">
                         <h1 className="text-xl font-poppins">
                           Save the current Location
@@ -633,13 +604,7 @@ const EditProperties = () => {
                       <div className="h-[1px] bg-gray-400 w-2/5" />
                     </div>
 
-                    <div
-                      id="manual"
-                      style={{
-                        filter: !isManualSelected ? "blur(4px)" : "none",
-                        pointerEvents: !isManualSelected ? "none" : "auto",
-                      }}
-                    >
+                    <div id="manual">
                       <div className="my-2">
                         <h1 className="text-xl font-poppins">
                           Enter location manually

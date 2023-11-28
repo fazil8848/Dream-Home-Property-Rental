@@ -44,6 +44,9 @@ function AdminNavbar({ sidebarOpen, setSidebarOpen }) {
           <NavLink
             to={"/admin"}
             end
+            className={({ isActive }) =>
+              isActive ? `bg-gray-200 text-gray-700 font-semibold` : ""
+            }
           >
             <ListItem className=" p-2 hover:bg-gray-200">
               <ListItemPrefix>
@@ -149,15 +152,6 @@ function AdminNavbar({ sidebarOpen, setSidebarOpen }) {
               <ListItemSuffix>
                 {' '}
               </ListItemSuffix>
-            </ListItem>
-          </NavLink>
-
-          <NavLink>
-            <ListItem className=" p-2 hover:bg-gray-200">
-              <ListItemPrefix>
-                <UserCircleIcon className="h-5 w-5 me-3" />
-              </ListItemPrefix>
-              Profile
             </ListItem>
           </NavLink>
 

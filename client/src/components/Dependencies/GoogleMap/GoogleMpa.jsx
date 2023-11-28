@@ -20,8 +20,8 @@ const GoogleMapComponent = ({
   const [autocomplete, setAutocomplete] = useState(null);
   const [place, setPlace] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState({
-    lat: longitude,
-    lng: latitude,
+    lat: latitude,
+    lng: longitude,
   });
 
   const { isLoaded, loadError } = useJsApiLoader({
@@ -59,8 +59,8 @@ const GoogleMapComponent = ({
       setLatitude(selectedPlace.geometry.location.lat());
       setLongitude(selectedPlace.geometry.location.lng());
       setSelectedLocation({
-        lat: longitude,
-        lng: latitude,
+        lat: latitude,
+        lng: longitude,
       });
     }
   };
