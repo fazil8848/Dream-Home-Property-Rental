@@ -16,6 +16,7 @@ import Spinner from "../Spinner/Spinner";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { generateError, generateSuccess } from "../../Dependencies/toast";
 import GoogleMapComponent from "../../Dependencies/GoogleMap/GoogleMpa";
+import { Button } from "@material-tailwind/react";
 
 const EditProperties = () => {
   const [editLoading, setEditLoading] = useState(false);
@@ -1005,18 +1006,20 @@ const EditProperties = () => {
                   Next
                 </Link>
               ) : (
-                <button
-                  type="submit"
-                  className=" float-right rounded-md bg-blue-100 hover:bg-blue-950 text-white py-2 px-8 mt-4 me-10"
-                >
+                <>
                   {editLoading ? (
-                    <div className="mx-auto">
+                    <div className=" px-4 py-1 flex justify-center items-center float-right rounded-md bg-black ">
                       <Spinner />
                     </div>
                   ) : (
-                    "Submit"
+                    <Button
+                      type="submit"
+                      className=" float-right rounded-md bg-black hover:bg-transparent hover:border hover:border-black hover:text-black text-white "
+                    >
+                      Submit
+                    </Button>
                   )}
-                </button>
+                </>
               )}
             </form>
           </div>

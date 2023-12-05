@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { useRegisterMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
 import { toast } from "react-toastify";
 import Spinner from "../Spinner/Spinner";
+import {Button} from '@material-tailwind/react'
 
 const Signup = () => {
   const [fisrtName, setFirstName] = useState("");
@@ -53,14 +54,14 @@ const Signup = () => {
       mobile.trim() === "" ||
       password.trim() === ""
     ) {
-      generateError("Please fill all the required fields");
+      return generateError("Please fill all the required fields");
     } else if (
       password.length < 7 ||
       (password.length > 17 && !strongPasswordRegex.test(password))
     ) {
-      generateError("Please enter a strong password");
+      return generateError("Please enter a strong password");
     } else if (password !== confirmPassword) {
-      generateError("Please Enter Matching Passwords");
+      return generateError("Please Enter Matching Passwords");
     } else {
       try {
         const res = await register({
@@ -78,7 +79,7 @@ const Signup = () => {
             window.open("https://mail.google.com/", "_blank");
           }, 2000);
         } else {
-          generateError(res.error);
+          return generateError(res.error);
         }
       } catch (err) {
         toast.error(err?.data?.message || err.error);
@@ -88,7 +89,7 @@ const Signup = () => {
   return (
     <>
       <div className="w-full  border bg-gray-100">
-        <div className="relative w-11/12 md:w-7/12 mx-auto m-12 px-8 bg-white rounded-md shadow-md">
+        <div className="relative w-11/12 lg:w-7/12 md:w-9/12 mx-auto m-12 px-8 bg-white rounded-md shadow-md">
           <div className=" mx-auto ">
             <div className="relative pb-16">
               <div className=" ml-8 pt-10 font-semibold text-[#252525] text-2xl leading-[48px]">
@@ -199,18 +200,23 @@ const Signup = () => {
                   </div>
 
                   <div className=" w-full flex justify-center ">
-                    <button
-                      type="submit"
-                      className="w-3/4 md:w-2/4 bg-blue-100 text-white text-base font-medium py-3 rounded hover:bg-blue-950 mt-4"
-                    >
                       {isLoading ? (
-                        <div className="mx-[50%]">
-                          <Spinner />
-                        </div>
+                        <button
+                          onClick={(e)=>e.preventDefault()}
+                          className="w-3/4 md:w-2/4 bg-blue-100 text-white text-base font-medium py-3 rounded hover:bg-blue-950 mt-4"
+                        >
+                          <div className="mx-[50%]">
+                            <Spinner />
+                          </div>
+                        </button>
                       ) : (
-                        "Register"
+                        <Button
+                          type="submit"
+                          className="w-3/4 md:w-2/4 bg-blue-100 text-white text-base font-medium py-3 rounded hover:bg-blue-950 mt-4"
+                        >
+                          Register
+                        </Button>
                       )}
-                    </button>
                   </div>
                 </form>
               </div>

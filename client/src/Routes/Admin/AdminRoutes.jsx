@@ -13,8 +13,8 @@ const AdminRouter = () => {
   return (
     <Routes>
       <Route path="login" element={<AdminLogin />} />
-      <Route path="/" element={<AdminLayout />}>
-        
+      
+      <Route path="/" element={<AdminLayout />}>      
         <Route path="" element={<PrivateRoutes />}>
           <Route index element={<AdminHome />} />
           <Route path="users" element={<UserListing />} />
@@ -23,6 +23,7 @@ const AdminRouter = () => {
           <Route path="properties" element={<PropertyManagementPage />} />
         </Route>
       </Route>
+
     </Routes>
   );
 };

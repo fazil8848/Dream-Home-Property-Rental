@@ -4,6 +4,7 @@ import generateToken from '../utils/generateToke.js';
 import { sendMail } from '../service/regMail.js';
 import { userVerification } from '../middleware/authMiddleware.js';
 import Properties from '../mongodb/models/property.js';
+import Booking from '../mongodb/models/booking.js';
 
 
 
@@ -232,6 +233,38 @@ export const updatePass = async (req, res) => {
                 return;
             }
         }
+    } catch (error) {
+        console.log('Error While updating password :-', error.message);
+        return res.json({ success: false, error: 'Internal Server Error' }).status(500);
+    }
+}
+
+
+export const propertyBooking = async (req, res) => {
+    try {
+
+        const bookingInfo = req.body;
+
+        const booked = await Booking.create(bookingInfo);
+        if (booked) {
+
+            if (booked.tokenPaid) {
+                const propertyUpdated = await Properties.findByIdAndUpdate(bookingInfo.property, {
+                    $set: { is_available: false, is_Booked: true, is_Reserved: true }
+                })
+                res.status(201).json({ success: true, message: "Property Booked Successfully", booked });
+                return;
+            } else {
+                const propertyUpdated = await Properties.findByIdAndUpdate(bookingInfo.property, {
+                    $set: { is_available: false, is_Reserved: true }
+                })
+                res.status(201).json({ success: true, message: "Property Reserved Successfully", booked });
+                return;
+            }
+        } else {
+            return res.json({ success: false, error: 'Property Booking Failed' }).status(402);
+        }
+
     } catch (error) {
         console.log('Error While updating password :-', error.message);
         return res.json({ success: false, error: 'Internal Server Error' }).status(500);

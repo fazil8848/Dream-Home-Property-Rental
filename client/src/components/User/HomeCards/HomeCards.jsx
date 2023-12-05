@@ -5,9 +5,10 @@ import { IoIosBed } from "react-icons/io";
 import { useGetPropertiesuserMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
 import { Link } from "react-router-dom";
 import { generateError } from "../../Dependencies/toast";
+import "./style.css";
 
 export const HomeCards = () => {
-  const [properties, setProperties] = useState([]);
+  const [properties, setProperties] = useState(null);
   const [getPropertiesCall] = useGetPropertiesuserMutation();
   const fetchProperties = async () => {
     try {
@@ -27,6 +28,18 @@ export const HomeCards = () => {
     fetchProperties();
   }, []);
 
+  if (!properties) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="h-10">
+          <div className="animate-spin h-20 w-20">
+            <div className="h-full w-full border-4 border-t-blue-100 border-b-blue-100 rounded-[50%]"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="frame container mx-auto my-8 lg:px-8 ">
       <div className="main-section">
@@ -41,28 +54,31 @@ export const HomeCards = () => {
               apartments, flats, office spaces, and houses for sale in Kerala.
             </p>
           </div>
-          <Link to={'/properties'} className="text-blue-500 text-lg cursor-pointer border p-2 rounded bg-sky-50">
+          <Link
+            to={"/properties"}
+            className="text-blue-500 text-lg cursor-pointer border p-2 rounded bg-sky-50"
+          >
             See all properties &#8594;
           </Link>
         </div>
-        <div className="overflow-x-auto xl:w-1\3  md:h-[30rem]">
-          <div className="flex flex-wrap">
+        <div className=" xl:w-1\3  ">
+          <div className="flex h-[33rem] card overflow-x-scroll overflow-y-hidden gap-5 p-5">
             {properties.map((property, index) => (
               <Link
                 to={`/property/${property._id}`}
-                className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-4 cursor-pointer md:h-[20rem]"
+                className="cursor-pointer"
                 key={index}
               >
-                <div className="bg-white px-1 pt-2 pb-8 shadow-2xl  border-t-2 border-gray-100">
+                <div className="bg-white px-0.5 pb- shadow-2xl w-56 md:w-64 lg:w-80  border border-gray-100">
                   <div className="text-xl font-bold mb-2">
                     <img
-                      className="sm:h-56 w-full rounded"
+                      className="h-64 w-full rounded"
                       src={property.ImageUrls[0]}
                       alt=""
                     />
                   </div>
-                  <div className="m-2">
-                    <div className="text-lg font-bold mb-2 border-b h-16">
+                  <div className="m-2 p-4">
+                    <div className="text-lg font-bold mb-2 border-b h-16 flex items-center">
                       {property.property_name}
                     </div>
                     <div className="flex my-2 justify-between">

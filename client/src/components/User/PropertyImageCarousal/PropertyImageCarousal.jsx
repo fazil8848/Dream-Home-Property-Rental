@@ -6,7 +6,7 @@ const PropertyImageCarousal = ({ImageUrls}) => {
   const closeModal = ()=> setSelectedImage(null);
   return (
     <>
-      <Carousel transition={{ duration: 1.5 }} className="rounded-xl ">
+      <Carousel transition={{ duration: 1.5 }} className="rounded-md ">
           {ImageUrls.map((url, index) => {
             return (
               <img
@@ -28,6 +28,7 @@ const PropertyImageCarousal = ({ImageUrls}) => {
           <img src={selectedImage} alt="Selected" className="max-h-[87vh]" />
         </div>
       )}
+      
     </>
   )
 }

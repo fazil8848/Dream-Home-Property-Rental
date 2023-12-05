@@ -1,5 +1,11 @@
 import express from 'express';
-import { registerUser, loginUser, logOutUser, userProfile, updateUser, verifyUser, getPropertiesUser, getSingleProperty, getUserInfo, checkPass, updatePass } from '../controllers/user.controller.js';
+import {
+    registerUser, loginUser, logOutUser,
+    userProfile, updateUser, verifyUser,
+    getPropertiesUser, getSingleProperty,
+    getUserInfo, checkPass, updatePass, propertyBooking
+} from '../controllers/user.controller.js';
+import { paypalCaptureOrder, paypalCreateOrder } from '../controllers/paypal.controller.js';
 // import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -11,6 +17,10 @@ router.post('/registerUser', registerUser);
 router.post('/loginUser', loginUser);
 router.post('/logOutUser', logOutUser);
 router.post('/checkPass', checkPass);
+router.post("/orders", paypalCreateOrder)
+router.post("/orders/:orderID/capture", paypalCaptureOrder)
+router.post("/bookProperty", propertyBooking)
+
 
 // ----------------= PUT =----------------
 router.put('/verifyUser/:id', verifyUser);

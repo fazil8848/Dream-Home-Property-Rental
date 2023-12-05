@@ -9,6 +9,8 @@ import {
   useUpdateUserMutation,
 } from "../../../Redux/Slices/userApi/usersApiSlice";
 
+import {Button } from "@material-tailwind/react";
+
 const UserProfile = () => {
   const [getUsrInfoCall] = useGetUserInfoMutation();
   const [updateUserCall] = useUpdateUserMutation();
@@ -45,6 +47,10 @@ const UserProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (email.trim() === "" || fullName.trim() === "" || mobile.trim() ==='') {
+        generateError("Please Fill the password fields");
+        return;
+      }
       const id = userInfo._id;
       const result = await updateUserCall({
         id,
@@ -65,6 +71,10 @@ const UserProfile = () => {
     e.preventDefault();
     setCheckPassLoading(true);
     try {
+      if (currentPass.trim() === "") {
+        generateError("Please Fill the password fields");
+        return;
+      }
       const id = userInfo._id;
       const result = await checkPasswordCall({
         id,
@@ -91,23 +101,18 @@ const UserProfile = () => {
 
   const handlePasschange = async (e) => {
     e.preventDefault();
-    if (password.trim() === "" || confirmPass.trim() === "") {
-      generateError("Please Fill the password fields");
-      return;
-    }
-    if (password !== confirmPass) {
-      generateError("Please Enter Matching password");
-      return;
-    }
-    if (
-      password.length < 7 ||
-      (password.length > 17 && !strongPasswordRegex.test(password))
-    ) {
-      generateError("Please Enter a Strong Password");
-      return;
-    }
-
     try {
+      if (password.trim() === "" || confirmPass.trim() === "") {
+        generateError("Please Fill the password fields");
+        return;
+      } else if (password !== confirmPass) {
+        generateError("Please Enter Matching password");
+        return;
+      } else if (!strongPasswordRegex.test(password)) {
+        generateError("Please Enter a Strong Password");
+        return;
+      }
+
       const id = userInfo._id;
       const result = await updatePasswordCall({
         id,
@@ -197,7 +202,7 @@ const UserProfile = () => {
                     </label>
                     <input
                       className="w-full rounded border border-stroke bg-gray py-3 px-4 text-black focus:border-primary focus-visible:outline-none"
-                      type="text"
+                      type="number"
                       name="phoneNumber"
                       id="phoneNumber"
                       placeholder="+990 3343 7865"
@@ -253,18 +258,18 @@ const UserProfile = () => {
                 </div>
 
                 <div className="flex justify-end gap-4">
-                  <button
-                    className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark"
+                  <Button
+                    className="flex justify-center rounded bg-white py-2 px-6 font-medium text-black"
                     type="submit"
                   >
                     Cancel
-                  </button>
-                  <button
-                    className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:shadow-1"
+                  </Button>
+                  <Button
+                    className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray "
                     type="submit"
                   >
                     Save
-                  </button>
+                  </Button>
                 </div>
               </form>
             </div>
@@ -324,12 +329,12 @@ const UserProfile = () => {
                     </div>
                   </div>
                   <div className="flex justify-end gap-4">
-                    <button
-                      className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-70"
+                    <Button
+                      className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray "
                       type="submit"
                     >
                       Confirm
-                    </button>
+                    </Button>
                   </div>
                 </form>
               )}
@@ -427,12 +432,12 @@ const UserProfile = () => {
                   </div>
 
                   <div className="flex justify-end gap-4">
-                    <button
+                    <Button
                       className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-70"
                       type="submit"
                     >
                       Save
-                    </button>
+                    </Button>
                   </div>
                 </form>
               )}

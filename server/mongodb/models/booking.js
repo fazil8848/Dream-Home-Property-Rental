@@ -12,21 +12,29 @@ const bookingSchema = new mongoose.Schema({
         type: ObjectId,
         required: true
       },
-      interval: {
+      fullName: {
         type: String,
         required: true
       },
-      start_date: {
+      email: {
+        type: String,
+        required: true
+      },
+      startDate: {
         type: Date,
         required: true
       },
-      end_date: {
-        type: Date,
-        required: true
-      },
-      advance: {
+      mobile: {
         type: Number,
         required: true
+      },
+      tokenAmount: {
+        type: Number,
+        required: true
+      },
+      tokenPaid:{
+        type :Boolean,
+        default:false
       }
 
 })

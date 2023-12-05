@@ -48,33 +48,40 @@ export const usersApiSclice = apiSlice.injectEndpoints({
             })
         }),
         updateUser: builder.mutation({
-            query: ({id,data})=>({
-                url:`${USERS_URL}/profile?id=${id}`,
-                method:'PUT',
-                body:data,
+            query: ({ id, data }) => ({
+                url: `${USERS_URL}/profile?id=${id}`,
+                method: 'PUT',
+                body: data,
             })
         }),
         checkPass: builder.mutation({
-            query: ({id,data})=>({
-                url:`${USERS_URL}/checkPass?id=${id}`,
-                method:'POST',
-                body:data,
-            }) 
+            query: ({ id, data }) => ({
+                url: `${USERS_URL}/checkPass?id=${id}`,
+                method: 'POST',
+                body: data,
+            })
         }),
         updatePass: builder.mutation({
-            query: ({id,data})=>({
-                url:`${USERS_URL}/updatePass?id=${id}`,
-                method:'PUT',
-                body:data,
-            }) 
+            query: ({ id, data }) => ({
+                url: `${USERS_URL}/updatePass?id=${id}`,
+                method: 'PUT',
+                body: data,
+            })
+        }),
+        bookProperty: builder.mutation({
+            query: ({bookingInfo}) => ({
+                url: `${USERS_URL}/bookProperty`,
+                method: "POST",
+                body: bookingInfo
+            })
         })
     })
 })
 
 export const {
-     useLoginMutation, useLogoutMutation, useRegisterMutation, 
-     useVerifyUserMutation, useGetPropertiesuserMutation, 
-     useGetSinglePropertyMutation, useGetUserInfoMutation,
-     useUpdateUserMutation, useCheckPassMutation, useUpdatePassMutation,
-     
+    useLoginMutation, useLogoutMutation, useRegisterMutation,
+    useVerifyUserMutation, useGetPropertiesuserMutation,
+    useGetSinglePropertyMutation, useGetUserInfoMutation,
+    useUpdateUserMutation, useCheckPassMutation, useUpdatePassMutation,
+    useBookPropertyMutation,
 } = usersApiSclice;

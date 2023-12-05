@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import PropertyImageCarousal from "../PropertyImageCarousal/PropertyImageCarousal";
-import { List, ListItem, Typography } from "@material-tailwind/react";
+import { Typography } from "@material-tailwind/react";
 import { IoIosBed, IoIosHome } from "react-icons/io";
 import { PiBathtub } from "react-icons/pi";
 import { GoCheck, GoX } from "react-icons/go";
 import { HiOutlineDocumentCheck } from "react-icons/hi2";
 import GoogleMapUser from "../../Dependencies/GooleMapUser/GoogleMapUser";
+import { useNavigate } from "react-router-dom";
 
 const PropertyDetails = ({ property, setProperty }) => {
+  const navigate = useNavigate();
+
   if (!property) {
     return (
-      <div className="border w-9/12 min-h-screen mb-10 p-3 flex items-center justify-center">
+      <div className="border md:w-9/12 min-h-screen mb-10 p-3 flex items-center justify-center">
         <div className=" h-10">
           <div className="animate-spin h-20 w-20">
             <div className="h-full w-full border-4 border-t-blue-100 border-b-blue-100 rounded-[50%]"></div>
@@ -40,7 +43,7 @@ const PropertyDetails = ({ property, setProperty }) => {
   ];
   const [tt, ID] = id;
   return (
-    <div className="border w-9/12 min-h-screen mb-10 p-3">
+    <div className="border rounded-md md:w-9/12 min-h-screen mb-10 p-3">
       <div className="flex justify-between w-full px-2 mb-2">
         <div className=" flex gap-4 ">
           <p className="border text-white rounded-md shadow-inner bg-sky-500 text-xs w-fit p-2 ">
@@ -80,11 +83,11 @@ const PropertyDetails = ({ property, setProperty }) => {
       <div className="h-[30rem]">
         <PropertyImageCarousal ImageUrls={ImageUrls} />
       </div>
-      <div className="w-full justify-between flex">
+      <div className="w-full p-3 gap-3 flex ">
         {ImageUrls.map((url, i) => {
           return (
-            <div className="m-4 w-1/5" key={i}>
-              <img src={url} alt="" className="h-28 w-full" />
+            <div className="h-28" key={i}>
+              <img src={url} alt="" className=" h-28 rounded-sm w-full" />
             </div>
           );
         })}
@@ -586,6 +589,46 @@ const PropertyDetails = ({ property, setProperty }) => {
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="relative">
+        <button
+          onClick={() => navigate(`/chatBox/${property.owner}`)}
+          class="z-20 text-white flex flex-col shrink-0 grow-0 justify-around 
+                  fixed bottom-0 right-5 rounded-lg
+                  mr-1 mb-5 lg:mr-5 lg:mb-5 xl:mr-10 xl:mb-10"
+        >
+          <div class="p-3 rounded-full border-4 border-white bg-green-600">
+            <svg
+              class="w-10 h-10 "
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+          </div>
+        </button>
+      </div>
+      <div class="relative">
+        <button
+          onClick={() => navigate(`/booking/${property._id}`)}
+          class="z-20 text-white flex flex-col shrink-0 grow-0 justify-around 
+                  fixed bottom-0 right-24 rounded-lg
+                  mr-1 mb-5 lg:mr-5 lg:mb-5 xl:mr-10 xl:mb-10"
+        >
+          <div class="p-3 rounded-full border-4 border-white bg-blue-100">
+            <img
+              src="https://res.cloudinary.com/dn6anfym7/image/upload/v1701682746/dreamHome/icons/output-onlinepngtools_cax8u9.png"
+              alt=""
+              className="h-10"
+            />
+          </div>
+        </button>
       </div>
     </div>
   );

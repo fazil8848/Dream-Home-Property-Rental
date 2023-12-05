@@ -389,7 +389,6 @@ export const editProperty = async (req, res) => {
         property.ImageUrls = propertyData.ImageUrls;
 
         property.property_location = propertyData.property_location
-        console.log(property.property_location);
 
         property.details = propertyData.details
 

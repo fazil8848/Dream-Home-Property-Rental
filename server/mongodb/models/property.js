@@ -125,6 +125,14 @@ const propertySchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    is_Reserved:{
+        type: Boolean,
+        default:false
+    },
+    is_Booked:{
+        type:Boolean,
+        default: false,
+    },
 }, { timestamps: true });
 
 const propertyModel = mongoose.model('Property', propertySchema);

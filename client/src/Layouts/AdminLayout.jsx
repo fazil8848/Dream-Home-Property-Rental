@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import './style.css'
 import { Outlet } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
@@ -12,7 +13,7 @@ function AdminLayout() {
       <div className="flex h-screen overflow-hidden">
         <AdminNavbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-        <div className="flex flex-1 flex-col overflow-y-auto overflow-x-auto">
+        <div className="flex flex-1 flex-col overflow-y-auto overflow-x-auto card">
           <Header
             sidebarOpen={sidebarOpen}
             setSidebarOpen={setSidebarOpen}

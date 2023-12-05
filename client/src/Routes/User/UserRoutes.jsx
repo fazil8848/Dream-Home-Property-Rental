@@ -8,21 +8,26 @@ import PrivateRoutes from "./Private/PrivateRoutes.jsx";
 import SinglePropertyPage from "../../Pages/User/SinglePropertyPage/SinglePropertyPage.jsx";
 import UserProfilePage from "../../Pages/User/ProfilePage/ProfilePage.jsx";
 import BookingPage from "../../Pages/User/BookingPage/BookingPage.jsx";
+import ChatPage from "../../Pages/User/ChatPage/ChatPage.jsx";
+// import ChatBoxPage from "../../Pages/User/ChatBoxPage/ChatBoxPage.jsx";
 
 const UserRouter = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<HomePage />} />
-        <Route path="login" element={<LoginPage />} />
-        <Route path="signup" element={<SignupPage />} />
-        <Route path="property/:id" element={<SinglePropertyPage />} />
-        <Route path="" element={<PrivateRoutes />}>
-          <Route path="profile" element={<UserProfilePage/>}/>
-          <Route path="booking/:id" element={<BookingPage/>}/>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route path="login" element={<LoginPage />} />
+          <Route path="signup" element={<SignupPage />} />
+          <Route path="property/:id" element={<SinglePropertyPage />} />
+          <Route path="" element={<PrivateRoutes />}>
+            <Route path="profile" element={<UserProfilePage />} />
+            <Route path="booking/:id" element={<BookingPage />} />
+            <Route path="chat" element={<ChatPage />} />
+            <Route path="chat/:ownerId" element={<ChatPage />} />
+            {/* <Route path="chatBox/:ownerId" element={<ChatBoxPage />} /> */}
+          </Route>
         </Route>
-      </Route>
-    </Routes>
+      </Routes>
   );
 };
 

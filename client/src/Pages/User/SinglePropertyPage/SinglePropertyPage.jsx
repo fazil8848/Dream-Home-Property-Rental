@@ -14,7 +14,6 @@ const SinglePropertyPage = () => {
     try {
       const res = await getSinglePropertyCall(id).unwrap();
       setProperty(res.property);
-      
     } catch (error) {
       throw new Error('System Error:- "Error While Fetching Property Data"');
     }
@@ -27,9 +26,6 @@ const SinglePropertyPage = () => {
   return (
     <div className="flex justify-center gap-3 mt-10 px-2 md:px-10 lg:px-30 xl:px-40">
       <PropertyDetails property={property} setProperty={setProperty} />
-      <div className="border w-3/12 h-96">
-        <SiglePropertyCard property={property} setProperty={setProperty}/>
-      </div>
     </div>
   );
 };

@@ -155,7 +155,7 @@ const AddPropertiesForm = () => {
           hospital_facility: hospital,
           play_area: playArea,
           security,
-          cctv
+          cctv,
         },
       };
 
@@ -933,18 +933,18 @@ const AddPropertiesForm = () => {
                     </Button>
                   ) : (
                     <>
-                      <Button
-                        type="submit"
-                        className=" float-right rounded-md bg-black hover:bg-transparent hover:border hover:border-black hover:text-black text-white "
-                      >
-                        {isLoading ? (
-                          <div className="mx-auto">
-                            <Spinner />
-                          </div>
-                        ) : (
-                          "Submit"
-                        )}
-                      </Button>
+                      {isLoading ? (
+                        <div className=" flex justify-center items-center float-right rounded-md bg-black hover:bg-transparent hover:border hover:border-black hover:text-black text-white ">
+                          <Spinner />
+                        </div>
+                      ) : (
+                        <Button
+                          type="submit"
+                          className=" float-right rounded-md bg-black hover:bg-transparent hover:border hover:border-black hover:text-black text-white "
+                        >
+                          Submit
+                        </Button>
+                      )}
                     </>
                   )}
                 </div>
