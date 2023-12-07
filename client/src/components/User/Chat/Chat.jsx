@@ -1,59 +1,93 @@
 import { Button, Input, Typography } from "@material-tailwind/react";
 import { Skeleton, Stack } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BiSearch } from "react-icons/bi";
 import Conversations from "../Conversations/Conversations";
-import { GiConversation } from "react-icons/gi";
+import MessageContainer from "../MessageContainer/MessageContainer";
+import { generateError } from "../../Dependencies/toast";
+import { useGetConversationsMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
+import { useSelector } from "react-redux";
 
 const Chat = () => {
+  const {userInfo} = useSelector((state) => state.user);
+  const userId  = userInfo._id
+  const [conversations, setConversations] = useState([]);
+  const [conversationLoading, setConversationsLoading] = useState(false);
+
+  const [getConversationsCall] = useGetConversationsMutation();
+
+  const fetchConversations = async (req, res) => {
+    try {
+      setConversationsLoading(true);
+      const result = await getConversationsCall(userId).unwrap();
+      if (result.error) {
+        generateError(result.error);
+      } else {
+        setConversations(result.conversations);
+      }
+    } catch (error) {
+      generateError(error.message);
+    } finally {
+      setConversationsLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchConversations();
+  }, [userId,setConversations]);
   return (
     <>
-      <div class="absolute py-10 left-1/2 w-full md:w-[80%] lg:w-[750px] p-4 transform -translate-x-1/2">
-        <div class="flex flex-col md:flex-row gap-4 max-w-full md:max-w-md mx-auto">
-          <span class="flex-1 md:flex-3 gap-2 flex-col mx-auto">
-            <Typography className="">Your Conversations</Typography>
-            <form>
-              <Typography className="flex items-center gap-2">
-                <Input type="text" placeholder="search for the user" />
-                <Button
-                  color="inherit"
-                  className="border bg-black hover:bg-white hover:text-black"
-                >
-                  <BiSearch size={16} />
-                </Button>
-              </Typography>
-            </form>
+      <div className="flex justify-center">
+        <div className="py-4  w-full md:w-[80%] lg:w-[850px] p-4 border shadow-xl mt-4 rounded-md">
+          <div className="flex flex-col md:flex-row gap-4 max-w-full mx-auto">
+            <span className="lg:w-[300px] p-3 gap-2 flex-col mx-auto">
+              <Typography className="">Your Conversations</Typography>
+              <form>
+                <Typography className="flex items-center gap-2">
+                  <Input type="text" placeholder="search for the user" />
+                  <Button className="border bg-black hover:bg-white hover:text-black">
+                    <BiSearch size={16} />
+                  </Button>
+                </Typography>
+              </form>
 
-            {true &&
-              [0, 1, 2, 3, 4].map((_, i) => (
-                <div
-                  key={i}
-                  className=" flex gap-4 items-center rounded-md p-1"
-                >
-                  <div>
-                    <Skeleton
-                      animation="pulse"
-                      variant="circular"
-                      width={50}
-                      height={50}
-                    />
-                  </div>
-                  <div className="w-full">
-                    <Skeleton animation="pulse" width={90} height={20} />
-                    <Skeleton animation="pulse" width={"90%"} height={16} />
-                  </div>
+              <div className="overflow-y-auto h-[465px] card">
+                {conversationLoading &&
+                  [0, 1, 2, 3, 4].map((_, i) => (
+                    <div
+                      key={i}
+                      className="flex gap-4 items-center rounded-md p-1"
+                    >
+                      <div>
+                        <Skeleton
+                          animation="pulse"
+                          variant="circular"
+                          width={50}
+                          height={50}
+                        />
+                      </div>
+                      <div className="w-full">
+                        <Skeleton animation="pulse" width={90} height={20} />
+                        <Skeleton animation="pulse" width={"90%"} height={16} />
+                      </div>
+                    </div>
+                  ))}
+
+                <div className="my-2">
+                  {conversations.map((conversation,i) => (
+                    <Conversations conversation={conversation} userId={userId} key={i}/>
+                  ))}
                 </div>
-              ))}
-
-            <Conversations />
-            <Conversations />
-            <Conversations />
-            <Conversations />
-          </span>
-          <Stack flex={70} p={2} flexDirection={'column'} alignItems={'center'} justifyContent={'center'} height={'400px'} className="rounded-md">
-                <GiConversation size={100} />
-          </Stack>
-          <span class="flex-7">MessageContainer</span>
+              </div>
+            </span>
+            {/* <span className="w-[300px] sm:w-full border flex flex-col items-center justify-center mx-auto">
+              <GiConversation size={100} />
+              <Typography className="text-lg">
+                {" "}
+                Select conversation to start texting
+              </Typography>
+            </span> */}
+            <MessageContainer />
+          </div>
         </div>
       </div>
     </>

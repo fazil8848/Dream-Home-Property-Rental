@@ -1,27 +1,23 @@
 import jwt from "jsonwebtoken";
-import asyncHandler from 'express-async-handler';
 import User from '../mongodb/models/user.js'
 import Owner from '../mongodb/models/owner.js'
 
-const protect = asyncHandler(async (req, res, next) => {
-    let token;
-    console.log(req.cookies,'----cc--------');
-    if (req.cookies && req.cookies.userToken) {
-        token = req.cookies.userToken;
+const protect = async (req, res, next) => {
+    try {
+        const token = req.cookies.userToken
         console.log(token);
-        try {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            req.user = await User.findById(decoded.userId).select('-password');
-            next();
-        } catch (error) {
-            res.status(401);
-            throw new Error('Not authorized, Invalid token');
+        if (!token) {
+            return res.status(401).json({ error: 'Not authorized, Invalid token' });
         }
-    } else {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decoded.userId).select('-password');
+        req.user = user;
+        next();
+    } catch (error) {
         res.status(401);
-        throw new Error('Not authorized, No token');
+        throw new Error('Not authorized, Invalid token');
     }
-});
+};
 
 const userVerification = async (userId) => {
     try {
@@ -33,7 +29,7 @@ const userVerification = async (userId) => {
         return user;
 
     } catch (error) {
-        console.log('ERROR @userVerification middleware:- ',error.message);
+        console.log('ERROR @userVerification middleware:- ', error.message);
 
     }
 };
@@ -48,7 +44,7 @@ const ownerVerification = async (ownerId) => {
         return owner;
 
     } catch (error) {
-        console.log('ERROR @ownerVerification middleware:- ',error.message);
+        console.log('ERROR @ownerVerification middleware:- ', error.message);
 
     }
 };

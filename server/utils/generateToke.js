@@ -10,8 +10,8 @@ const generateToken = (res, userId) => {
         secure: process.env.NODE_ENV !== 'development',
         sameSite: 'strict',
         maxAge: 7 * 24 * 60 * 60 * 1000,
-        path: '/',
     })
+    return token;
 } 
 
 const generatAdminToken = (res, adminId) => {
@@ -21,10 +21,10 @@ const generatAdminToken = (res, adminId) => {
 
     res.cookie('adminToken', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV !== 'development',
         sameSite: 'strict',
         maxAge: 7 * 24 * 60 * 60 * 1000,
     })
+    return token;
 }
 
 const generatOwnerToken = (res, ownerId) => {
@@ -35,10 +35,10 @@ const generatOwnerToken = (res, ownerId) => {
 
     res.cookie('ownerToken', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV !== 'development',
         sameSite: 'strict',
         maxAge: 7 * 24 * 60 * 60 * 1000,
     })
+    return token;
 }
 
 export default {

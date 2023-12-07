@@ -26,7 +26,7 @@ function AdminLayout() {
           >
             <ToastContainer />
             <main className=" w-full h-screen">
-              <div className="mx-auto my-16 max-w-screen-2xl p-4 md:p-6 2xl:px-10">
+              <div className="mx-auto my-16 max-w-screen-2xl px-1 md:px-3 py-4 md:py-6 2xl:px-10">
                 <Outlet />
               </div>
             </main>

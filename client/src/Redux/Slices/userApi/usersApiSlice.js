@@ -69,10 +69,22 @@ export const usersApiSclice = apiSlice.injectEndpoints({
             })
         }),
         bookProperty: builder.mutation({
-            query: ({bookingInfo}) => ({
+            query: ({ bookingInfo }) => ({
                 url: `${USERS_URL}/bookProperty`,
                 method: "POST",
                 body: bookingInfo
+            })
+        }),
+        getConversations: builder.mutation({
+            query: (id) => ({
+                url: `${USERS_URL}/getConversations?userId=${id}`,
+                method: 'GET',
+            })
+        }),
+        getMessages: builder.mutation({
+            query:(id)=>({
+                url:`${USERS_URL}/getConversationMessages/${id}`,
+                method:"GET"
             })
         })
     })
@@ -83,5 +95,5 @@ export const {
     useVerifyUserMutation, useGetPropertiesuserMutation,
     useGetSinglePropertyMutation, useGetUserInfoMutation,
     useUpdateUserMutation, useCheckPassMutation, useUpdatePassMutation,
-    useBookPropertyMutation,
+    useBookPropertyMutation, useGetConversationsMutation,
 } = usersApiSclice;

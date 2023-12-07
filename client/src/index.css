@@ -9,10 +9,8 @@ body {
 }
 
 /* Correct way to style the scrollbar */
-body::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
-    display: none;
+::-webkit-scrollbar {
+    width: 7px;
 }
 
 .card::-webkit-scrollbar {
@@ -22,17 +20,17 @@ body::-webkit-scrollbar {
 }
 
 /* Optional: Style for the scrollbar track */
-body::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
 
 /* Optional: Style for the scrollbar handle */
-body::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 6px;
 }
 
 /* Optional: Style for the scrollbar handle on hover */
-body::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
     background: #555;
 }

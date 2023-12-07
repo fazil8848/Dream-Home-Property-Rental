@@ -5,6 +5,8 @@ import { sendMail } from '../service/regMail.js';
 import { userVerification } from '../middleware/authMiddleware.js';
 import Properties from '../mongodb/models/property.js';
 import Booking from '../mongodb/models/booking.js';
+import Conversation from '../mongodb/models/ConversationMode.js';
+import Message from '../mongodb/models/messageModel.js';
 
 
 
@@ -91,6 +93,7 @@ export const loginUser = asyncHandler(async (req, res) => {
 
     if (user && (await user.matchPass(password))) {
         generateToken.generateToken(res, user._id);
+        req.user = user;
         res.status(201).json({
             _id: user._id,
             name: user.fullName,
@@ -104,7 +107,7 @@ export const loginUser = asyncHandler(async (req, res) => {
 });
 
 export const logOutUser = asyncHandler(async (req, res) => {
-    res.cookie('userToken', '', {
+    res.cookie('userToken', '-', {
         httpOnly: true,
         expires: new Date(0)
     });
@@ -121,8 +124,9 @@ export const userProfile = asyncHandler(async (req, res) => {
 });
 
 export const updateUser = asyncHandler(async (req, res) => {
+    // const { id } = req.user._id;
     const { id } = req.query;
-    const { email, fullName, mobile, password } = req.body;
+    const { email, fullName, mobile } = req.body;
     const user = await User.findById(id);
     if (user) {
         user.fullName = fullName;
@@ -267,6 +271,99 @@ export const propertyBooking = async (req, res) => {
 
     } catch (error) {
         console.log('Error While updating password :-', error.message);
+        return res.json({ success: false, error: 'Internal Server Error' }).status(500);
+    }
+}
+
+
+export const sendMessage = async (req, res) => {
+    try {
+        const { ownerId, message, senderId } = req.body;
+        console.log(req.user);
+        // const senderId = req.user._id;
+
+        let conversation = await Conversation.findOne({
+            participants: { $all: [senderId, ownerId] }
+        })
+
+        if (!conversation) {
+            conversation = new Conversation({
+                participants: [senderId, ownerId],
+                lastMessage: {
+                    text: message,
+                    sender: senderId
+                }
+            })
+
+            await conversation.save();
+        }
+
+        const newMessage = new Message({
+            conversationId: conversation._id,
+            sender: senderId,
+            text: message
+        })
+
+        await Promise.all([
+            newMessage.save(),
+            conversation.updateOne({
+                lastMessage: {
+                    text: message,
+                    sender: senderId
+                }
+            })
+        ])
+
+        res.status(201).json(newMessage)
+    } catch (error) {
+        console.log('Error While Sending Message :-', error.message);
+        return res.json({ success: false, error: 'Internal Server Error' }).status(500);
+    }
+}
+
+export const getMessages = async (req, res) => {
+    try {
+        const { userId,ownerId} = req.body
+
+        const conversation = await Conversation.findOne({
+            participants: { $all: [userId, ownerId] }
+        })
+
+        if (!conversation) {
+            return res.json({ error: 'Chat Not Found' }).status(404)
+        }
+
+        const messages = await Message.find({
+            conversationId: conversation._id
+        }).sort({ createdAt: 1 });
+
+        res.status(201).json({ messages, success: true });
+
+    } catch (error) {
+        console.log('Error While Getting Message :-', error.message);
+        return res.json({ success: false, error: 'Internal Server Error' }).status(500);
+    }
+}
+
+export const getConversations = async (req, res) => {
+    try {
+        const { userId } = req.query
+        console.log(userId);
+        const conversations = await Conversation.find({
+            participants: { $in: [userId] },
+        }).populate({
+            path: 'participants',
+            select: 'fullName'
+        })
+
+        if (!conversations) {
+            return res.json({ error: 'Conversations Not Found' }).status(404)
+        }
+
+        res.status(201).json({ conversations, success: true });
+
+    } catch (error) {
+        console.log('Error While Getting Conversations :-', error.message);
         return res.json({ success: false, error: 'Internal Server Error' }).status(500);
     }
 }
