@@ -81,7 +81,27 @@ const ownerApiSlice = apiSlice.injectEndpoints({
                 method: "DELETE",
                 body: data
             })
-        })  
+        }),
+        getConversations: builder.mutation({
+            query: (id) => ({
+                url: `${OWNER_URL}/getConversations?userId=${id}`,
+                method: 'GET',
+            })
+        }),
+        getMessages: builder.mutation({
+            query: (data) => ({
+                url: `${OWNER_URL}/getConversationMessages`,
+                method: "POST",
+                body: data
+            })
+        }),
+        sendMessage: builder.mutation({
+            query: (data) => ({
+                url: `${OWNER_URL}/sendMessage`,
+                method: 'POST',
+                body: data
+            })
+        })
     })
 })
 
@@ -89,5 +109,7 @@ export const {
     useOwnerLoginMutation, useOwnerSignupMutation, useOwnerVerifyMutation,
     useOwnerLogoutMutation, useAddKycMutation, useGetOwnerMutation,
     useUpdateOwnerMutation, useAddPropertiesMutation, useGetPropertiesMutation,
-    useGetPropertyMutation, useEditPropertyMutation, useDeleteImageMutation
+    useGetPropertyMutation, useEditPropertyMutation, useDeleteImageMutation,
+    useGetConversationsMutation, useGetMessagesMutation, useSendMessageMutation,
+
 } = ownerApiSlice;

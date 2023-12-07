@@ -27,8 +27,8 @@ router.post('/checkPass', checkPass);
 router.post("/orders", paypalCreateOrder)
 router.post("/orders/:orderID/capture", paypalCaptureOrder)
 router.post("/bookProperty", propertyBooking)
-router.post('/messages',sendMessage)
-router.post('/messages/:ownerId',getMessages)
+router.post('/sendMessage',sendMessage)
+router.post('/getConversationMessages',getMessages)
 
 
 // ----------------= PUT =----------------

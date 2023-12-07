@@ -278,20 +278,18 @@ export const propertyBooking = async (req, res) => {
 
 export const sendMessage = async (req, res) => {
     try {
-        const { ownerId, message, senderId } = req.body;
-        console.log(req.user);
-        // const senderId = req.user._id;
+        const { ownerId, messageText, userId } = req.body;
 
         let conversation = await Conversation.findOne({
-            participants: { $all: [senderId, ownerId] }
+            participants: { $all: [userId, ownerId] }
         })
 
         if (!conversation) {
             conversation = new Conversation({
-                participants: [senderId, ownerId],
+                participants: [userId, ownerId],
                 lastMessage: {
-                    text: message,
-                    sender: senderId
+                    text: messageText,
+                    sender: userId
                 }
             })
 
@@ -300,16 +298,16 @@ export const sendMessage = async (req, res) => {
 
         const newMessage = new Message({
             conversationId: conversation._id,
-            sender: senderId,
-            text: message
+            sender: userId,
+            text: messageText
         })
 
         await Promise.all([
             newMessage.save(),
             conversation.updateOne({
                 lastMessage: {
-                    text: message,
-                    sender: senderId
+                    text: messageText,
+                    sender: userId
                 }
             })
         ])
@@ -323,7 +321,7 @@ export const sendMessage = async (req, res) => {
 
 export const getMessages = async (req, res) => {
     try {
-        const { userId,ownerId} = req.body
+        const { userId, ownerId } = req.body
 
         const conversation = await Conversation.findOne({
             participants: { $all: [userId, ownerId] }
@@ -348,7 +346,6 @@ export const getMessages = async (req, res) => {
 export const getConversations = async (req, res) => {
     try {
         const { userId } = req.query
-        console.log(userId);
         const conversations = await Conversation.find({
             participants: { $in: [userId] },
         }).populate({

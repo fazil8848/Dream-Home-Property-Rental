@@ -82,9 +82,17 @@ export const usersApiSclice = apiSlice.injectEndpoints({
             })
         }),
         getMessages: builder.mutation({
-            query:(id)=>({
-                url:`${USERS_URL}/getConversationMessages/${id}`,
-                method:"GET"
+            query: (data) => ({
+                url: `${USERS_URL}/getConversationMessages`,
+                method: "POST",
+                body: data
+            })
+        }),
+        sendMessage: builder.mutation({
+            query: (data) => ({
+                url: `${USERS_URL}/sendMessage`,
+                method: 'POST',
+                body: data
             })
         })
     })
@@ -96,4 +104,5 @@ export const {
     useGetSinglePropertyMutation, useGetUserInfoMutation,
     useUpdateUserMutation, useCheckPassMutation, useUpdatePassMutation,
     useBookPropertyMutation, useGetConversationsMutation,
+    useGetMessagesMutation, useSendMessageMutation,
 } = usersApiSclice;

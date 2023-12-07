@@ -50,12 +50,13 @@ const Conversations = ({ conversation, userId }) => {
     dispatch(setSelectedUserConversation(selectedChat));
     // Use selectedConversation directly, no need for useSelector here
     setSelectedConversation(selectedChat);
-
   };
 
   return (
     <div
-      className={`flex items-center px-2 py-1 gap-2 hover:cursor-pointer ${ selectedConversation._id === conversation._id ? ' bg-gray-200' :''} my-0.5 rounded-md`}
+      className={`flex items-center px-2 py-1 gap-2 hover:cursor-pointer ${
+        selectedConversation._id === conversation._id ? " bg-gray-200" : ""
+      } my-0.5 rounded-md`}
       onClick={handleClick}
     >
       <Stack>
