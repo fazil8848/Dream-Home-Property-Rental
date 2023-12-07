@@ -4,7 +4,7 @@ import { IoMdSend } from "react-icons/io";
 import { generateError } from "../../Dependencies/toast";
 import { useSendMessageMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { setGlobalUserConversations } from "../../../Redux/Slices/chatSlices/userChatSlice";
+import { setGlobalConversations } from "../../../Redux/Slices/chatSlices/userChatSlice";
 
 const MessageInput = ({ setMessages }) => {
   const allConversations = useSelector((state) => state.chat.conversations);
@@ -51,7 +51,7 @@ const MessageInput = ({ setMessages }) => {
         });
 
         // Dispatch the action to update the state
-        dispatch(setGlobalUserConversations(updatedConversations));
+        dispatch(setGlobalConversations(updatedConversations));
         
         setMessageText("");
       }

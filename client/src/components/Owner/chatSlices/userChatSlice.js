@@ -34,7 +34,7 @@ const userChatSlice = createSlice({
 
 
 
-export const { setSelectedUserConversation, setGlobalUserConversations, setSelectedOwnerConversation, setGlobalOwnerConversations } = userChatSlice.actions
+export const { setSelectedUserConversation, setGlobalConversations, setSelectedOwnerConversation, setGlobalOwnerConversations } = userChatSlice.actions
 
 
 export default userChatSlice.reducer;

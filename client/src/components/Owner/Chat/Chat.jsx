@@ -8,7 +8,7 @@ import MessageContainer from "../MessageContainer/MessageContainer";
 import { generateError } from "../../Dependencies/toast";
 import { useGetConversationsMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { setGlobalUserConversations } from "../../../Redux/Slices/chatSlices/userChatSlice";
+import { setGlobalOwnerConversations } from "../../../Redux/Slices/chatSlices/userChatSlice";
 
 const Chat = () => {
   const { userInfo } = useSelector((state) => state.user);
@@ -19,7 +19,7 @@ const Chat = () => {
     (state) => state.chat.selectedUserConversation
   );
   const dispatch = useDispatch();
-  const allConversations = useSelector((state) => state.chat.conversations);
+  const allConversations = useSelector((state) => state.chat.ownerConversations);
   const [getConversationsCall] = useGetConversationsMutation();
 
   const fetchConversations = async () => {
@@ -29,7 +29,7 @@ const Chat = () => {
       if (result.error) {
         generateError(result.error);
       } else {
-        dispatch(setGlobalUserConversations(result.conversations));
+        dispatch(setGlobalOwnerConversations(result.conversations));
       }
     } catch (error) {
       generateError(error.message);
