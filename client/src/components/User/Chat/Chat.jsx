@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { Button, Input, Typography } from "@material-tailwind/react";
 import { Skeleton } from "@mui/material";
@@ -9,12 +10,16 @@ import { generateError } from "../../Dependencies/toast";
 import { useGetConversationsMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setGlobalUserConversations } from "../../../Redux/Slices/chatSlices/userChatSlice";
+import { useSocket } from "../../../Context/SocketContext";
 
 const Chat = () => {
   const { userInfo } = useSelector((state) => state.user);
   const userId = userInfo._id;
   const [conversations, setConversations] = useState([]);
   const [conversationLoading, setConversationsLoading] = useState(false);
+
+  const { socket, onlineUsers } = useSocket();
+
   const selectedChat = useSelector(
     (state) => state.chat.selectedUserConversation
   );
@@ -43,7 +48,6 @@ const Chat = () => {
   }, [userId]);
 
   useEffect(() => {
-    // Update local state when global state changes
     setConversations(allConversations);
   }, [allConversations]);
 
@@ -89,6 +93,9 @@ const Chat = () => {
                   {!conversationLoading &&
                     conversations.map((conversation, i) => (
                       <Conversations
+                        isOnline={onlineUsers.includes(
+                          conversation.participants[0]._id
+                        )}
                         conversation={conversation}
                         userId={userId}
                         key={i}

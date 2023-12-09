@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { FaUserTie } from "react-icons/fa";
@@ -9,6 +9,7 @@ import { BsFillChatQuoteFill } from "react-icons/bs";
 import { useLogoutMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
 import { logout } from "../../../Redux/Slices/authSlice";
 import { generateError } from "../../Dependencies/toast";
+import { setUserOffline, setUserOnline } from "../../../Redux/Slices/chatSlices/userChatSlice";
 
 const Header = () => {
   const { userInfo } = useSelector((state) => state.user);
@@ -24,12 +25,17 @@ const Header = () => {
         generateError(res.error);
       } else {
         dispatch(logout());
+        dispatch(setUserOffline(null));
         navigate("/");
       }
     } catch (error) {
       generateError(err?.data?.message || err.error);
     }
   };
+
+  useEffect(() => {
+    dispatch(setUserOnline(userInfo));
+  }, [userInfo]);
 
   return (
     <div>
@@ -89,7 +95,7 @@ const Header = () => {
                   to="/chat"
                   className={`bg-White rounded p-2 text-coolblue border-1 border-grey`}
                 >
-                  <BsFillChatQuoteFill size={20}/>
+                  <BsFillChatQuoteFill size={20} />
                 </NavLink>
                 <NavLink
                   to="/profile"

@@ -8,7 +8,7 @@ const messageSchema = new mongoose.Schema(
             required: true,
             ref: 'Conversation',
         },
-        sender: { type: ObjectId, required: true, ref: 'User' },
+        sender: { type: ObjectId, required: true },
         text: { type: String, required: true }
     },
     { timestamps: true }

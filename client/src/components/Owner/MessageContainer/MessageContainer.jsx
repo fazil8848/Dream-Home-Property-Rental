@@ -4,21 +4,56 @@ import { Avatar, Divider, Skeleton } from "@mui/material";
 import { GoVerified } from "react-icons/go";
 import Message from "../Message/Message";
 import MessageInput from "../MessageInput/MessageInput";
-import { useSelector } from "react-redux";
-import { useGetMessagesMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { generateError } from "../../Dependencies/toast";
+import { useGetOwnerMessagesMutation } from "../../../Redux/Slices/ownerApi/ownerApiSlice";
+import { useSocket } from "../../../Context/SocketContext";
+import { setGlobalOwnerConversations } from "../../../Redux/Slices/chatSlices/userChatSlice";
 
 const MessageContainer = () => {
-  const { userInfo } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const { socket } = useSocket();
+  const { ownerInfo } = useSelector((state) => state.owner);
   const selectedChat = useSelector(
-    (state) => state.chat.selectedUserConversation
+    (state) => state.chat.selectedOwnerConversation
   );
-  const [getMessagesCall] = useGetMessagesMutation();
+  const [getMessagesCall] = useGetOwnerMessagesMutation();
   const [messages, setMessages] = useState([]);
   const [messagesLoading, setMessagesLoading] = useState(false);
-  const userId = userInfo._id;
+  const userId = ownerInfo._id;
   const ownerId = selectedChat.ownerId;
+  const allConversations = useSelector((state) => state.chat.ownerConversations);
 
+  useEffect(() => {
+    if (!allConversations) {
+      return; // Add a check to handle undefined or null
+    }
+
+    socket.on(
+      "newMessage",
+      (message) => {
+        setMessages((prevMessages) => [...prevMessages, message]);
+
+        const updatedConversations = allConversations.map((conversation) => {
+          if (conversation._id === selectedChat._id) {
+            return {
+              ...conversation,
+              lastMessage: {
+                text: message.text,
+                sender: message.sender,
+              },
+            };
+          }
+          return conversation;
+        });
+
+        dispatch(setGlobalOwnerConversations(updatedConversations));
+      },
+      [socket, allConversations, selectedChat]
+    );
+
+    return () => socket.off("newMessage");
+  }, [socket, allConversations, selectedChat]);
 
   const fetchMesssages = async () => {
     try {
@@ -47,7 +82,10 @@ const MessageContainer = () => {
     <>
       <span className="w-[300px] sm:w-full border mx-auto bg-blue-gray-50 rounded-md">
         <div className="px-4 flex items-center h-16 gap-2">
-          <Avatar src="https://res.cloudinary.com/dn6anfym7/image/upload/v1700566625/dreamHome/arqhv0bipniec9xpfu7m.jpg" sizes="sm" />
+          <Avatar
+            src="https://res.cloudinary.com/dn6anfym7/image/upload/v1700566625/dreamHome/arqhv0bipniec9xpfu7m.jpg"
+            sizes="sm"
+          />
           <Typography className="flex items-center">
             {selectedChat.ownerName} <GoVerified className="w-4 h-4 ml-1" />
           </Typography>

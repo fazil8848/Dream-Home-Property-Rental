@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { TbLogout2 } from "react-icons/tb";
@@ -7,6 +7,8 @@ import { ownerLogout } from "../../../Redux/Slices/ownerApi/ownerAuthSlicel";
 import { TbLayoutSidebarRightExpand } from "react-icons/tb";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { generateError } from "../../Dependencies/toast";
+import { BsFillChatQuoteFill } from "react-icons/bs";
+import { setOwnerOffline, setOwnerOnline } from "../../../Redux/Slices/chatSlices/userChatSlice";
 
 const OwnerHeader = ({ sidebarOpen, setSidebarOpen }) => {
   const [logoutCall] = useOwnerLogoutMutation();
@@ -18,12 +20,12 @@ const OwnerHeader = ({ sidebarOpen, setSidebarOpen }) => {
     try {
       const res = await logoutCall().unwrap();
       if (res.error) {
-        generateError(res.error)
+        generateError(res.error);
       } else {
         dispatch(ownerLogout());
-      navigate("/owner/login");
+        dispatch(setOwnerOffline())
+        navigate("/owner/login");
       }
-      
     } catch (error) {
       generateError(err?.data?.message || err.error);
     }
@@ -32,6 +34,11 @@ const OwnerHeader = ({ sidebarOpen, setSidebarOpen }) => {
   const handleToggle = () => {
     setSidebarOpen(!sidebarOpen);
   };
+
+  useEffect(() => {  
+    dispatch(setOwnerOnline(ownerInfo))
+  }, [ownerInfo])
+  
 
   return (
     <div>
@@ -55,6 +62,12 @@ const OwnerHeader = ({ sidebarOpen, setSidebarOpen }) => {
             <>
               {ownerInfo && (
                 <>
+                  <NavLink
+                    to="/owner/chat"
+                    className={`bg-White rounded p-2 text-coolblue border-1 border-grey`}
+                  >
+                    <BsFillChatQuoteFill size={20} />
+                  </NavLink>
                   <NavLink
                     className={` flex gap-2 items-center text-sm font-semibold border border-gray-500 hover:shadow-2xl hover:drop-shadow-2xl hover:bg-blue-100 p-2 rounded leading-6 hover:text-white `}
                     onClick={logoutHandlder}

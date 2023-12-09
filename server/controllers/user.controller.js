@@ -7,6 +7,7 @@ import Properties from '../mongodb/models/property.js';
 import Booking from '../mongodb/models/booking.js';
 import Conversation from '../mongodb/models/ConversationMode.js';
 import Message from '../mongodb/models/messageModel.js';
+import { getRecipientSocketId, io } from '../socket/socket.js';
 
 
 
@@ -312,6 +313,11 @@ export const sendMessage = async (req, res) => {
             })
         ])
 
+        const recipientSocketId = getRecipientSocketId(ownerId);
+        if (recipientSocketId) {
+            io.to(recipientSocketId).emit('newMessage', newMessage)
+        }
+
         res.status(201).json(newMessage)
     } catch (error) {
         console.log('Error While Sending Message :-', error.message);
@@ -335,7 +341,7 @@ export const getMessages = async (req, res) => {
             conversationId: conversation._id
         }).sort({ createdAt: 1 });
 
-        res.status(201).json({ messages, success: true });
+        res.status(200).json({ messages, success: true });
 
     } catch (error) {
         console.log('Error While Getting Message :-', error.message);
@@ -345,22 +351,26 @@ export const getMessages = async (req, res) => {
 
 export const getConversations = async (req, res) => {
     try {
-        const { userId } = req.query
+        const { userId } = req.query;
         const conversations = await Conversation.find({
             participants: { $in: [userId] },
-        }).populate({
-            path: 'participants',
-            select: 'fullName'
-        })
+        }).populate(
+            {
+                path: 'participants',
+                select: 'fullName',
+                match: { _id: { $ne: userId } }, // Populate only if not the current user
+                model: 'Owner',
+            },
+        );
 
         if (!conversations) {
-            return res.json({ error: 'Conversations Not Found' }).status(404)
+            return res.status(404).json({ error: 'Conversations Not Found' });
         }
 
-        res.status(201).json({ conversations, success: true });
+        res.status(200).json({ conversations, success: true });
 
     } catch (error) {
         console.log('Error While Getting Conversations :-', error.message);
-        return res.json({ success: false, error: 'Internal Server Error' }).status(500);
+        return res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
-}
+};

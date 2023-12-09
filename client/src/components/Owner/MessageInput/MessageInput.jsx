@@ -2,22 +2,22 @@ import React, { useState } from "react";
 import { Input } from "@material-tailwind/react";
 import { IoMdSend } from "react-icons/io";
 import { generateError } from "../../Dependencies/toast";
-import { useSendMessageMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { setGlobalConversations } from "../../../Redux/Slices/chatSlices/userChatSlice";
+import { setGlobalOwnerConversations } from "../../../Redux/Slices/chatSlices/userChatSlice";
+import { useSendOwnerMessageMutation } from "../../../Redux/Slices/ownerApi/ownerApiSlice";
 
 const MessageInput = ({ setMessages }) => {
-  const allConversations = useSelector((state) => state.chat.conversations);
-  const { userInfo } = useSelector((state) => state.user);
+  const allConversations = useSelector((state) => state.chat.ownerConversations);
+  const { ownerInfo } = useSelector((state) => state.owner);
   const selectedChat = useSelector(
-    (state) => state.chat.selectedUserConversation
+    (state) => state.chat.selectedOwnerConversation
   );
-  const userId = userInfo._id;
+  const userId = ownerInfo._id;
   const ownerId = selectedChat.ownerId;
   const dispatch = useDispatch();
 
   const [messageText, setMessageText] = useState("");
-  const [sendMessageCall] = useSendMessageMutation();
+  const [sendMessageCall] = useSendOwnerMessageMutation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -51,7 +51,7 @@ const MessageInput = ({ setMessages }) => {
         });
 
         // Dispatch the action to update the state
-        dispatch(setGlobalConversations(updatedConversations));
+        dispatch(setGlobalOwnerConversations(updatedConversations));
         
         setMessageText("");
       }

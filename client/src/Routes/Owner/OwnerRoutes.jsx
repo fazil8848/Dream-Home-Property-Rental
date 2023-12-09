@@ -10,6 +10,7 @@ import ProfilePage from "../../Pages/Owner/ProfilePage/ProfilePage";
 import KycPage from "../../Pages/Owner/KycPage/KycPage";
 import AddPropertiesPage from "../../Pages/Owner/AddPropertiesPage/AddPropertiesPage";
 import EditPropertiesPage from "../../Pages/Owner/EditPropertiesPage/EditPropertiesPage";
+import ChatPage from "../../Pages/Owner/ChatPage/ChatPage";
 
 const OwnerRoutes = () => {
   return (
@@ -24,6 +25,7 @@ const OwnerRoutes = () => {
           <Route path="profile/kyc" element={<KycPage />} />
           <Route path="properties/addproperties" element={<AddPropertiesPage />} />
           <Route path="properties/editProperties/:id" element={<EditPropertiesPage />} />
+          <Route path="chat" element={<ChatPage />} />
         </Route>
       </Route>
     </Routes>

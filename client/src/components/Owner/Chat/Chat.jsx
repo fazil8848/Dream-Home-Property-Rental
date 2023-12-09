@@ -6,21 +6,25 @@ import { GiConversation } from "react-icons/gi";
 import Conversations from "../Conversations/Conversations";
 import MessageContainer from "../MessageContainer/MessageContainer";
 import { generateError } from "../../Dependencies/toast";
-import { useGetConversationsMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setGlobalOwnerConversations } from "../../../Redux/Slices/chatSlices/userChatSlice";
+import { useGetOwnerConversationsMutation } from "../../../Redux/Slices/ownerApi/ownerApiSlice";
+import { useSocket } from "../../../Context/SocketContext";
 
 const Chat = () => {
-  const { userInfo } = useSelector((state) => state.user);
-  const userId = userInfo._id;
+  const { socket, onlineUsers } = useSocket();
+  const { ownerInfo } = useSelector((state) => state.owner);
+  const userId = ownerInfo._id;
   const [conversations, setConversations] = useState([]);
   const [conversationLoading, setConversationsLoading] = useState(false);
   const selectedChat = useSelector(
-    (state) => state.chat.selectedUserConversation
+    (state) => state.chat.selectedOwnerConversation
   );
   const dispatch = useDispatch();
-  const allConversations = useSelector((state) => state.chat.ownerConversations);
-  const [getConversationsCall] = useGetConversationsMutation();
+  const allConversations = useSelector(
+    (state) => state.chat.ownerConversations
+  );
+  const [getConversationsCall] = useGetOwnerConversationsMutation();
 
   const fetchConversations = async () => {
     try {
@@ -29,7 +33,9 @@ const Chat = () => {
       if (result.error) {
         generateError(result.error);
       } else {
+        console.log(result.conversations);
         dispatch(setGlobalOwnerConversations(result.conversations));
+        setConversations(result.conversations);
       }
     } catch (error) {
       generateError(error.message);
@@ -89,6 +95,9 @@ const Chat = () => {
                   {!conversationLoading &&
                     conversations.map((conversation, i) => (
                       <Conversations
+                        isOnline={onlineUsers.includes(
+                          conversation.participants[0]._id
+                        )}
                         conversation={conversation}
                         userId={userId}
                         key={i}

@@ -3,9 +3,9 @@ import { Avatar, Badge, Box, Stack, Typography, styled } from "@mui/material";
 import { GoVerified } from "react-icons/go";
 import { BsCheck2All } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedUserConversation } from "../../../Redux/Slices/chatSlices/userChatSlice";
+import { setSelectedOwnerConversation } from "../../../Redux/Slices/chatSlices/userChatSlice";
 
-const Conversations = ({ conversation, userId }) => {
+const Conversations = ({ conversation, userId, isOnline }) => {
   const owner = conversation.participants[0];
   const { lastMessage } = conversation;
   const [selectedConversation, setSelectedConversation] = useState({});
@@ -47,7 +47,7 @@ const Conversations = ({ conversation, userId }) => {
       ownerId: owner._id,
       ownerName: owner.fullName,
     };
-    dispatch(setSelectedUserConversation(selectedChat));
+    dispatch(setSelectedOwnerConversation(selectedChat));
     // Use selectedConversation directly, no need for useSelector here
     setSelectedConversation(selectedChat);
   };
@@ -60,16 +60,23 @@ const Conversations = ({ conversation, userId }) => {
       onClick={handleClick}
     >
       <Stack>
-        <StyledBadge
-          overlap="circular"
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          variant="dot"
-        >
+      {isOnline ? (
+          <StyledBadge
+            overlap="circular"
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            variant="dot"
+          >
+            <Avatar
+              alt="Remy Sharp"
+              src="https://res.cloudinary.com/dn6anfym7/image/upload/v1700566625/dreamHome/arqhv0bipniec9xpfu7m.jpg"
+            />
+          </StyledBadge>
+        ) : (
           <Avatar
             alt="Remy Sharp"
             src="https://res.cloudinary.com/dn6anfym7/image/upload/v1700566625/dreamHome/arqhv0bipniec9xpfu7m.jpg"
           />
-        </StyledBadge>
+        )}
       </Stack>
       <Stack direction={"column"} fontSize={"sm"}>
         <Typography

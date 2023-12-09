@@ -25,7 +25,7 @@ router.post('/loginUser', loginUser);
 router.post('/logOutUser', logOutUser);
 router.post('/checkPass', checkPass);
 router.post("/orders", paypalCreateOrder)
-router.post("/orders/:orderID/capture", paypalCaptureOrder)
+router.post("/orders/:orderID/capture", paypalCaptureOrder) 
 router.post("/bookProperty", propertyBooking)
 router.post('/sendMessage',sendMessage)
 router.post('/getConversationMessages',getMessages)

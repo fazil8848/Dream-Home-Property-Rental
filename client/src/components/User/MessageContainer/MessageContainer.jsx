@@ -4,11 +4,15 @@ import { Avatar, Divider, Skeleton } from "@mui/material";
 import { GoVerified } from "react-icons/go";
 import Message from "../Message/Message";
 import MessageInput from "../MessageInput/MessageInput";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useGetMessagesMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
 import { generateError } from "../../Dependencies/toast";
+import { useSocket } from "../../../Context/SocketContext";
+import { setGlobalUserConversations } from "../../../Redux/Slices/chatSlices/userChatSlice";
 
 const MessageContainer = () => {
+  const dispatch = useDispatch();
+  const { socket } = useSocket();
   const { userInfo } = useSelector((state) => state.user);
   const selectedChat = useSelector(
     (state) => state.chat.selectedUserConversation
@@ -18,7 +22,36 @@ const MessageContainer = () => {
   const [messagesLoading, setMessagesLoading] = useState(false);
   const userId = userInfo._id;
   const ownerId = selectedChat.ownerId;
+  const allConversations = useSelector((state) => state.chat.conversations);
 
+  useEffect(() => {
+    const handleNewMessage = (message) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+
+      if (allConversations) {
+        const updatedConversations = allConversations.map((conversation) => {
+          if (conversation._id === selectedChat._id) {
+            return {
+              ...conversation,
+              lastMessage: {
+                text: message.text,
+                sender: message.sender,
+              },
+            };
+          }
+          return conversation;
+        });
+
+        dispatch(setGlobalUserConversations(updatedConversations));
+      }
+    };
+
+    socket.on("newMessage", handleNewMessage);
+
+    return () => {
+      socket.off("newMessage", handleNewMessage);
+    };
+  }, [socket, selectedChat, allConversations, dispatch]);
 
   const fetchMesssages = async () => {
     try {
@@ -47,7 +80,10 @@ const MessageContainer = () => {
     <>
       <span className="w-[300px] sm:w-full border mx-auto bg-blue-gray-50 rounded-md">
         <div className="px-4 flex items-center h-16 gap-2">
-          <Avatar src="https://res.cloudinary.com/dn6anfym7/image/upload/v1700566625/dreamHome/arqhv0bipniec9xpfu7m.jpg" sizes="sm" />
+          <Avatar
+            src="https://res.cloudinary.com/dn6anfym7/image/upload/v1700566625/dreamHome/arqhv0bipniec9xpfu7m.jpg"
+            sizes="sm"
+          />
           <Typography className="flex items-center">
             {selectedChat.ownerName} <GoVerified className="w-4 h-4 ml-1" />
           </Typography>
