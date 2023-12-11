@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { Button, Input, Typography } from "@material-tailwind/react";
-import { Skeleton } from "@mui/material";
+import { Skeleton, accordionSummaryClasses } from "@mui/material";
 import { BiSearch } from "react-icons/bi";
 import { GiConversation } from "react-icons/gi";
+import { useParams } from "react-router-dom";
+
 import Conversations from "../Conversations/Conversations";
 import MessageContainer from "../MessageContainer/MessageContainer";
 import { generateError } from "../../Dependencies/toast";
 import { useDispatch, useSelector } from "react-redux";
 import { setGlobalOwnerConversations } from "../../../Redux/Slices/chatSlices/userChatSlice";
-import { useGetOwnerConversationsMutation } from "../../../Redux/Slices/ownerApi/ownerApiSlice";
+import {
+  useGetClickedUserMutation,
+  useGetOwnerConversationsMutation,
+} from "../../../Redux/Slices/ownerApi/ownerApiSlice";
 import { useSocket } from "../../../Context/SocketContext";
 
 const Chat = () => {
-  const { socket, onlineUsers } = useSocket();
+  const [clickedUser, setClickedUser] = useState(null);
+  const { onlineUsers } = useSocket();
   const { ownerInfo } = useSelector((state) => state.owner);
   const userId = ownerInfo._id;
   const [conversations, setConversations] = useState([]);
@@ -25,6 +31,13 @@ const Chat = () => {
     (state) => state.chat.ownerConversations
   );
   const [getConversationsCall] = useGetOwnerConversationsMutation();
+  const [getClickedUserCall] = useGetClickedUserMutation();
+
+  const { customerId } = useParams();
+
+  if (customerId) {
+    setClickedUser(customerId);
+  }
 
   const fetchConversations = async () => {
     try {
@@ -49,9 +62,42 @@ const Chat = () => {
   }, [userId]);
 
   useEffect(() => {
-    // Update local state when global state changes
     setConversations(allConversations);
   }, [allConversations]);
+
+  const fetchClickedUser = async () => {
+    try {
+      const result = await getClickedUserCall({ customerId }).unwrap();
+      if (result.error) {
+        generateError(result.error)
+      } else {
+        setClickedUser(result.user)
+
+        const mockConversarion = {
+          lastMessage: {
+            text: "",
+            sender: "",
+          },
+          _id: Date.now(),
+          participants: [
+            {
+              _id: clickedUser._id,
+              userName: clickedUser.fullName,
+              // profilePic:clickedUser.profilePic
+            },
+          ],
+        };
+      
+        setConversations((prev) => [...prev, mockConversarion]);
+      }
+    } catch (error) {
+      generateError(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchClickedUser();
+  }, [clickedUser, customerId]);
 
   return (
     <>

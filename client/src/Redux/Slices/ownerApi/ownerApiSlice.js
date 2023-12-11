@@ -101,6 +101,12 @@ const ownerApiSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 body: data
             })
+        }),
+        getClickedUser: builder.mutation({
+            query: ({customerId})=>({
+                url:`${OWNER_URL}/getClikcedUser/${customerId}`,
+                method: 'GET'
+            })
         })
     })
 })
@@ -111,5 +117,5 @@ export const {
     useUpdateOwnerMutation, useAddPropertiesMutation, useGetPropertiesMutation,
     useGetPropertyMutation, useEditPropertyMutation, useDeleteImageMutation,
     useGetOwnerConversationsMutation, useGetOwnerMessagesMutation, 
-    useSendOwnerMessageMutation,
+    useSendOwnerMessageMutation, useGetClickedUserMutation,
 } = ownerApiSlice;

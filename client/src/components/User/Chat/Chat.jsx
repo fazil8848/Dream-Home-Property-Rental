@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Button, Input, Typography } from "@material-tailwind/react";
 import { Skeleton } from "@mui/material";
@@ -7,18 +6,26 @@ import { GiConversation } from "react-icons/gi";
 import Conversations from "../Conversations/Conversations";
 import MessageContainer from "../MessageContainer/MessageContainer";
 import { generateError } from "../../Dependencies/toast";
-import { useGetConversationsMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
+import {
+  useGetClickedOwnerMutation,
+  useGetConversationsMutation,
+} from "../../../Redux/Slices/userApi/usersApiSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { setGlobalUserConversations } from "../../../Redux/Slices/chatSlices/userChatSlice";
+import {
+  setGlobalUserConversations,
+  setSelectedUserConversation,
+} from "../../../Redux/Slices/chatSlices/userChatSlice";
 import { useSocket } from "../../../Context/SocketContext";
+import { useParams } from "react-router-dom";
 
 const Chat = () => {
   const { userInfo } = useSelector((state) => state.user);
   const userId = userInfo._id;
   const [conversations, setConversations] = useState([]);
   const [conversationLoading, setConversationsLoading] = useState(false);
-
-  const { socket, onlineUsers } = useSocket();
+  const { onlineUsers } = useSocket();
+  const { ownerId } = useParams();
+  const [clickedOwner, setClickedOwner] = useState(null);
 
   const selectedChat = useSelector(
     (state) => state.chat.selectedUserConversation
@@ -26,6 +33,7 @@ const Chat = () => {
   const dispatch = useDispatch();
   const allConversations = useSelector((state) => state.chat.conversations);
   const [getConversationsCall] = useGetConversationsMutation();
+  const [getClickedOwnerCall] = useGetClickedOwnerMutation();
 
   const fetchConversations = async () => {
     try {
@@ -46,6 +54,64 @@ const Chat = () => {
   useEffect(() => {
     fetchConversations();
   }, [userId]);
+
+  const fetchClickedUser = async () => {
+    try {
+      const result = await getClickedOwnerCall({ ownerId }).unwrap();
+      if (result.error) {
+        return generateError(result.error);
+      } else if (result.owner) {
+        const conversationExists = conversations.find(
+          (conv) => conv.participants[0]._id === result.owner._id
+        );
+
+        if (conversationExists) {
+          console.log();
+          dispatch(
+            setSelectedUserConversation({
+              mock: conversationExists.mock,
+              _id: conversationExists._id,
+              ownerId: result.owner._id,
+              ownerName: result.owner.fullName,
+            })
+          );
+        } else {
+          const mockConversation = {
+            mock: true,
+            lastMessage: {
+              text: "",
+              sender: "",
+            },
+            _id: Date.now(),
+            participants: [
+              {
+                _id: result.owner._id,
+                fullName: result.owner.fullName,
+                // profilePic: result.owner.profilePic
+              },
+            ],
+          };
+
+          console.log(mockConversation, "getting here");
+
+          // Use the callback form of setConversations to ensure you have the latest state
+          setConversations((prevConversations) => [
+            ...prevConversations,
+            mockConversation,
+          ]);
+        }
+        console.log(conversations, "conversation");
+      }
+    } catch (error) {
+      generateError(error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (ownerId) {
+      fetchClickedUser();
+    }
+  }, [ownerId, conversations]);
 
   useEffect(() => {
     setConversations(allConversations);

@@ -26,6 +26,7 @@ const OwnerRoutes = () => {
           <Route path="properties/addproperties" element={<AddPropertiesPage />} />
           <Route path="properties/editProperties/:id" element={<EditPropertiesPage />} />
           <Route path="chat" element={<ChatPage />} />
+          <Route path="chat/:customerId" element={<ChatPage />} />
         </Route>
       </Route>
     </Routes>

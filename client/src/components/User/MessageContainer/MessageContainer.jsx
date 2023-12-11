@@ -55,6 +55,8 @@ const MessageContainer = () => {
 
   const fetchMesssages = async () => {
     try {
+      console.log(selectedChat);
+      if (selectedChat.mock)  return;
       setMessagesLoading(true);
       const result = await getMessagesCall({
         userId,

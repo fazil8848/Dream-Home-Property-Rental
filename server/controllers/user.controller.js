@@ -8,6 +8,7 @@ import Booking from '../mongodb/models/booking.js';
 import Conversation from '../mongodb/models/ConversationMode.js';
 import Message from '../mongodb/models/messageModel.js';
 import { getRecipientSocketId, io } from '../socket/socket.js';
+import Owner from '../mongodb/models/owner.js';
 
 
 
@@ -374,3 +375,22 @@ export const getConversations = async (req, res) => {
         return res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
 };
+
+
+export const getClickedOwner = async (req, res) => {
+    try {
+
+        const { ownerId } = req.params;
+
+        const owner = await Owner.findById(ownerId);
+        if (owner) {
+            res.status(200).json({ owner, success: true });
+        } else {
+            return res.json({ error: 'Owner Not Found' }).status(404);
+        }
+
+    } catch (error) {
+        console.log('Error While Getting ClickedOwner :-', error.message);
+        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+}

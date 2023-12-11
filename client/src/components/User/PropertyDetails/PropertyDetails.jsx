@@ -593,7 +593,10 @@ const PropertyDetails = ({ property, setProperty }) => {
 
       <div class="relative">
         <button
-          onClick={() => navigate(`/chatBox/${property.owner}`)}
+          onClick={(e) => {
+            e.preventDefault();
+            navigate(`/chat/${property.owner}`);
+          }}
           class="z-20 text-white flex flex-col shrink-0 grow-0 justify-around 
                   fixed bottom-0 right-5 rounded-lg
                   mr-1 mb-5 lg:mr-5 lg:mb-5 xl:mr-10 xl:mb-10"

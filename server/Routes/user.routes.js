@@ -3,7 +3,7 @@ import {
     registerUser, loginUser, logOutUser,
     userProfile, updateUser, verifyUser,
     getPropertiesUser, getSingleProperty,
-    getUserInfo, checkPass, updatePass, propertyBooking, sendMessage, getMessages, getConversations
+    getUserInfo, checkPass, updatePass, propertyBooking, sendMessage, getMessages, getConversations, getClickedOwner
 } from '../controllers/user.controller.js';
 import { paypalCaptureOrder, paypalCreateOrder } from '../controllers/paypal.controller.js';
 // import { protect } from '../middleware/authMiddleware.js';
@@ -18,6 +18,7 @@ router.get('/getPropertiesuser', getPropertiesUser);
 router.get('/getSingleProperty', getSingleProperty);
 router.get('/getUserInfo', getUserInfo);
 router.get('/getConversations', getConversations);
+router.get('/getClickedOwner/:ownerId', getClickedOwner);
 
 // ----------------= POST =----------------
 router.post('/registerUser', registerUser);

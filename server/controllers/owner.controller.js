@@ -503,3 +503,22 @@ export const getConversations = async (req, res) => {
         return res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
 };
+
+
+export const getClickedUser = async (req,res) => {
+    try {
+
+        const { customerId } = req.params;
+
+        const user = await User.findById(customerId);
+        if (user) {
+            res.status(200).json({ user, success: true });
+        } else {
+            return res.json({ error: 'User Not Found' }).status(404);
+        }
+
+    } catch (error) {
+        console.log('Error While Getting Clickeduser :-', error.message);
+        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+}

@@ -24,7 +24,6 @@ const UserRouter = () => {
             <Route path="booking/:id" element={<BookingPage />} />
             <Route path="chat" element={<ChatPage />} />
             <Route path="chat/:ownerId" element={<ChatPage />} />
-            {/* <Route path="chatBox/:ownerId" element={<ChatBoxPage />} /> */}
           </Route>
         </Route>
       </Routes>
