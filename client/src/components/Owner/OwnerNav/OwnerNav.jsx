@@ -62,12 +62,17 @@ function OwnerNav({ sidebarOpen, setSidebarOpen }) {
             </ListItem>
           </NavLink>
 
-          <NavLink>
+          <NavLink
+            to={"/owner/enquiries"}
+            className={({ isActive }) =>
+              isActive ? `bg-gray-200 text-gray-700 font-semibold` : ""
+            }
+          >
             <ListItem className=" p-2 hover:bg-gray-200">
               <ListItemPrefix>
                 <InboxIcon className="h-5 w-5" />
               </ListItemPrefix>
-              Inbox
+              Enquiries
               <ListItemSuffix>
                 <Chip
                   value="14"

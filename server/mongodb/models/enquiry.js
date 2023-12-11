@@ -20,6 +20,11 @@ const enquirySchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    owner: {
+        type: ObjectId,
+        ref: 'User',
+        required: true
+    },
     contact: {
         type: String,
         required: true

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Input, Typography } from "@material-tailwind/react";
-import { Skeleton, accordionSummaryClasses } from "@mui/material";
+import { Skeleton } from "@mui/material";
 import { BiSearch } from "react-icons/bi";
 import { GiConversation } from "react-icons/gi";
 import { useParams } from "react-router-dom";
@@ -9,7 +9,10 @@ import Conversations from "../Conversations/Conversations";
 import MessageContainer from "../MessageContainer/MessageContainer";
 import { generateError } from "../../Dependencies/toast";
 import { useDispatch, useSelector } from "react-redux";
-import { setGlobalOwnerConversations } from "../../../Redux/Slices/chatSlices/userChatSlice";
+import {
+  setGlobalOwnerConversations,
+  setSelectedOwnerConversation,
+} from "../../../Redux/Slices/chatSlices/userChatSlice";
 import {
   useGetClickedUserMutation,
   useGetOwnerConversationsMutation,
@@ -35,9 +38,11 @@ const Chat = () => {
 
   const { customerId } = useParams();
 
-  if (customerId) {
-    setClickedUser(customerId);
-  }
+  useEffect(() => {
+    if (customerId) {
+      setClickedUser(customerId);
+    }
+  }, [customerId]);
 
   const fetchConversations = async () => {
     try {
@@ -46,7 +51,6 @@ const Chat = () => {
       if (result.error) {
         generateError(result.error);
       } else {
-        console.log(result.conversations);
         dispatch(setGlobalOwnerConversations(result.conversations));
         setConversations(result.conversations);
       }
@@ -69,26 +73,45 @@ const Chat = () => {
     try {
       const result = await getClickedUserCall({ customerId }).unwrap();
       if (result.error) {
-        generateError(result.error)
-      } else {
-        setClickedUser(result.user)
+        return generateError(result.error);
+      } else if (result.user) {
+        const conversationExists = allConversations.find(
+          (conv) => conv.participants[0]._id === result.user._id
+        );
 
-        const mockConversarion = {
-          lastMessage: {
-            text: "",
-            sender: "",
-          },
-          _id: Date.now(),
-          participants: [
-            {
-              _id: clickedUser._id,
-              userName: clickedUser.fullName,
-              // profilePic:clickedUser.profilePic
+        if (conversationExists && !conversationExists.mock) {
+          dispatch(
+            setSelectedOwnerConversation({
+              mock: conversationExists.mock,
+              _id: conversationExists._id,
+              ownerId: result.user._id,
+              ownerName: result.user.fullName,
+            })
+          );
+        } else {
+          const mockConversation = {
+            mock: true,
+            lastMessage: {
+              text: "",
+              sender: "",
             },
-          ],
-        };
-      
-        setConversations((prev) => [...prev, mockConversarion]);
+            _id: Date.now(),
+            participants: [
+              {
+                _id: result.user._id,
+                fullName: result.user.fullName,
+                //profilePic: result.user.profilepic
+              },
+            ],
+          };
+
+          dispatch(
+            setGlobalOwnerConversations([...allConversations, mockConversation])
+          );
+
+          setConversations([...conversations, mockConversation])
+
+        }
       }
     } catch (error) {
       generateError(error.message);
@@ -96,13 +119,15 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    fetchClickedUser();
-  }, [clickedUser, customerId]);
+    if (customerId) {
+      fetchClickedUser();
+    }
+  }, [customerId]);
 
   return (
     <>
       <div className="flex justify-center">
-        <div className="py-4  w-full md:w-[90%] lg:w-[850px] p1 md:p-4 border shadow-xl mt-4 rounded-md">
+        <div className="py-4 w-full md:w-[90%] lg:w-[850px] p1 md:p-4 border shadow-xl mt-4 rounded-md">
           <div className="flex flex-col md:flex-row gap-4 max-w-full mx-auto">
             <span className="lg:w-[300px] p-3 gap-2 flex-col mx-auto">
               <Typography className="">Your Conversations</Typography>
@@ -157,7 +182,7 @@ const Chat = () => {
                 <GiConversation size={100} />
                 <Typography className="text-lg">
                   {" "}
-                  Select conversation to start texting
+                  Select a conversation to start texting
                 </Typography>
               </span>
             ) : (

@@ -61,11 +61,11 @@ const Chat = () => {
       if (result.error) {
         return generateError(result.error);
       } else if (result.owner) {
-        const conversationExists = conversations.find(
+        const conversationExists = allConversations.find(
           (conv) => conv.participants[0]._id === result.owner._id
         );
 
-        if (conversationExists) {
+        if (conversationExists && !conversationExists.mock) {
           console.log();
           dispatch(
             setSelectedUserConversation({
@@ -92,13 +92,11 @@ const Chat = () => {
             ],
           };
 
-          console.log(mockConversation, "getting here");
-
+          dispatch(
+            setGlobalUserConversations([...allConversations, mockConversation])
+          );
           // Use the callback form of setConversations to ensure you have the latest state
-          setConversations((prevConversations) => [
-            ...prevConversations,
-            mockConversation,
-          ]);
+          setConversations([...conversations, mockConversation])
         }
         console.log(conversations, "conversation");
       }
@@ -111,7 +109,7 @@ const Chat = () => {
     if (ownerId) {
       fetchClickedUser();
     }
-  }, [ownerId, conversations]);
+  }, [ownerId]);
 
   useEffect(() => {
     setConversations(allConversations);

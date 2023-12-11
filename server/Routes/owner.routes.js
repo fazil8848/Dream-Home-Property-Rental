@@ -1,5 +1,5 @@
 import express from "express";
-import { loginOwner,deleteImage, ownerSignup, verifyOwner, logOutOwner, getOwner, updateOwner, addKyc, addProperties, getProperties, getProperty, editProperty, getConversations, sendMessage, getMessages, getClickedUser } from "../controllers/owner.controller.js";
+import { loginOwner,deleteImage, ownerSignup, verifyOwner, logOutOwner, getOwner, updateOwner, addKyc, addProperties, getProperties, getProperty, editProperty, getConversations, sendMessage, getMessages, getClickedUser, getEnquiries } from "../controllers/owner.controller.js";
 import { uploadImage } from "../middleware/cloudinaryConfig.js";
 
 const router = express.Router();
@@ -10,6 +10,7 @@ router.get('/getProperties/:id', getProperties)
 router.get('/getProperty/:id', getProperty)
 router.get('/getConversations', getConversations);
 router.get('/getClickedUser/:userId', getClickedUser);
+router.get('/getEnquiries', getEnquiries);
 
 
 // ------------ = POST = ------------

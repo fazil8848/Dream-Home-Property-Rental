@@ -22,7 +22,9 @@ const MessageContainer = () => {
   const [messagesLoading, setMessagesLoading] = useState(false);
   const userId = ownerInfo._id;
   const ownerId = selectedChat.ownerId;
-  const allConversations = useSelector((state) => state.chat.ownerConversations);
+  const allConversations = useSelector(
+    (state) => state.chat.ownerConversations
+  );
 
   useEffect(() => {
     if (!allConversations) {
@@ -57,13 +59,15 @@ const MessageContainer = () => {
 
   const fetchMesssages = async () => {
     try {
+      console.log(selectedChat);
+      if (selectedChat.mock) return;
       setMessagesLoading(true);
       const result = await getMessagesCall({
         userId,
         ownerId,
       }).unwrap();
       if (result.error) {
-        generateError(result.error);
+        // generateError(result.error);
       } else {
         setMessages(result.messages);
       }
@@ -73,7 +77,6 @@ const MessageContainer = () => {
       setMessagesLoading(false);
     }
   };
-
 
   useEffect(() => {
     fetchMesssages();

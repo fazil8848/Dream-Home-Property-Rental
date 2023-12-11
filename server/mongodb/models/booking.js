@@ -12,6 +12,11 @@ const bookingSchema = new mongoose.Schema({
         type: ObjectId,
         required: true
       },
+      owner: {
+        type: ObjectId,
+        required: true,
+        ref: 'Owner'
+      },
       fullName: {
         type: String,
         required: true
@@ -22,7 +27,6 @@ const bookingSchema = new mongoose.Schema({
       },
       startDate: {
         type: Date,
-        required: true
       },
       mobile: {
         type: Number,
@@ -35,6 +39,9 @@ const bookingSchema = new mongoose.Schema({
       tokenPaid:{
         type :Boolean,
         default:false
+      },
+      interest: {
+        type: String,
       }
 
 })

@@ -49,7 +49,10 @@ const BookingForm = () => {
       bookingInfo.fullName = bookingData.fName;
       bookingInfo.tokenAmount = property.property_rent;
       bookingInfo.property = id;
-      bookingInfo.startDate = bookingData.sdate;
+      option === "Book"
+        ? (bookingInfo.startDate = bookingData.sdate)
+        : (bookingInfo.interest = bookingData.interest);
+      bookingInfo.owner = property.owner;
 
       const result = await bookingCall({ bookingInfo }).unwrap();
       if (result.error) {
@@ -64,33 +67,39 @@ const BookingForm = () => {
     }
   };
 
-  const validationSchema = Yup.object().shape({
-    fName: Yup.string().required("First Name is required"),
-    sdate: Yup.date()
-      .required("Re-Location Date is required")
-      .test("valid-date", "Invalid date format", function (value) {
-        return value instanceof Date && !isNaN(value);
-      })
-      .test("valid-date", "Insert an available date", function (value) {
-        return value > new Date();
-      }),
-    mobile: Yup.string().required("Mobile is required"),
-    email: Yup.string().email("Invalid email").required("Email is required"),
-  });
-
   const formik = useFormik({
     initialValues: {
       fName: "",
       sdate: "",
       mobile: "",
       email: "",
+      interest: "",
     },
-    validationSchema: validationSchema,
+
+    validationSchema: Yup.object().shape({
+      fName: Yup.string().required("Full Name is required"),
+      sdate:
+        option === "Book"
+          ? Yup.date()
+              .required("Re-Location Date is required")
+              .test("valid-date", "Invalid date format", function (value) {
+                return value instanceof Date && !isNaN(value);
+              })
+              .test("valid-date", "Insert an available date", function (value) {
+                return value > new Date();
+              })
+          : Yup.date(),
+      mobile: Yup.string().required("Mobile is required"),
+      email: Yup.string().email("Invalid email").required("Email is required"),
+      interest:
+        option === "Reserve"
+          ? Yup.string().required("Interest is required")
+          : Yup.string(),
+    }),
     onSubmit: (values) => {
       handleSubmit(values);
     },
   });
-
   if (!property) {
     return (
       <div className="h-screen flex items-center justify-center">
@@ -111,7 +120,7 @@ const BookingForm = () => {
 
   return (
     <PayPalScriptProvider options={initialOptions}>
-      <div className="min-h-[80vh] bg-blue-gray-50 xl:px-80 xl:py-20 lg:px-48 lg:py-16 md:px-28 md:py-10 p-10">
+      <div className="min-h-[80vh] bg-blue-gray-50 xl:px-80 xl:py-10 lg:px-48 md:px-28 md:py-10 p-10">
         <div className="col-span-5 xl:col-span-3 h-full ">
           <div className="rounded-md border border-stroke bg-white shadow-xl pb-10 h-full">
             <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
@@ -148,31 +157,66 @@ const BookingForm = () => {
                       ) : null}
                     </div>
                   </div>
-                  <div className="w-full px-3 lg:w-1/2">
-                    <div className="mb-5">
-                      <label
-                        htmlFor="sdate"
-                        className="mb-3 block text-base font-medium text-[#07074D]"
-                      >
-                        Re-Location Date
-                      </label>
-                      <input
-                        type="date"
-                        name="sdate"
-                        id="sdate"
-                        placeholder="Re-Location Date"
-                        className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        value={formik.values.sdate}
-                      />
-                      {formik.touched.sdate && formik.errors.sdate ? (
-                        <div className="text-red-500">
-                          {formik.errors.sdate}
-                        </div>
-                      ) : null}
+                  {option === "Book" ? (
+                    <div className="w-full px-3 lg:w-1/2">
+                      <div className="mb-5">
+                        <label
+                          htmlFor="sdate"
+                          className="mb-3 block text-base font-medium text-[#07074D]"
+                        >
+                          Re-Location Date
+                        </label>
+                        <input
+                          type="date"
+                          name="sdate"
+                          id="sdate"
+                          placeholder="Re-Location Date"
+                          className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          value={formik.values.sdate}
+                        />
+                        {formik.touched.sdate && formik.errors.sdate ? (
+                          <div className="text-red-500">
+                            {formik.errors.sdate}
+                          </div>
+                        ) : null}
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="w-full px-3 lg:w-1/2">
+                      <div className="mb-5">
+                        <label
+                          htmlFor="interest"
+                          className="mb-3 block text-base font-medium text-[#07074D]"
+                        >
+                          Interest{" "}
+                          <span className="text-sm font-light">(optional)</span>
+                        </label>
+                        <select
+                          name="interest"
+                          id="interest"
+                          className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          value={formik.values.interest}
+                        >
+                          <option value="" disabled>
+                            Select a level of interest
+                          </option>
+                          <option value="low">Low</option>
+                          <option value="medium">Medium</option>
+                          <option value="high">High</option>
+                          <option value="veryHigh">Very High</option>
+                        </select>
+                        {formik.touched.interest && formik.errors.interest ? (
+                          <div className="text-red-500">
+                            {formik.errors.interest}
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="-mx-3 flex flex-wrap">
@@ -288,7 +332,8 @@ const BookingForm = () => {
                             showInfo ? "text-lg " : "text-lg text-sky-400"
                           }
                         >
-                          <IoIosInformationCircleOutline className="hover:cursor-pointer"
+                          <IoIosInformationCircleOutline
+                            className="hover:cursor-pointer"
                             onClick={() => {
                               setShowInfo(!showInfo);
                             }}

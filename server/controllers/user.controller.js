@@ -147,7 +147,7 @@ export const updateUser = asyncHandler(async (req, res) => {
 
 export const getPropertiesUser = async (req, res) => {
     try {
-        const properties = await Properties.find({ isApproved: true, is_available: true });
+        const properties = await Properties.find({ isApproved: true, is_available: true, is_Booked: false });
 
         if (properties) {
             res.status(201).json({ success: true, message: 'Properties successfully retrieved', properties });
@@ -250,19 +250,22 @@ export const propertyBooking = async (req, res) => {
     try {
 
         const bookingInfo = req.body;
-
         const booked = await Booking.create(bookingInfo);
         if (booked) {
 
             if (booked.tokenPaid) {
                 const propertyUpdated = await Properties.findByIdAndUpdate(bookingInfo.property, {
-                    $set: { is_available: false, is_Booked: true, is_Reserved: true }
-                })
+                    $set: { is_available: false, is_Booked: true },
+                },
+                    {
+                        new: true,
+                    }
+                )
                 res.status(201).json({ success: true, message: "Property Booked Successfully", booked });
                 return;
             } else {
                 const propertyUpdated = await Properties.findByIdAndUpdate(bookingInfo.property, {
-                    $set: { is_available: false, is_Reserved: true }
+                    $set: { is_Reserved: true }
                 })
                 res.status(201).json({ success: true, message: "Property Reserved Successfully", booked });
                 return;
@@ -379,7 +382,6 @@ export const getConversations = async (req, res) => {
 
 export const getClickedOwner = async (req, res) => {
     try {
-
         const { ownerId } = req.params;
 
         const owner = await Owner.findById(ownerId);

@@ -10,6 +10,7 @@ import Property from '../mongodb/models/property.js';
 import Conversation from '../mongodb/models/ConversationMode.js';
 import Message from '../mongodb/models/messageModel.js';
 import { getRecipientSocketId, io } from '../socket/socket.js';
+import Booking from '../mongodb/models/booking.js';
 
 export const ownerSignup = asyncHandler(async (req, res) => {
     const { fisrtName, lastName, email, password, mobile } = req.body;
@@ -487,8 +488,8 @@ export const getConversations = async (req, res) => {
             {
                 path: 'participants',
                 select: 'fullName',
-                match: { _id: { $ne: userId } }, // Populate only if not the current user
-                model: 'User', // Specify the model to populate
+                match: { _id: { $ne: userId } },
+                model: 'User',
             }
         );
 
@@ -505,12 +506,12 @@ export const getConversations = async (req, res) => {
 };
 
 
-export const getClickedUser = async (req,res) => {
+export const getClickedUser = async (req, res) => {
     try {
 
-        const { customerId } = req.params;
+        const { userId } = req.params;
 
-        const user = await User.findById(customerId);
+        const user = await User.findById(userId);
         if (user) {
             res.status(200).json({ user, success: true });
         } else {
@@ -519,6 +520,21 @@ export const getClickedUser = async (req,res) => {
 
     } catch (error) {
         console.log('Error While Getting Clickeduser :-', error.message);
+        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+}
+
+export const getEnquiries = async (req, res) => {
+    try {
+        const { ownerId } = req.query
+        const enquiries = await Booking.find({ owner: ownerId, tokenPaid: false });
+        if (enquiries) {
+            res.status(200).json({ enquiries, success: true });
+        } else {
+            return res.json({ error: 'Reservations Not Found' }).status(404);
+        }
+    } catch (error) {
+        console.log('Error While Getting Enquiries :-', error.message);
         return res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
 }

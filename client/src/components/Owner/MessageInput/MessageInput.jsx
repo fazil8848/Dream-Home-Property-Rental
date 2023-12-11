@@ -36,7 +36,6 @@ const MessageInput = ({ setMessages }) => {
       } else {
         setMessages((messages) => [...messages, result]);
 
-        // Update the Redux state
         const updatedConversations = allConversations.map((conversation) => {
           if (conversation._id === selectedChat._id) {
             return {

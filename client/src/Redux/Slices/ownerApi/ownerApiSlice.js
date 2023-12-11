@@ -103,8 +103,14 @@ const ownerApiSlice = apiSlice.injectEndpoints({
             })
         }),
         getClickedUser: builder.mutation({
-            query: ({customerId})=>({
-                url:`${OWNER_URL}/getClikcedUser/${customerId}`,
+            query: ({ customerId }) => ({
+                url: `${OWNER_URL}/getClickedUser/${customerId}`,
+                method: 'GET'
+            })
+        }),
+        getEnquiries: builder.mutation({
+            query: (ownerId) => ({
+                url: `${OWNER_URL}/getEnquiries?ownerId=${ownerId}`,
                 method: 'GET'
             })
         })
@@ -116,6 +122,6 @@ export const {
     useOwnerLogoutMutation, useAddKycMutation, useGetOwnerMutation,
     useUpdateOwnerMutation, useAddPropertiesMutation, useGetPropertiesMutation,
     useGetPropertyMutation, useEditPropertyMutation, useDeleteImageMutation,
-    useGetOwnerConversationsMutation, useGetOwnerMessagesMutation, 
-    useSendOwnerMessageMutation, useGetClickedUserMutation,
+    useGetOwnerConversationsMutation, useGetOwnerMessagesMutation,
+    useSendOwnerMessageMutation, useGetClickedUserMutation, useGetEnquiriesMutation
 } = ownerApiSlice;

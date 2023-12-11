@@ -11,6 +11,7 @@ import KycPage from "../../Pages/Owner/KycPage/KycPage";
 import AddPropertiesPage from "../../Pages/Owner/AddPropertiesPage/AddPropertiesPage";
 import EditPropertiesPage from "../../Pages/Owner/EditPropertiesPage/EditPropertiesPage";
 import ChatPage from "../../Pages/Owner/ChatPage/ChatPage";
+import EnquiryListingPage from "../../Pages/Owner/EnquiryListingPage/EnquiryListingPage";
 
 const OwnerRoutes = () => {
   return (
@@ -27,6 +28,7 @@ const OwnerRoutes = () => {
           <Route path="properties/editProperties/:id" element={<EditPropertiesPage />} />
           <Route path="chat" element={<ChatPage />} />
           <Route path="chat/:customerId" element={<ChatPage />} />
+          <Route path="enquiries" element={<EnquiryListingPage />} />
         </Route>
       </Route>
     </Routes>

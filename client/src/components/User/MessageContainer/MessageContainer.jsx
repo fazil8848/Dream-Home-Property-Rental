@@ -54,8 +54,7 @@ const MessageContainer = () => {
   }, [socket, selectedChat, allConversations, dispatch]);
 
   const fetchMesssages = async () => {
-    try {
-      console.log(selectedChat);
+    try { 
       if (selectedChat.mock)  return;
       setMessagesLoading(true);
       const result = await getMessagesCall({
@@ -63,7 +62,7 @@ const MessageContainer = () => {
         ownerId,
       }).unwrap();
       if (result.error) {
-        generateError(result.error);
+        // generateError(result.error);
       } else {
         setMessages(result.messages);
       }
