@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   fullName: {
     type: String,
     required: true
-  }, 
+  },
   email: {
     type: String,
     required: true
@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
   profilePic: {
     type: String,
     required: true,
-    default:'https://res.cloudinary.com/dn6anfym7/image/upload/v1700566625/dreamHome/arqhv0bipniec9xpfu7m.jpg'
+    default: 'https://res.cloudinary.com/dn6anfym7/image/upload/v1700566625/dreamHome/arqhv0bipniec9xpfu7m.jpg'
   },
   mobile: {
     type: String,
@@ -28,19 +28,22 @@ const userSchema = new mongoose.Schema({
     type: ObjectId,
     ref: "details",
   },
-  isVerified:{
+  isVerified: {
     type: Boolean,
     default: false
   },
-  is_Blocked:{
+  is_Blocked: {
     type: Boolean,
     default: false
   },
-  bookedProperties:[{
+  bookedProperties: [{
     type: ObjectId,
     ref: 'Property',
-    required: true,
-}]
+  }],
+  reservedproperties: [{
+    type: ObjectId,
+    ref: 'Property',
+  }]
 });
 
 userSchema.pre('save', async function (next) {

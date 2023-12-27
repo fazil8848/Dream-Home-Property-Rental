@@ -28,6 +28,7 @@ const Chat = () => {
   const selectedChat = useSelector(
     (state) => state.chat.selectedOwnerConversation
   );
+  const [messages, setMessages] = useState([]);
   const dispatch = useDispatch();
   const allConversations = useSelector(
     (state) => state.chat.ownerConversations
@@ -56,7 +57,7 @@ const Chat = () => {
 
   useEffect(() => {
     fetchConversations();
-  }, [userId]);
+  }, []);
 
   useEffect(() => {
     setConversations(allConversations);
@@ -74,15 +75,15 @@ const Chat = () => {
 
       if (result.user) {
         if (conversationExists) {
-          dispatch(
-            setSelectedOwnerConversation({
-              mock: conversationExists.mock,
-              _id: conversationExists._id,
-              ownerId: result.user._id,
-              ownerName: result.user.fullName,
-              profilePic: result.user.profilePic,
-            })
-          );
+          // dispatch(
+          //   setSelectedOwnerConversation({
+          //     mock: conversationExists.mock,
+          //     _id: conversationExists._id,
+          //     ownerId: result.user._id,
+          //     ownerName: result.user.fullName,
+          //     profilePic: result.user.profilePic,
+          //   })
+          // );
         } else {
           const mockConversation = {
             mock: true,
@@ -216,7 +217,7 @@ const Chat = () => {
                 </Typography>
               </span>
             ) : (
-              <MessageContainer />
+              <MessageContainer setMessages={setMessages} messages={messages} />
             )}
           </div>
         </div>

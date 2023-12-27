@@ -34,6 +34,7 @@ const MessageContainer = ({messages, setMessages}) => {
 
     const handleNewMessage = async (message) => {
       if (message.conversationId === selectedChat._id) {
+        console.log(message, 'message');
         const result = await updateMessageCall(message._id).unwrap();
         if (result.error) {
           generateError(result.error);

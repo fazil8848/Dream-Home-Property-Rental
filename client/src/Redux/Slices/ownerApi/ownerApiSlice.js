@@ -133,7 +133,14 @@ const ownerApiSlice = apiSlice.injectEndpoints({
                 url: `${OWNER_URL}/updateMessageStatus/${messageId}`,
                 method: 'PATCH',
             })
-        })
+        }),
+        cancelEnquiry: builder.mutation({
+            query: (data) => ({
+                url: `${OWNER_URL}/cancelEnquiry`,
+                method: 'POST',
+                body: data,
+            })
+        }),
     })
 })
 
@@ -145,5 +152,5 @@ export const {
     useGetOwnerConversationsMutation, useGetOwnerMessagesMutation,
     useSendOwnerMessageMutation, useGetClickedUserMutation, useGetEnquiriesMutation,
     useUpdatePassOwnerMutation, useCheckPassOwnerMutation, useGetOwnerMutation,
-
+    useCancelEnquiryMutation,
 } = ownerApiSlice;

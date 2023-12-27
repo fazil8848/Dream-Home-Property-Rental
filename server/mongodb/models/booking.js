@@ -43,7 +43,11 @@ const bookingSchema = new mongoose.Schema({
   },
   interest: {
     type: String,
-  }
+  },
+  is_cancelled: {
+    type: Boolean,
+    default: false,
+  },
 
 })
 

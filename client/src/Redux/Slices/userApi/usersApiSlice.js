@@ -134,6 +134,19 @@ export const usersApiSclice = apiSlice.injectEndpoints({
                 body: data,
             })
         }),
+        getReservations: builder.mutation({
+            query: (userId) => ({
+                url: `${USERS_URL}/getReservations/${userId}`,
+                method: 'GET'
+            })
+        }),
+        cancelReservation: builder.mutation({
+            query: (data) => ({
+                url: `${USERS_URL}/cancelReservation`,
+                method: 'POST',
+                body: data,
+            })
+        }),
     })
 })
 
@@ -145,5 +158,6 @@ export const {
     useBookPropertyMutation, useGetConversationsMutation,
     useGetMessagesMutation, useSendMessageMutation, useGetClickedOwnerMutation,
     useGetBookedDetailsMutation, useUpdateMessageStatusUserMutation, useAddReviewMutation,
-    useGetReviewsMutation, usePropertyIncludedMutation
+    useGetReviewsMutation, usePropertyIncludedMutation, useGetReservationsMutation,
+    useCancelReservationMutation,
 } = usersApiSclice;

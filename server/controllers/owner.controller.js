@@ -498,7 +498,7 @@ export const sendMessage = async (req, res) => {
                     model: 'User',
                 }
             );
-            console.log(newConversation,'newConversation');
+            console.log(newConversation, 'newConversation');
             const data = { newConversation, newMessage }
 
             if (recipientSocketId) {
@@ -635,5 +635,26 @@ export const getEnquiries = async (req, res) => {
     } catch (error) {
         console.log('Error While Getting Enquiries :-', error.message);
         return res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+}
+
+export const cancelEnquiry = async (req, res) => {
+    try {
+        const { id, owner } = req.body;
+        const cancelled = await Booking.findByIdAndUpdate(id, {
+            $set: { is_cancelled: true },
+        }, {
+            new: true
+        });
+
+        if (cancelled) {
+            const enquiries = await Booking.find({ owner, tokenPaid: false });
+            res.status(201).json({ success: true, message: 'Reservation Cancelled Successfully', enquiries });
+        } else {
+            res.json({ error: 'Cannot cancel reservation Please try again' }).status(404)
+        }
+    } catch (error) {
+        console.log('Error While cancelling reservation:- ', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }

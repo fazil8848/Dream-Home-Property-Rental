@@ -50,7 +50,6 @@ const Conversations = ({ conversation, userId, isOnline }) => {
       profilePic: owner.profilePic,
     };
     dispatch(setSelectedUserConversation(selectedChat));
-    // Use selectedConversation directly, no need for useSelector here
     setSelectedConversation(selectedChat);
   };
 

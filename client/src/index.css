@@ -11,11 +11,10 @@ body {
 /* Correct way to style the scrollbar */
 ::-webkit-scrollbar {
   width: 7px;
+  height: 7px;
 }
 
 .card::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
   display: none;
 }
 

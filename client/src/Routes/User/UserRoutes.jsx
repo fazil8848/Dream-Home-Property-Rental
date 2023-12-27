@@ -11,6 +11,7 @@ import BookingPage from "../../Pages/User/BookingPage/BookingPage.jsx";
 import ChatPage from "../../Pages/User/ChatPage/ChatPage.jsx";
 import BookingCompletedPage from "../../Pages/User/BookingCompletedPage/BookingCompletedPage.jsx";
 import PropertyListingPage from "../../Pages/User/PropertyListingPage/PropertyListingPage.jsx";
+import ReservationManagement from "../../Pages/User/reservationManagement/reservationManagement.jsx";
 
 const UserRouter = () => {
   return (
@@ -27,10 +28,8 @@ const UserRouter = () => {
           <Route path="chat" element={<ChatPage />} />
           <Route path="chat/:ownerId" element={<ChatPage />} />
           <Route path="bookings" element={<BookingCompletedPage />} />
-          <Route
-            path="bookingSuccessful/:bookingId"
-            element={<BookingCompletedPage />}
-          />
+          <Route path="reservations" element={<ReservationManagement />} />
+          <Route path="bookingSuccessful/:bookingId" element={<BookingCompletedPage />}/>
           <Route path="reservations" element={<BookingCompletedPage />} />
         </Route>
       </Route>

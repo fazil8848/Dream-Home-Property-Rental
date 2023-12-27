@@ -1,5 +1,5 @@
 import express from "express";
-import { loginOwner, deleteImage, ownerSignup, verifyOwner, logOutOwner, getOwner, updateOwner, addKyc, addProperties, getProperties, getProperty, editProperty, getConversations, sendMessage, getMessages, getClickedUser, getEnquiries, updatePassOwner, checkPassOwner } from "../controllers/owner.controller.js";
+import { loginOwner, deleteImage, ownerSignup, verifyOwner, logOutOwner, getOwner, updateOwner, addKyc, addProperties, getProperties, getProperty, editProperty, getConversations, sendMessage, getMessages, getClickedUser, getEnquiries, updatePassOwner, checkPassOwner, cancelEnquiry } from "../controllers/owner.controller.js";
 import { uploadImage } from "../middleware/cloudinaryConfig.js";
 import { updateMessageStatus } from "../controllers/user.controller.js";
 
@@ -25,6 +25,7 @@ router.post('/editProperty', editProperty)
 router.post('/sendMessage', sendMessage)
 router.post('/getConversationMessages', getMessages)
 router.post('/checkPassOwner', checkPassOwner);
+router.post('/cancelEnquiry', cancelEnquiry);
 
 // ------------ = PUT = ------------
 router.put('/verifyOwner/:id', verifyOwner)

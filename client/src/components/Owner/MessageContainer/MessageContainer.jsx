@@ -13,7 +13,7 @@ import {
 import { useSocket } from "../../../Context/SocketContext";
 import { setGlobalOwnerConversations } from "../../../Redux/Slices/chatSlices/userChatSlice";
 
-const MessageContainer = () => {
+const MessageContainer = ({messages, setMessages}) => {
   const dispatch = useDispatch();
   const { socket } = useSocket();
   const { ownerInfo } = useSelector((state) => state.owner);
@@ -22,7 +22,6 @@ const MessageContainer = () => {
   );
   const [updateMessageCall] = useUpdateMessageStatusOwnerMutation();
   const [getMessagesCall] = useGetOwnerMessagesMutation();
-  const [messages, setMessages] = useState([]);
   const [messagesLoading, setMessagesLoading] = useState(false);
   const userId = ownerInfo._id;
   const ownerId = selectedChat.ownerId;

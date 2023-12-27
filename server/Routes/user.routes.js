@@ -3,7 +3,7 @@ import {
     registerUser, loginUser, logOutUser,
     userProfile, updateUser, verifyUser,
     getPropertiesUser, getSingleProperty,
-    getUserInfo, checkPass, updatePass, propertyBooking, sendMessage, getMessages, getConversations, getClickedOwner, getBookedDetails, updateMessageStatus
+    getUserInfo, checkPass, updatePass, propertyBooking, sendMessage, getMessages, getConversations, getClickedOwner, getBookedDetails, updateMessageStatus, getReservations, cancelReservation
 } from '../controllers/user.controller.js';
 import { paypalCaptureOrder, paypalCreateOrder } from '../controllers/paypal.controller.js';
 import { addReview, getReviews, propertyIncluded } from '../controllers/rating.controller.js';
@@ -21,6 +21,7 @@ router.get('/getUserInfo', getUserInfo);
 router.get('/getConversations', getConversations);
 router.get('/getClickedOwner/:ownerId', getClickedOwner);
 router.get('/getReviews/:propertyId', getReviews);
+router.get('/getReservations/:userId', getReservations);
 
 // ----------------= POST =----------------
 router.post('/registerUser', registerUser);
@@ -35,6 +36,7 @@ router.post('/getConversationMessages', getMessages)
 router.post('/getBookedDetails', getBookedDetails);
 router.post('/addReview', addReview);
 router.post('/propertyIncluded', propertyIncluded);
+router.post('/cancelReservation', cancelReservation);
 
 
 // ----------------= PUT =----------------

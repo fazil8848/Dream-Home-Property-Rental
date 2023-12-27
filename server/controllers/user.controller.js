@@ -270,6 +270,10 @@ export const propertyBooking = async (req, res) => {
                 await Properties.findByIdAndUpdate(bookingInfo.property, {
                     $set: { is_Reserved: true }
                 })
+
+                await User.findByIdAndUpdate(booked.user, {
+                    $addToSet: { reservedproperties: booked.property }
+                });
                 res.status(201).json({ success: true, message: "Property Reserved Successfully", booked });
                 return;
             }
@@ -499,5 +503,58 @@ export const getBookedDetails = async (req, res) => {
     } catch (error) {
         console.log('Error While Getting booking :-', error.message);
         return res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+}
+
+export const getReservations = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        console.log(userId);
+
+        const reservations = await Booking.find({ user: userId, tokenPaid: false })
+            .populate({
+                path: 'property',
+                select: 'property_name property_rent property_location.address'
+            })
+            .populate({
+                path: 'owner',
+                select: 'email mobile fullName',
+            });
+
+        console.log(reservations);
+        res.status(201).json({ reservations });
+
+    } catch (error) {
+        console.log('Error While Getting the reservations');
+        return res.status(500).json({ success: flase, error: 'Internal Server Error' });
+    }
+}
+
+export const cancelReservation = async (req, res) => {
+    try {
+        const { id, user } = req.body;
+        const cancelled = await Booking.findByIdAndUpdate(id, {
+            $set: { is_cancelled: true },
+        }, {
+            new: true
+        });
+
+        if (cancelled) {
+            const reservations = await Booking.find({ user, tokenPaid: false })
+                .populate({
+                    path: 'property',
+                    select: 'property_name property_rent property_location.address'
+                })
+                .populate({
+                    path: 'owner',
+                    select: 'email mobile fullName',
+                });
+            res.status(201).json({ success: true, message: 'Reservation Cancelled Successfully', reservations });
+        } else {
+            res.json({ error: 'Cannot cancel reservation Please try again' }).status(404)
+        }
+    } catch (error) {
+        console.log('Error While cancelling reservation:- ', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }

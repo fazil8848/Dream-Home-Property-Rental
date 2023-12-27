@@ -36,6 +36,8 @@ const EnquiryListingPage = () => {
       <EnquiryListing
         enquiriesLoading={enquiriesLoading}
         enqiuries={enqiuries}
+        ownerInfo={ownerInfo}
+        setEnquiries={setEnquiries}
       />
     </>
   );

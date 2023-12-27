@@ -67,10 +67,10 @@ const PropertyListing = ({ properties }) => {
                       </p>
                     </div>
                   </div>
-                  <div className=" w-full lg:w-1/3 flex justify-end mt-2 lg:mt-0">
+                  <div className=" w-full flex justify-end mt-2 lg:mt-0">
                     <div>
-                      <div className="flex gap-2">
-                        <p className="border rounded-sm border-sky-300 text-xs h-fit w-fit py-1 px-2 ">
+                      <div className="flex items-center  gap-2">
+                        <p className="border rounded-md border-sky-300 text-xs h-fit w-fit py-1 px-2 ">
                           FOR RENT
                         </p>
 

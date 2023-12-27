@@ -136,10 +136,7 @@ export default function Sidebar() {
             <NavLink to="/chat" className={`rounded p-2 border-1 border-grey`}>
               <BsFillChatQuoteFill size={28} className="text-black" />
             </NavLink>
-            <NavLink
-              to="/notifications"
-              className={`text-black`}
-            >
+            <NavLink to="/notifications" className={`text-black`}>
               <IoNotifications size={28} />
             </NavLink>
           </div>
@@ -201,6 +198,24 @@ export default function Sidebar() {
                   <MailIcon />
                 </ListItemIcon>
                 <ListItemText primary={"For Owners"} />
+              </ListItemButton>
+            </ListItem>
+          </NavLink>
+          <Divider />
+          <NavLink
+            to="/reservations"
+            className={({ isActive }) => {
+              isActive
+                ? "text-sm leading-6 text-gray-500 flex items-center py-1 hover:text-black bg-gray-100"
+                : "text-sm leading-6 text-gray-500 flex items-center py-1 hover:text-black";
+            }}
+          >
+            <ListItem key={"Reservations"} disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <FaUserTie />
+                </ListItemIcon>
+                <ListItemText primary={"Reservations"} />
               </ListItemButton>
             </ListItem>
           </NavLink>

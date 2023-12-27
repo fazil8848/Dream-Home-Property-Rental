@@ -66,16 +66,16 @@ const Chat = () => {
       );
 
       if (conversationExists) {
-        // console.log(conversationExists);
-        // dispatch(
-        //   setSelectedUserConversation({
-        //     mock: conversationExists.mock,
-        //     _id: conversationExists._id,
-        //     ownerId: result.owner._id,
-        //     ownerName: result.owner.fullName,
-        //     profilePic: result.owner.profilePic,
-        //   })
-        // );
+        console.log(conversationExists);
+        dispatch(
+          setSelectedUserConversation({
+            mock: conversationExists.mock,
+            _id: conversationExists._id,
+            ownerId: result.owner._id,
+            ownerName: result.owner.fullName,
+            profilePic: result.owner.profilePic,
+          })
+        );
       } else {
         const mockConversation = {
           mock: true,
@@ -112,6 +112,7 @@ const Chat = () => {
 
   const handleNewConversation = async (data) => {
     try {
+      console.log(data,"data");
       setMessages([...messages, data.newMessage]);
       setConversations([...conversations, data.newConversation]);
     } catch (error) {
