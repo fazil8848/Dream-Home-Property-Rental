@@ -141,6 +141,12 @@ const ownerApiSlice = apiSlice.injectEndpoints({
                 body: data,
             })
         }),
+        getBookingsOwner: builder.mutation({
+            query: (ownerId) => ({
+                url: `${OWNER_URL}/getBookingsOwner?ownerId=${ownerId}`,
+                method: 'GET'
+            })
+        }),
     })
 })
 
@@ -152,5 +158,5 @@ export const {
     useGetOwnerConversationsMutation, useGetOwnerMessagesMutation,
     useSendOwnerMessageMutation, useGetClickedUserMutation, useGetEnquiriesMutation,
     useUpdatePassOwnerMutation, useCheckPassOwnerMutation, useGetOwnerMutation,
-    useCancelEnquiryMutation,
+    useCancelEnquiryMutation, useGetBookingsOwnerMutation,
 } = ownerApiSlice;

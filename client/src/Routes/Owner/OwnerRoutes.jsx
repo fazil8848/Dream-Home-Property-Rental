@@ -12,23 +12,31 @@ import AddPropertiesPage from "../../Pages/Owner/AddPropertiesPage/AddProperties
 import EditPropertiesPage from "../../Pages/Owner/EditPropertiesPage/EditPropertiesPage";
 import ChatPage from "../../Pages/Owner/ChatPage/ChatPage";
 import EnquiryListingPage from "../../Pages/Owner/EnquiryListingPage/EnquiryListingPage";
+import BookingManagement from "../../Pages/Owner/BookingManagement/BookingManagement";
 
 const OwnerRoutes = () => {
   return (
     <Routes>
-      <Route path="login" element={<OwnerLoginPage/>} />
-      <Route path="signup" element={<OwnerSignupPage/>} />
+      <Route path="login" element={<OwnerLoginPage />} />
+      <Route path="signup" element={<OwnerSignupPage />} />
       <Route path="/" element={<OwnerLayout />}>
         <Route path="" element={<PrivateRoutesOwner />}>
           <Route index element={<OwnerHome />} />
           <Route path="properties" element={<OwnerProperties />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="profile/kyc" element={<KycPage />} />
-          <Route path="properties/addproperties" element={<AddPropertiesPage />} />
-          <Route path="properties/editProperties/:id" element={<EditPropertiesPage />} />
+          <Route
+            path="properties/addproperties"
+            element={<AddPropertiesPage />}
+          />
+          <Route
+            path="properties/editProperties/:id"
+            element={<EditPropertiesPage />}
+          />
           <Route path="chat" element={<ChatPage />} />
           <Route path="chat/:customerId" element={<ChatPage />} />
           <Route path="enquiries" element={<EnquiryListingPage />} />
+          <Route path="bookings" element={<BookingManagement />} />
         </Route>
       </Route>
     </Routes>

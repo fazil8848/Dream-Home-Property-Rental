@@ -1,13 +1,13 @@
 import React from "react";
-import ReservationListing from "../../../components/User/ReservationListing/ReservationListing";
+import BookingManagementListing from "../../../components/User/BookingMangement/BookingManagement";
 
-const ReservationManagement = () => {
+const BookingManagment = () => {
   return (
     <>
       <div className="w-screen flex justify-center bg-gray-50 min-h-screen pt-10">
         <div className="w-full lg:w-8/12">
           <div className="w-full">
-            <ReservationListing />
+            <BookingManagementListing />
           </div>
         </div>
       </div>
@@ -15,4 +15,4 @@ const ReservationManagement = () => {
   );
 };
 
-export default ReservationManagement;
+export default BookingManagment;

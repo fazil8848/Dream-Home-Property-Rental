@@ -86,6 +86,20 @@ function OwnerNav({ sidebarOpen, setSidebarOpen }) {
           </NavLink>
 
           <NavLink
+            to={"/owner/bookings"}
+            className={({ isActive }) =>
+              isActive ? `bg-gray-200 text-gray-700 font-semibold` : ""
+            }
+          >
+            <ListItem className=" p-2 hover:bg-gray-200">
+              <ListItemPrefix>
+                <ShoppingBagIcon className="h-5 w-5" />
+              </ListItemPrefix>
+              Bookings
+            </ListItem>
+          </NavLink>
+
+          <NavLink
             to="/owner/profile"
             className={({ isActive }) =>
               isActive ? `bg-gray-200 text-gray-700 font-semibold` : ""

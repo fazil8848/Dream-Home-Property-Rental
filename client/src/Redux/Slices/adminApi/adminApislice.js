@@ -69,7 +69,6 @@ const adminApiSlice = apiSlice.injectEndpoints({
                 body:{option}
             })
         })
-
     })
 })
 

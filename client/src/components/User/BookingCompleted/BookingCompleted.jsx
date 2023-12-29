@@ -188,14 +188,20 @@ const BookingCompleted = () => {
                 {" "}
                 Property Address
               </Typography>
-              <Typography className="text-black font-ubuntu"> {property.property_location?.address} </Typography>
+              <Typography className="text-black font-ubuntu">
+                {" "}
+                {property.property_location?.address}{" "}
+              </Typography>
             </div>
             <div className="flex justify-between py-1">
               <Typography className="text-gray-500 font-ubuntu">
                 {" "}
                 Property rent{" "}
               </Typography>
-              <Typography className="text-black font-ubuntu"> {property.property_rent} </Typography>
+              <Typography className="text-black font-ubuntu">
+                {" "}
+                {property.property_rent}{" "}
+              </Typography>
             </div>
           </div>
           <div className="group mt-4 inline-flex flex-wrap items-center gap-3">
@@ -287,11 +293,15 @@ const BookingCompleted = () => {
           </div>
         </CardBody>
         <CardFooter className="pt-3 flex gap-5">
-          <Button className="bg-white hover:bg-black text-black hover:text-white border" size="lg" fullWidth={true}>
+          <Button
+            className="bg-gray-500 hover:bg-black text-white hover:text-white border"
+            size="lg"
+            fullWidth={true}
+          >
             Close
           </Button>
           <Button
-            className="bg-blue-100 hover:bg-blue-950"
+            className="bg-blue-100 hover:bg-white hover:text-black shadow-none"
             size="lg"
             fullWidth={true}
             onClick={handlePrint}

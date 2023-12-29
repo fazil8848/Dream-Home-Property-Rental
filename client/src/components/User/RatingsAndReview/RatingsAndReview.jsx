@@ -10,27 +10,38 @@ import {
   Rating,
   Progress,
 } from "@material-tailwind/react";
-import { generateError } from "../../Dependencies/toast";
+import { generateError, generateSuccess } from "../../Dependencies/toast";
 import {
   useAddReviewMutation,
+  useDeleteReviewMutation,
+  useEditReviewMutation,
   useGetReviewsMutation,
   usePropertyIncludedMutation,
 } from "../../../Redux/Slices/userApi/usersApiSlice";
 import { useSelector } from "react-redux";
+import { CiEdit } from "react-icons/ci";
+import { MdDeleteOutline } from "react-icons/md";
 
 const RatingsAndReview = ({ property }) => {
   const [rating, setRating] = useState(0);
+  const [editRating, setEditRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [editReview, setEditReview] = useState();
+  const [editComment, setEditComment] = useState("");
   const [reviews, setReviews] = useState([]);
   const [addReviewLoading, setAddReviewLoading] = useState(false);
   const [addReviewCall] = useAddReviewMutation();
   const [getPropertyReviewsCall] = useGetReviewsMutation();
+  const [checkUserBookedProperty] = usePropertyIncludedMutation();
+  const [deleteReviewCall] = useDeleteReviewMutation();
+  const [editReviewCall] = useEditReviewMutation();
   const { userInfo } = useSelector((state) => state.user);
   const user = userInfo?._id;
   const propertyId = property._id;
   const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   const handleOpen = () => setOpen((cur) => !cur);
-  const [checkUserBookedProperty] = usePropertyIncludedMutation();
+  const handleEditOpen = () => setEditOpen((cur) => !cur);
   const [propertyBooked, setPropertyBooked] = useState(false);
 
   const formattedDate = (date) => {
@@ -96,6 +107,22 @@ const RatingsAndReview = ({ property }) => {
     }
   };
 
+  const handleDelete = async (e, id) => {
+    e.preventDefault();
+    try {
+      const result = await deleteReviewCall({ id, propertyId }).unwrap();
+      if (result.error) {
+        generateError(result.error);
+      } else {
+        generateSuccess("Review Deleted Successfully");
+        setReviews(result.reviews);
+      }
+    } catch (error) {
+      generateError(error.message);
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const getPropertyReviews = async () => {
       const result = await getPropertyReviewsCall({ propertyId }).unwrap();
@@ -113,6 +140,41 @@ const RatingsAndReview = ({ property }) => {
       handleCheck();
     }
   }, [userInfo]);
+
+  const handleEdit = async (e) => {
+    e.preventDefault();
+    try {
+      if (editReview) {
+        setAddReviewLoading(true);
+        if (editRating < 1 || editRating > 5)
+          return generateError("Please Provide a Valid Rating");
+
+        if (editComment.trim() === "")
+          return generateError("Please Provide a Valid comment");
+        const result = await editReviewCall({
+          rating: editRating,
+          comment: editComment,
+          propertyId,
+          id: editReview._id,
+        }).unwrap();
+        if (result.error) {
+          generateError(result.error);
+        } else {
+          setEditComment(0);
+          setEditRating("");
+          setReviews(result.reviews);
+        }
+      } else {
+        generateError("Please try again");
+      }
+    } catch (error) {
+      generateError(error.message);
+      console.log(error);
+    } finally {
+      setAddReviewLoading(false);
+      handleEditOpen();
+    }
+  };
 
   return (
     <>
@@ -153,9 +215,28 @@ const RatingsAndReview = ({ property }) => {
             <div className="border rounded-md p-6 md:flex-col max-h-96 overflow-y-auto">
               {reviews.map((review, i) => (
                 <div className="container w-full mb-6 p-6 border shadow-xl rounded-md">
-                  <Typography className="font-semibold text-lg my-2">
-                    Saapi
-                  </Typography>
+                  <div className="w-full flex justify-between ">
+                    <Typography className="font-semibold text-lg my-2">
+                      {review.user.fullName}
+                    </Typography>
+                    <div className="flex gap-3">
+                      <CiEdit
+                        cursor={"pointer"}
+                        size={24}
+                        onClick={(e) => {
+                          setEditReview(review);
+                          setEditComment(review.comment);
+                          setEditRating(review.rating);
+                          handleEditOpen(e);
+                        }}
+                      />
+                      <MdDeleteOutline
+                        cursor={"pointer"}
+                        size={24}
+                        onClick={(e) => handleDelete(e, review._id)}
+                      />
+                    </div>
+                  </div>
                   <div className=" flex gap-2 mb-2 ">
                     <div className="flex items-center gap-2 font-bold text-blue-gray-500">
                       {review.rating}
@@ -255,6 +336,67 @@ const RatingsAndReview = ({ property }) => {
                   variant="gradient"
                   className="text-black border"
                   onClick={handleSubmit}
+                >
+                  Submit
+                </Button>
+              </CardFooter>
+            </Card>
+          )}
+        </Dialog>
+      </>
+      <>
+        <Dialog
+          size="xs"
+          open={editOpen}
+          handler={handleEditOpen}
+          className="bg-transparent shadow-none"
+          animate={{
+            mount: { scale: 1, y: 0 },
+            unmount: { scale: 0.9, y: -100 },
+          }}
+        >
+          {addReviewLoading ? (
+            <Card className="mx-auto w-full max-w-[24rem]">
+              <div className=" mb-10 p-3  h-[45vh] flex items-center justify-center">
+                <div className=" h-10">
+                  <div className="animate-spin h-20 w-20">
+                    <div className="h-full w-full border-4 border-t-blue-100 border-b-blue-100 rounded-[50%]"></div>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          ) : (
+            <Card className="mx-auto w-full max-w-[24rem]">
+              <CardBody className="flex flex-col gap-4">
+                <Typography className="text-black text-2xl font-medium font-poppins">
+                  Add a comment
+                </Typography>
+                <Typography className="-mb-2" variant="h6">
+                  Record Your Rating
+                </Typography>
+                <div className="w-full flex justify-center">
+                  <Rating
+                    value={editRating || 0}
+                    ratedColor="amber"
+                    onChange={(value) => setEditRating(value)}
+                  />
+                </div>
+
+                <Typography className="-mb-2" variant="h6">
+                  Your comment
+                </Typography>
+                <Textarea
+                  value={editComment || ""}
+                  onChange={(e) => setEditComment(e.target.value)}
+                  label="Add your comment"
+                  size="lg"
+                />
+              </CardBody>
+              <CardFooter className="pt-0">
+                <Button
+                  variant="gradient"
+                  className="text-black border"
+                  onClick={handleEdit}
                 >
                   Submit
                 </Button>
