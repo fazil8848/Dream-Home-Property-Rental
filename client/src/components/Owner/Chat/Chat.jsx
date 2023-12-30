@@ -20,7 +20,7 @@ import {
 import { useSocket } from "../../../Context/SocketContext";
 
 const Chat = () => {
-  const { onlineUsers, socket, notifications, setNotifications } = useSocket();
+  const { onlineUsers, socket } = useSocket();
   const { ownerInfo } = useSelector((state) => state.owner);
   const userId = ownerInfo._id;
   const [conversations, setConversations] = useState([]);
@@ -191,7 +191,7 @@ const Chat = () => {
                   ))}
 
                 <div className="my-2">
-                  {!conversationLoading && Array.isArray(conversations) ? (
+                  {Array.isArray(conversations) &&
                     conversations.map((conversation, i) => (
                       <Conversations
                         isOnline={onlineUsers.includes(
@@ -201,10 +201,7 @@ const Chat = () => {
                         userId={userId}
                         key={i}
                       />
-                    ))
-                  ) : (
-                    <p>No conversations available</p>
-                  )}
+                    ))}
                 </div>
               </div>
             </span>

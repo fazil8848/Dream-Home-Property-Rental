@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { generateError } from "../../Dependencies/toast";
 
 const Properties = () => {
-  const [getProperties, { isLoading }] = useGetPropertiesMutation();
+  const [getProperties] = useGetPropertiesMutation();
   const { ownerInfo } = useSelector((state) => state.owner);
   const [properties, setProperties] = useState([]);
 

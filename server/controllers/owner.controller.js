@@ -159,13 +159,11 @@ export const checkPassOwner = async (req, res) => {
       if (matchingPassword) {
         user.password = password;
         await user.save();
-        res
-          .status(200)
-          .json({
-            success: true,
-            message: "Password Verified Successfully",
-            matchingPassword,
-          });
+        res.status(200).json({
+          success: true,
+          message: "Password Verified Successfully",
+          matchingPassword,
+        });
       } else {
         res
           .json({ success: false, error: "Please Enter Correct Password" })
@@ -195,13 +193,11 @@ export const updatePassOwner = async (req, res) => {
       const userUpdated = await user.save();
 
       if (userUpdated) {
-        res
-          .status(201)
-          .json({
-            success: true,
-            message: "Password Updated Successfully",
-            userUpdated,
-          });
+        res.status(201).json({
+          success: true,
+          message: "Password Updated Successfully",
+          userUpdated,
+        });
       } else {
         res
           .json({ success: false, error: "Password Change Failed" })
@@ -433,13 +429,11 @@ export const deleteImage = async (req, res) => {
     );
 
     if (imageDeleted) {
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: "Image deleted succesfully",
-          imageDeleted,
-        });
+      res.status(200).json({
+        success: true,
+        message: "Image deleted succesfully",
+        imageDeleted,
+      });
     } else {
       return res
         .json({ success: false, error: "Internal Server Error" })
@@ -480,13 +474,11 @@ export const editProperty = async (req, res) => {
 
     const propertyEdited = await property.save();
 
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "Property updated successfully",
-        propertyEdited,
-      });
+    return res.status(200).json({
+      success: true,
+      message: "Property updated successfully",
+      propertyEdited,
+    });
   } catch (error) {
     console.log("Error While Editing Property:-", error.message);
     return res
@@ -684,13 +676,11 @@ export const cancelEnquiry = async (req, res) => {
 
     if (cancelled) {
       const enquiries = await Booking.find({ owner, tokenPaid: false });
-      res
-        .status(201)
-        .json({
-          success: true,
-          message: "Reservation Cancelled Successfully",
-          enquiries,
-        });
+      res.status(201).json({
+        success: true,
+        message: "Reservation Cancelled Successfully",
+        enquiries,
+      });
     } else {
       res
         .json({ error: "Cannot cancel reservation Please try again" })
