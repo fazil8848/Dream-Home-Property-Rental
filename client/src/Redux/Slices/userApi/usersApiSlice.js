@@ -167,6 +167,13 @@ export const usersApiSclice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    googleRegister: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/googleRegister`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -196,4 +203,5 @@ export const {
   useGetBookingsMutation,
   useEditReviewMutation,
   useDeleteReviewMutation,
+  useGoogleRegisterMutation,
 } = usersApiSclice;

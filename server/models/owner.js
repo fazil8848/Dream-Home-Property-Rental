@@ -1,11 +1,11 @@
-import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
+import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 const ObjectId = mongoose.Types.ObjectId;
 
 const ownerSchema = new mongoose.Schema({
   fullName: {
     type: String,
-    required: true
+    required: true,
   },
   email: {
     type: String,
@@ -13,15 +13,15 @@ const ownerSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true
+    required: true,
   },
   mobile: {
     type: String,
-    required: true
+    required: true,
   },
   properties: {
     type: [ObjectId],
-    ref: 'Properties'
+    ref: "Properties",
   },
   details_id: {
     type: ObjectId,
@@ -29,39 +29,40 @@ const ownerSchema = new mongoose.Schema({
   },
   isVerified: {
     type: Boolean,
-    default: false
+    default: false,
   },
   kycAdded: {
     type: Boolean,
-    default: false
+    default: false,
   },
   profilePic: {
     type: String,
     required: true,
-    default: 'https://res.cloudinary.com/dn6anfym7/image/upload/v1700566625/dreamHome/arqhv0bipniec9xpfu7m.jpg'
+    default:
+      "https://res.cloudinary.com/dn6anfym7/image/upload/v1700566625/dreamHome/arqhv0bipniec9xpfu7m.jpg",
   },
   kycApproved: {
     type: Boolean,
-    default: false
+    default: false,
   },
   is_Blocked: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
-ownerSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
+ownerSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
     next();
   }
   const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt)
-})
+  this.password = await bcrypt.hash(this.password, salt);
+});
 
 ownerSchema.methods.matchPass = async function (enteredPass) {
   return await bcrypt.compare(enteredPass, this.password);
-}
+};
 
-const ownerModel = mongoose.model('Owner', ownerSchema)
+const ownerModel = mongoose.model("Owner", ownerSchema);
 
 export default ownerModel;

@@ -147,6 +147,13 @@ const ownerApiSlice = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
+    googleRegisterOwner: builder.mutation({
+      query: (data) => ({
+        url: `${OWNER_URL}/googleRegisterOwner`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -173,4 +180,5 @@ export const {
   useGetOwnerMutation,
   useCancelEnquiryMutation,
   useGetBookingsOwnerMutation,
+  useGoogleRegisterOwnerMutation,
 } = ownerApiSlice;

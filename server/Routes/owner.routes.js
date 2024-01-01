@@ -21,6 +21,7 @@ import {
   checkPassOwner,
   cancelEnquiry,
   getBookingsOwner,
+  googleRegisterOwner,
 } from "../controllers/owner.controller.js";
 import { uploadImage } from "../middleware/cloudinaryConfig.js";
 import { updateMessageStatus } from "../controllers/user.controller.js";
@@ -38,6 +39,7 @@ router.get("/getBookingsOwner", getBookingsOwner);
 
 // ------------ = POST = ------------
 router.post("/signup", ownerSignup);
+router.post("/googleRegisterOwner", googleRegisterOwner);
 router.post("/login", loginOwner);
 router.post("/logout", logOutOwner);
 router.post("/updateOwner", updateOwner);

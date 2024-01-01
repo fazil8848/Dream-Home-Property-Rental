@@ -78,14 +78,14 @@ const Header = () => {
                   For Owners
                 </NavLink>
               </li>
-              <li className="my-1">
+              {/* <li className="my-1">
                 <NavLink
                   to={"/reservations"}
                   className="text-sm font-semibold leading-6 hover:text-black hover:border hover:shadow-xl text-slate-900 p-5 w-full hover:bg-blue-gray-50"
                 >
                   Reservations
                 </NavLink>
-              </li>
+              </li> */}
               <li className="my-1">
                 <NavLink
                   to="/blogs"

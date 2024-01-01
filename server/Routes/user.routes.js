@@ -21,6 +21,7 @@ import {
   getReservations,
   cancelReservation,
   getBookings,
+  googleRegister,
 } from "../controllers/user.controller.js";
 import {
   paypalCaptureOrder,
@@ -64,6 +65,7 @@ router.post("/getBookedDetails", getBookedDetails);
 router.post("/addReview", addReview);
 router.post("/propertyIncluded", propertyIncluded);
 router.post("/cancelReservation", cancelReservation);
+router.post("/googleRegister", googleRegister);
 
 // ----------------= PUT =----------------
 router.put("/verifyUser/:id", verifyUser);

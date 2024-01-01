@@ -1,18 +1,18 @@
-import User from "../mongodb/models/user.js";
+import User from "../models/user.js";
 import asyncHandler from "express-async-handler";
 import generateToken from "../utils/generateToke.js";
 import { sendMail } from "../service/regMail.js";
 import { userVerification } from "../middleware/authMiddleware.js";
-import Properties from "../mongodb/models/property.js";
-import Booking from "../mongodb/models/booking.js";
-import Conversation from "../mongodb/models/ConversationMode.js";
-import Message from "../mongodb/models/messageModel.js";
+import Properties from "../models/property.js";
+import Booking from "../models/booking.js";
+import Conversation from "../models/ConversationMode.js";
+import Message from "../models/messageModel.js";
 import {
   getRecipientSocketId,
   getSenderSocketId,
   io,
 } from "../socket/socket.js";
-import Owner from "../mongodb/models/owner.js";
+import Owner from "../models/owner.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
   const { fisrtName, lastName, email, password, mobile } = req.body;
@@ -61,6 +61,47 @@ export const registerUser = asyncHandler(async (req, res) => {
     }
   }
 });
+
+export const googleRegister = async (req, res) => {
+  try {
+    const { body } = req;
+
+    const userExists = await User.findOne({ email: body.email });
+    if (userExists) {
+      res.json({ error: "Existing Email", created: false }).status(403);
+      return;
+    }
+
+    const user = await User.create({
+      fullName: body.name,
+      email: body.email,
+      password: body.id,
+      mobile: body.phone ? body.phone : "0000000000",
+      is_Google: true,
+      profilePic: body.photo,
+      isVerified: true,
+    });
+    console.log(user);
+    if (user) {
+      res.status(201).json({
+        user: {
+          _id: user._id,
+          name: user.fullName,
+          email: user.email,
+          profilePic: user.profilePic,
+        },
+      });
+    } else {
+      res
+        .json({ error: "Couldn't Complete Registering Through Google" })
+        .status(401);
+    }
+  } catch (error) {
+    console.log("Error While Registering Through Google", error.message);
+    res.json({ error: "Invalid User Data" }).status(404);
+    return;
+  }
+};
 
 export const verifyUser = async (req, res) => {
   try {
@@ -123,7 +164,6 @@ export const userProfile = asyncHandler(async (req, res) => {
 });
 
 export const updateUser = asyncHandler(async (req, res) => {
-  // const { id } = req.user._id;
   const { id } = req.query;
   const { email, fullName, mobile, profilePic } = req.body;
   const user = await User.findById(id);

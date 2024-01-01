@@ -132,14 +132,19 @@ export default function Sidebar() {
               </Typography>
             </NavLink>
           </div>
-          <div className="flex items-center h-full">
-            <NavLink to="/chat" className={`rounded p-2 border-1 border-grey`}>
-              <BsFillChatQuoteFill size={28} className="text-black" />
-            </NavLink>
-            <NavLink to="/notifications" className={`text-black`}>
-              <IoNotifications size={28} />
-            </NavLink>
-          </div>
+          {userInfo && (
+            <div className="flex items-center h-full">
+              <NavLink
+                to="/chat"
+                className={`rounded p-2 border-1 border-grey`}
+              >
+                <BsFillChatQuoteFill size={28} className="text-black" />
+              </NavLink>
+              <NavLink to="/notifications" className={`text-black`}>
+                <IoNotifications size={28} />
+              </NavLink>
+            </div>
+          )}
         </Toolbar>
       </AppBar>
       <Drawer
@@ -202,7 +207,7 @@ export default function Sidebar() {
             </ListItem>
           </NavLink>
           <Divider />
-          <NavLink
+          {/* <NavLink
             to="/reservations"
             className={({ isActive }) => {
               isActive
@@ -219,7 +224,7 @@ export default function Sidebar() {
               </ListItemButton>
             </ListItem>
           </NavLink>
-          <Divider />
+          <Divider /> */}
           <NavLink
             to="/blogs"
             className={({ isActive }) => {

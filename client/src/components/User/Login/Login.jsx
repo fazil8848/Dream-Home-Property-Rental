@@ -7,10 +7,14 @@ import { toast } from "react-toastify";
 import Spinner from "../Spinner/Spinner";
 import { generateError } from "../../Dependencies/toast";
 import { Button } from "@material-tailwind/react";
+import { FcGoogle } from "react-icons/fc";
+import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [user, setUser] = useState([]);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -43,6 +47,40 @@ function Login() {
       generateError(err?.data?.message || err.error);
     }
   };
+
+  const loginGoogle = useGoogleLogin({
+    onSuccess: (codeResponse) => setUser(codeResponse),
+    onError: (error) => console.log("Login Failed:", error),
+  });
+
+  useEffect(() => {
+    if (user) {
+      axios
+        .get(
+          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user.access_token}`,
+              Accept: "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          login({ email: res.data.email, password: res.data.id })
+            .unwrap()
+            .then((result) => {
+              if (result.error) {
+                generateError(result.error);
+              } else {
+                console.log(result);
+                dispatch(setCredentials(result));
+                navigate("/");
+              }
+            });
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [user]);
 
   return (
     <div className="min-h-[84vh] bg-gray-100 flex justify-center items-center">
@@ -107,8 +145,7 @@ function Login() {
                 onClick={(e) => e.preventDefault}
                 className="w-3/12 mt-6 md:w-2/4 flex justify-center  bg-blue-100 text-white text-base font-medium py-3 rounded hover:bg-blue-950"
               >
-                
-                  <Spinner />
+                <Spinner />
               </Button>
             ) : (
               <Button
@@ -125,6 +162,14 @@ function Login() {
             </p>
           </div>
         </form>
+        <div className=" w-full flex justify-center gap-1 my-2 h-12 items-center">
+          <div
+            onClick={() => loginGoogle()}
+            className=" flex justify-center items-center px-10 py-2 text-gray-400 border rounded-md text-sm font-light font-poppins"
+          >
+            Signup With <FcGoogle />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -5,6 +5,9 @@ import { toast } from "react-toastify";
 import { setOwnerCredentials } from "../../../Redux/Slices/ownerApi/ownerAuthSlicel";
 import { useOwnerLoginMutation } from "../../../Redux/Slices/ownerApi/ownerApiSlice";
 import Spinner from "../Spinner/Spinner";
+import { FcGoogle } from "react-icons/fc";
+import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 
 function OwnerLogin() {
   const [email, setEmail] = useState("");
@@ -13,6 +16,7 @@ function OwnerLogin() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { ownerInfo } = useSelector((state) => state.owner);
+  const [user, setUser] = useState([]);
 
   const generateError = (err) => {
     toast.error(err, {
@@ -45,6 +49,40 @@ function OwnerLogin() {
       generateError(err?.data?.message || err.error);
     }
   };
+
+  const loginGoogle = useGoogleLogin({
+    onSuccess: (codeResponse) => setUser(codeResponse),
+    onError: (error) => console.log("Login Failed:", error),
+  });
+
+  useEffect(() => {
+    if (user) {
+      axios
+        .get(
+          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user.access_token}`,
+              Accept: "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          login({ email: res.data.email, password: res.data.id })
+            .unwrap()
+            .then((result) => {
+              if (result.error) {
+                generateError(result.error);
+              } else {
+                console.log(result);
+                dispatch(setOwnerCredentials(result));
+                navigate("/owner");
+              }
+            });
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [user]);
 
   return (
     <>
@@ -122,6 +160,14 @@ function OwnerLogin() {
                 </button>
               </div>
             </form>
+            <div className=" w-full flex justify-center gap-1 my-2 h-12 items-center">
+              <div
+                onClick={() => loginGoogle()}
+                className=" flex justify-center items-center hover:text-black hover:bg-white bg-black px-10 py-2 text-white border rounded-md font-light font-poppins"
+              >
+                Signup With <FcGoogle />
+              </div>
+            </div>
           </div>
 
           <div className="w-0 lg:w-1/2 hidden lg:block">

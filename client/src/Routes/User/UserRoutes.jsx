@@ -13,6 +13,8 @@ import BookingCompletedPage from "../../Pages/User/BookingCompletedPage/BookingC
 import PropertyListingPage from "../../Pages/User/PropertyListingPage/PropertyListingPage.jsx";
 import BookingManagment from "../../Pages/User/BookingManagment/BookingManagment.jsx";
 import ReservationManagement from "../../Pages/User/ReservationManagement/ReservationManagement.jsx";
+import ForOwners from "../../Pages/User/ForOwners/ForOwners.jsx";
+import BlogsPage from "../../Pages/User/BlogsPage/BlogsPage.jsx";
 
 const UserRouter = () => {
   return (
@@ -23,6 +25,8 @@ const UserRouter = () => {
         <Route path="signup" element={<SignupPage />} />
         <Route path="properties" element={<PropertyListingPage />} />
         <Route path="property/:id" element={<SinglePropertyPage />} />
+        <Route path="ownerBenefiets" element={<ForOwners />} />
+        <Route path="blogs" element={<BlogsPage />} />
         <Route path="" element={<PrivateRoutes />}>
           <Route path="profile" element={<UserProfilePage />} />
           <Route path="booking/:id" element={<BookingPage />} />

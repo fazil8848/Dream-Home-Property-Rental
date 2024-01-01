@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Spinner from "../Spinner/Spinner";
-import { useOwnerSignupMutation } from "../../../Redux/Slices/ownerApi/ownerApiSlice";
+import {
+  useGoogleRegisterOwnerMutation,
+  useOwnerSignupMutation,
+} from "../../../Redux/Slices/ownerApi/ownerApiSlice";
+import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
+import { FcGoogle } from "react-icons/fc";
+import { setOwnerCredentials } from "../../../Redux/Slices/ownerApi/ownerAuthSlicel";
 
 const OwnerSignup = () => {
   const [fisrtName, setFirstName] = useState("");
@@ -13,11 +20,19 @@ const OwnerSignup = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const navigate = useNavigate();
-
   const [register, { isLoading }] = useOwnerSignupMutation();
+  const [googleRegister] = useGoogleRegisterOwnerMutation();
 
   const { ownerInfo } = useSelector((state) => state.owner);
+
+  const [user, setUser] = useState([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const login = useGoogleLogin({
+    onSuccess: (codeResponse) => setUser(codeResponse),
+    onError: (error) => console.log("Login Failed:", error),
+  });
 
   const generateError = (err) => {
     toast.error(err, {
@@ -79,13 +94,43 @@ const OwnerSignup = () => {
           }, 2000);
         } else {
           generateError(res.error);
-          return
+          return;
         }
       } catch (err) {
         toast.error(err?.data?.message || err.error);
       }
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      axios
+        .get(
+          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user.access_token}`,
+              Accept: "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          googleRegister(res.data)
+            .unwrap()
+            .then((result) => {
+              if (result.error) {
+                generateError(result.error);
+              } else {
+                console.log(result.user);
+                dispatch(setOwnerCredentials(result.user));
+                navigate("/");
+              }
+            });
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [user]);
+
   return (
     <>
       <div className="w-full  border bg-loginBg bg-cover bg-center pt-16">
@@ -215,6 +260,14 @@ const OwnerSignup = () => {
                     </button>
                   </div>
                 </form>
+                <div className=" w-full flex justify-center gap-1 my-2 h-12 items-center">
+                  <div
+                    onClick={() => login()}
+                    className=" flex justify-center items-center hover:text-black hover:bg-white bg-black px-10 py-2 text-white border rounded-md font-light font-poppins"
+                  >
+                    Signup With <FcGoogle />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

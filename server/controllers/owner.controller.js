@@ -1,20 +1,20 @@
-import Owner from "../mongodb/models/owner.js";
-import KYCmodel from "../mongodb/models/kycModel.js";
+import Owner from "../models/owner.js";
+import KYCmodel from "../models/kycModel.js";
 import asyncHandler from "express-async-handler";
 import generateToken from "../utils/generateToke.js";
-import User from "../mongodb/models/user.js";
+import User from "../models/user.js";
 import { sendMail } from "../service/ownerRegMail.js";
 import { ownerVerification } from "../middleware/authMiddleware.js";
 // import { cloudinary, deleteImageFromCloudinary, generateDeleteToken, getPublicIdFromCloudinaryUrl } from '../middleware/cloudinaryConfig.js';
-import Property from "../mongodb/models/property.js";
-import Conversation from "../mongodb/models/ConversationMode.js";
-import Message from "../mongodb/models/messageModel.js";
+import Property from "../models/property.js";
+import Conversation from "../models/ConversationMode.js";
+import Message from "../models/messageModel.js";
 import {
   getRecipientSocketId,
   getSenderSocketId,
   io,
 } from "../socket/socket.js";
-import Booking from "../mongodb/models/booking.js";
+import Booking from "../models/booking.js";
 
 export const ownerSignup = asyncHandler(async (req, res) => {
   const { fisrtName, lastName, email, password, mobile } = req.body;
@@ -706,5 +706,47 @@ export const getBookingsOwner = async (req, res) => {
     return res
       .status(500)
       .json({ success: false, error: "Internal Server Error" });
+  }
+};
+
+export const googleRegisterOwner = async (req, res) => {
+  try {
+    const { body } = req;
+    console.log(body);
+
+    const userExists = await Owner.findOne({ email: body.email });
+    if (userExists) {
+      res.json({ error: "Existing Email", created: false }).status(403);
+      return;
+    }
+
+    const user = await Owner.create({
+      fullName: body.name,
+      email: body.email,
+      password: body.id,
+      mobile: body.phone ? body.phone : "0000000000",
+      is_Google: true,
+      profilePic: body.photo,
+      isVerified: true,
+    });
+    console.log(user);
+    if (user) {
+      res.status(201).json({
+        user: {
+          _id: user._id,
+          name: user.fullName,
+          email: user.email,
+          profilePic: user.profilePic,
+        },
+      });
+    } else {
+      res
+        .json({ error: "Couldn't Complete Registering Through Google" })
+        .status(401);
+    }
+  } catch (error) {
+    console.log("Error While Registering Through Google", error.message);
+    res.json({ error: "Invalid User Data" }).status(404);
+    return;
   }
 };

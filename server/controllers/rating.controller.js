@@ -1,5 +1,5 @@
-import Review from "../mongodb/models/reviewSchema.js";
-import User from "../mongodb/models/user.js";
+import Review from "../models/reviewSchema.js";
+import User from "../models/user.js";
 
 export const addReview = async (req, res) => {
   try {

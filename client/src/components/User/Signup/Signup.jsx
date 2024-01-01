@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { useRegisterMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  useGoogleRegisterMutation,
+  useRegisterMutation,
+} from "../../../Redux/Slices/userApi/usersApiSlice";
 import { toast } from "react-toastify";
 import Spinner from "../Spinner/Spinner";
-import {Button} from '@material-tailwind/react'
+import { Button } from "@material-tailwind/react";
+import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
+import { FcGoogle } from "react-icons/fc";
+import { setCredentials } from "../../../Redux/Slices/authSlice";
 
 const Signup = () => {
   const [fisrtName, setFirstName] = useState("");
@@ -14,9 +21,18 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const [user, setUser] = useState([]);
+  const dispatch = useDispatch();
+
+  const login = useGoogleLogin({
+    onSuccess: (codeResponse) => setUser(codeResponse),
+    onError: (error) => console.log("Login Failed:", error),
+  });
+
   const navigate = useNavigate();
 
   const [register, { isLoading }] = useRegisterMutation();
+  const [userRegisterGoogle] = useGoogleRegisterMutation();
 
   const { userInfo } = useSelector((state) => state.user);
 
@@ -86,6 +102,36 @@ const Signup = () => {
       }
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      axios
+        .get(
+          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user.access_token}`,
+              Accept: "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          userRegisterGoogle(res.data)
+            .unwrap()
+            .then((result) => {
+              if (result.error) {
+                generateError(result.error);
+              } else {
+                console.log(result.user);
+                dispatch(setCredentials(result.user));
+                navigate("/owner");
+              }
+            });
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [user]);
+
   return (
     <>
       <div className="w-full  border bg-gray-100">
@@ -200,25 +246,34 @@ const Signup = () => {
                   </div>
 
                   <div className=" w-full flex justify-center ">
-                      {isLoading ? (
-                        <button
-                          onClick={(e)=>e.preventDefault()}
-                          className="w-3/4 md:w-2/4 bg-blue-100 text-white text-base font-medium py-3 rounded hover:bg-blue-950 mt-4"
-                        >
-                          <div className="mx-[50%]">
-                            <Spinner />
-                          </div>
-                        </button>
-                      ) : (
-                        <Button
-                          type="submit"
-                          className="w-3/4 md:w-2/4 bg-blue-100 text-white text-base font-medium py-3 rounded hover:bg-blue-950 mt-4"
-                        >
-                          Register
-                        </Button>
-                      )}
+                    {isLoading ? (
+                      <button
+                        onClick={(e) => e.preventDefault()}
+                        className="w-3/4 md:w-2/4 bg-blue-100 text-white text-base font-medium py-3 rounded hover:bg-blue-950 mt-4"
+                      >
+                        <div className="mx-[50%]">
+                          <Spinner />
+                        </div>
+                      </button>
+                    ) : (
+                      <Button
+                        type="submit"
+                        className="w-3/4 md:w-2/4 bg-blue-100 text-white text-base font-medium py-3 rounded hover:bg-blue-950 mt-4"
+                      >
+                        Register
+                      </Button>
+                    )}
                   </div>
                 </form>
+
+                <div className=" w-full flex justify-center gap-1 my-2 h-12 items-center">
+                  <div
+                    onClick={() => login()}
+                    className=" flex justify-center items-center px-10 py-2 text-gray-400 border rounded-md text-sm font-light font-poppins"
+                  >
+                    Signup With <FcGoogle />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

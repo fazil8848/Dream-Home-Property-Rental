@@ -6,16 +6,22 @@ import store from "./Redux/store.js";
 import "./index.css";
 import MainRouter from "./Routes/MainRoute.jsx";
 import { SocketContextProvider } from "./Context/SocketContext.jsx";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const root = document.getElementById("root");
 const reactRoot = createRoot(root);
+console.log(process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID);
 
 reactRoot.render(
   <Provider store={store}>
     <SocketContextProvider>
-      <Router>
-        <MainRouter />
-      </Router>
+      <GoogleOAuthProvider
+        clientId={process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID}
+      >
+        <Router>
+          <MainRouter />
+        </Router>
+      </GoogleOAuthProvider>
     </SocketContextProvider>
   </Provider>
 );
