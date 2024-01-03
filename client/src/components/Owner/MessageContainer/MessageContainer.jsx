@@ -13,7 +13,7 @@ import {
 import { useSocket } from "../../../Context/SocketContext";
 import { setGlobalOwnerConversations } from "../../../Redux/Slices/chatSlices/userChatSlice";
 
-const MessageContainer = ({messages, setMessages}) => {
+const MessageContainer = ({ messages, setMessages }) => {
   const dispatch = useDispatch();
   const { socket } = useSocket();
   const { ownerInfo } = useSelector((state) => state.owner);
@@ -110,11 +110,18 @@ const MessageContainer = ({messages, setMessages}) => {
   return (
     <>
       <span className="w-[300px] sm:w-full border mx-auto bg-blue-gray-50 rounded-md">
-        <div className="px-4 flex items-center h-16 gap-2">
-          <Avatar src={selectedChat.profilePic} sizes="sm" />
-          <Typography className="flex items-center">
-            {selectedChat.ownerName} <GoVerified className="w-4 h-4 ml-1" />
-          </Typography>
+        <div className="px-4 flex items-center justify-between h-16 gap-2">
+          <div className="flex">
+            <Avatar src={selectedChat.profilePic} sizes="sm" />
+            <Typography className="flex items-center">
+              {selectedChat.ownerName} <GoVerified className="w-4 h-4 ml-1" />
+            </Typography>
+          </div>
+          <div>
+            <Link to={`/videocall/${ownerId}`} className="h-full">
+              <MdVideoCall size={30} />
+            </Link>
+          </div>
         </div>
         <Divider />
 

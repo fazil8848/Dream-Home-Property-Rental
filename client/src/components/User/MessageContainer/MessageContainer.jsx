@@ -12,8 +12,10 @@ import {
 import { generateError } from "../../Dependencies/toast";
 import { useSocket } from "../../../Context/SocketContext";
 import { setGlobalUserConversations } from "../../../Redux/Slices/chatSlices/userChatSlice";
+import { Link } from "react-router-dom";
+import { MdVideoCall } from "react-icons/md";
 
-const MessageContainer = ({messages, setMessages}) => {
+const MessageContainer = ({ messages, setMessages }) => {
   const dispatch = useDispatch();
   const { socket } = useSocket();
   const { userInfo } = useSelector((state) => state.user);
@@ -34,7 +36,7 @@ const MessageContainer = ({messages, setMessages}) => {
 
     const handleNewMessage = async (message) => {
       if (message.conversationId === selectedChat._id) {
-        console.log(message, 'message');
+        console.log(message, "message");
         const result = await updateMessageCall(message._id).unwrap();
         if (result.error) {
           generateError(result.error);
@@ -60,7 +62,7 @@ const MessageContainer = ({messages, setMessages}) => {
     };
 
     const handleReadMessage = async (readMessage) => {
-      console.log(readMessage,"messageRead");
+      console.log(readMessage, "messageRead");
       if (readMessage.length > 1) {
         setMessages(readMessage);
       } else {
@@ -83,7 +85,6 @@ const MessageContainer = ({messages, setMessages}) => {
 
   const fetchMesssages = async () => {
     try {
-      console.log(selectedChat);
       if (selectedChat.mock) {
         setMessages([]);
         return;
@@ -112,11 +113,18 @@ const MessageContainer = ({messages, setMessages}) => {
   return (
     <>
       <span className="w-[300px] sm:w-full border mx-auto bg-blue-gray-50 rounded-md">
-        <div className="px-4 flex items-center h-16 gap-2">
-          <Avatar src={selectedChat.profilePic} sizes="sm" />
-          <Typography className="flex items-center">
-            {selectedChat.ownerName} <GoVerified className="w-4 h-4 ml-1" />
-          </Typography>
+        <div className="px-4 flex items-center justify-between h-16 gap-2">
+          <div className="flex">
+            <Avatar src={selectedChat.profilePic} sizes="sm" />
+            <Typography className="flex items-center">
+              {selectedChat.ownerName} <GoVerified className="w-4 h-4 ml-1" />
+            </Typography>
+          </div>
+          <div>
+            <Link to={`/videocall/${ownerId}`} className="h-full">
+              <MdVideoCall size={30} />
+            </Link>
+          </div>
         </div>
         <Divider />
 

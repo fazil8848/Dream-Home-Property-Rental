@@ -208,7 +208,7 @@ function Dashboard() {
         <div className="w-full border rounded-md h-full sparkboxes ">
           <div className="col-span-3 h-full">
             <div className="box box3 h-full">
-              <div className="details me-2">
+              <div className="details pe-2">
                 <h3 className="text-2xl font-bold">
                   {enquiriesLength + bookingsLenght}
                 </h3>
@@ -226,7 +226,7 @@ function Dashboard() {
         <div className="w-full border rounded-md h-full sparkboxes ">
           <div className="col-span-3  h-full">
             <div className="box box4 h-full ">
-              <div className="details">
+              <div className="details me-2">
                 <h3 className="text-2xl font-bold">{propertyLength}</h3>
                 <h4 className="text-sm font-semibold">TOATAL PROPERTIES</h4>
               </div>
@@ -240,15 +240,10 @@ function Dashboard() {
           </div>
         </div>
       </div>
-      <div className="flex justify-between p-5">
-        <div id="chart" className="bg-white p-5 rounded-md shadow-xl">
+      <div className="flex flex-col gap-5 lg:flex-row justify-between p-5 ">
+        <div id="chart" className="bg-white p-5 w-full rounded-md shadow-xl">
           {!fetchUserLoading ? (
-            <ReactApexChart
-              options={options}
-              series={series}
-              type="donut"
-              width={520}
-            />
+            <ReactApexChart options={options} series={series} type="donut" />
           ) : (
             <>
               {/* <div className="">
@@ -257,12 +252,11 @@ function Dashboard() {
             </>
           )}
         </div>
-        <div id="chart" className="bg-white p-5 rounded-md shadow-xl">
+        <div id="chart" className="bg-white p-5 w-full rounded-md shadow-xl">
           <ReactApexChart
             options={propertiesOptions}
             series={propertySeries}
             type="pie"
-            width={520}
           />
         </div>
       </div>

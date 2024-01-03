@@ -174,6 +174,13 @@ export const usersApiSclice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    addNotification: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/addNotification`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -204,4 +211,5 @@ export const {
   useEditReviewMutation,
   useDeleteReviewMutation,
   useGoogleRegisterMutation,
+  useAddNotificationMutation,
 } = usersApiSclice;

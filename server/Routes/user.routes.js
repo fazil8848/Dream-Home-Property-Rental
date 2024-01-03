@@ -34,6 +34,7 @@ import {
   getReviews,
   propertyIncluded,
 } from "../controllers/rating.controller.js";
+import { addNotification } from "../controllers/notification.js";
 // import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -66,6 +67,7 @@ router.post("/addReview", addReview);
 router.post("/propertyIncluded", propertyIncluded);
 router.post("/cancelReservation", cancelReservation);
 router.post("/googleRegister", googleRegister);
+router.post("/addNotification", addNotification);
 
 // ----------------= PUT =----------------
 router.put("/verifyUser/:id", verifyUser);
