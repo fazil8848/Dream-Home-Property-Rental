@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { generateError, generateSuccess } from "../../Dependencies/toast";
 import { useMarkNotificationAsReadMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
 import { useSelector } from "react-redux";
+import { Button } from "@material-tailwind/react";
 
 const NotificationListing = () => {
   const { notification, setNotification } = useSocket();
@@ -39,8 +40,8 @@ const NotificationListing = () => {
                 <div
                   className={
                     noti.read
-                      ? `h-16 p-2 w-full border rounded-md shadow-lg flex justify-between items-center gap-4`
-                      : `h-16 p-2 w-full bg-blue-gray-100 border rounded-md shadow-lg flex justify-between items-center gap-4`
+                      ? `h-16 p-2 w-full border rounded-md shadow-lg flex justify-between items-center gap-4 px-2`
+                      : `h-16 p-2 w-full bg-blue-gray-100 border rounded-md shadow-lg flex justify-between px-2 items-center gap-4`
                   }
                   key={i}
                 >
@@ -54,16 +55,16 @@ const NotificationListing = () => {
                   <div className="w-2/3 ">
                     <p>{noti.message}</p>
                   </div>
-                  <div
+                  <Button
                     className="w-1/3 "
                     onClick={() => handleMarkRead(noti._id)}
                   >
                     {noti.read ? "Read" : "Mark Read"}
-                  </div>
+                  </Button>
                   {noti.link && (
-                    <div className=" ">
+                    <Button className=" ">
                       <Link to={noti.link}>Join</Link>
-                    </div>
+                    </Button>
                   )}
                 </div>
               ))

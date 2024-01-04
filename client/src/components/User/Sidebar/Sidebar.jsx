@@ -114,11 +114,8 @@ export default function Sidebar() {
 
   useEffect(() => {
     const notread = notification.filter((not) => not.read === false);
-    if (notread) {
-      setUnread(true);
-    }
+    setUnread(notread.length > 0);
   }, [notification]);
-
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -154,12 +151,12 @@ export default function Sidebar() {
               <NavLink to="/notifications" className={`text-black`}>
                 {unread ? (
                   <img
-                    className="h-8"
+                    className="h-6"
                     src="https://res.cloudinary.com/dn6anfym7/image/upload/v1704261832/dreamHome/icons/icons8-notification_ttmanm.gif"
                     alt="notification Bell"
                   />
                 ) : (
-                  <VscBell size={28} />
+                  <VscBell size={20} />
                 )}
               </NavLink>
             </div>

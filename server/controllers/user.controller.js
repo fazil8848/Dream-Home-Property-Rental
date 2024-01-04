@@ -13,6 +13,7 @@ import {
   io,
 } from "../socket/socket.js";
 import Owner from "../models/owner.js";
+import Notification from "../models/notification.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
   const { fisrtName, lastName, email, password, mobile } = req.body;
@@ -358,6 +359,27 @@ export const propertyBooking = async (req, res) => {
         await User.findByIdAndUpdate(booked.user, {
           $addToSet: { bookedProperties: booked.property },
         });
+
+        const data = {
+          message: "New Property Booked",
+          sender: booked.user,
+          reciever: booked.owner,
+          link: "http://localhost:3000/owner/bookings",
+        };
+
+        const notification = await Notification.create(data);
+        if (notification) {
+          const recipientId = getRecipientSocketId(booked.owner);
+          const notifications = await Notification.find({
+            reciever: booked.owner,
+          }).populate({
+            path: "sender",
+            select: "fullName profilePic",
+            model: "User",
+          });
+          io.to(recipientId).emit("newNotification", notifications);
+        }
+
         res.status(201).json({
           success: true,
           message: "Property Booked Successfully",
@@ -372,6 +394,26 @@ export const propertyBooking = async (req, res) => {
         await User.findByIdAndUpdate(booked.user, {
           $addToSet: { reservedproperties: booked.property },
         });
+
+        const data = {
+          message: "Property Reserved",
+          sender: booked.user,
+          reciever: booked.owner,
+          link: "http://localhost:3000/owner/enquiries",
+        };
+
+        const notification = await Notification.create(data);
+        if (notification) {
+          const recipientId = getRecipientSocketId(booked.owner);
+          const notifications = await Notification.find({
+            reciever: booked.owner,
+          }).populate({
+            path: "sender",
+            select: "fullName profilePic",
+            model: "User",
+          });
+          io.to(recipientId).emit("newNotification", notifications);
+        }
         res.status(201).json({
           success: true,
           message: "Property Reserved Successfully",
@@ -609,7 +651,6 @@ export const getBookedDetails = async (req, res) => {
 export const getReservations = async (req, res) => {
   try {
     const { userId } = req.params;
-    console.log(userId);
 
     const reservations = await Booking.find({ user: userId, tokenPaid: false })
       .populate({
@@ -621,7 +662,6 @@ export const getReservations = async (req, res) => {
         select: "email mobile fullName",
       });
 
-    console.log(reservations);
     res.status(201).json({ reservations });
   } catch (error) {
     console.log("Error While Getting the reservations");
