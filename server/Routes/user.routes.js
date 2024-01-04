@@ -47,6 +47,7 @@ router.route("/profile").get(userProfile).put(updateUser);
 // router.route('/profile').get(protect,userProfile).put(protect,updateUser);
 
 // ----------------= GET =----------------
+router.get("/", (req, res) => res.send("Hello World"));
 router.get("/getPropertiesuser", getPropertiesUser);
 router.get("/getSingleProperty", getSingleProperty);
 router.get("/getUserInfo", getUserInfo);
