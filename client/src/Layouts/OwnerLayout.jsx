@@ -37,14 +37,10 @@ const OwnerLayout = () => {
             setSidebarOpen={setSidebarOpen}
           />
 
-          <div
-            className={`transition-margin duration-300 ${
-              sidebarOpen ? "ml-64" : ""
-            }`}
-          >
+          <div>
             <ToastContainer />
             <main className="bg-gray-100">
-              <div className="mx-auto my-16 max-w-screen-2xl p-4 md:p-6 2xl:px-10">
+              <div className=" my-16 max-w-screen-2xl p-4 md:p-6 2xl:px-10">
                 <Outlet />
               </div>
             </main>

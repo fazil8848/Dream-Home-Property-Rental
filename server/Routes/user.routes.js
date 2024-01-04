@@ -34,7 +34,11 @@ import {
   getReviews,
   propertyIncluded,
 } from "../controllers/rating.controller.js";
-import { addNotification } from "../controllers/notification.js";
+import {
+  addNotification,
+  getNotifications,
+  markNotificationAsRead,
+} from "../controllers/notification.controller.js";
 // import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -51,6 +55,7 @@ router.get("/getClickedOwner/:ownerId", getClickedOwner);
 router.get("/getReviews/:propertyId", getReviews);
 router.get("/getReservations/:userId", getReservations);
 router.get("/getBookings/:userId", getBookings);
+router.get("/getNotifications/:userId", getNotifications);
 
 // ----------------= POST =----------------
 router.post("/registerUser", registerUser);
@@ -68,6 +73,7 @@ router.post("/propertyIncluded", propertyIncluded);
 router.post("/cancelReservation", cancelReservation);
 router.post("/googleRegister", googleRegister);
 router.post("/addNotification", addNotification);
+router.post("/markNotificationAsRead", markNotificationAsRead);
 
 // ----------------= PUT =----------------
 router.put("/verifyUser/:id", verifyUser);

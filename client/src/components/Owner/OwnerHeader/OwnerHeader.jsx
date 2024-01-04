@@ -1,21 +1,32 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { TbLogout2 } from "react-icons/tb";
 import { IoNotifications } from "react-icons/io5";
-import { useOwnerLogoutMutation } from "../../../Redux/Slices/ownerApi/ownerApiSlice";
+import {
+  useGetNotificationsOwnerMutation,
+  useOwnerLogoutMutation,
+} from "../../../Redux/Slices/ownerApi/ownerApiSlice";
 import { ownerLogout } from "../../../Redux/Slices/ownerApi/ownerAuthSlicel";
 import { TbLayoutSidebarRightExpand } from "react-icons/tb";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { generateError } from "../../Dependencies/toast";
 import { BsFillChatQuoteFill } from "react-icons/bs";
-import { setOwnerOffline, setOwnerOnline } from "../../../Redux/Slices/chatSlices/userChatSlice";
+import {
+  setOwnerOffline,
+  setOwnerOnline,
+} from "../../../Redux/Slices/chatSlices/userChatSlice";
+import { useSocket } from "../../../Context/SocketContext";
+import { VscBell } from "react-icons/vsc";
 
 const OwnerHeader = ({ sidebarOpen, setSidebarOpen }) => {
   const [logoutCall] = useOwnerLogoutMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { ownerInfo } = useSelector((state) => state.owner);
+  const [unread, setUnread] = useState(false);
+  const [getNotificationsCall] = useGetNotificationsOwnerMutation();
+  const { socket, ownerNotification, setOwnerNotification } = useSocket();
 
   const logoutHandlder = async () => {
     try {
@@ -24,7 +35,7 @@ const OwnerHeader = ({ sidebarOpen, setSidebarOpen }) => {
         generateError(res.error);
       } else {
         dispatch(ownerLogout());
-        dispatch(setOwnerOffline())
+        dispatch(setOwnerOffline());
         navigate("/owner/login");
       }
     } catch (error) {
@@ -36,10 +47,56 @@ const OwnerHeader = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  useEffect(() => {  
-    dispatch(setOwnerOnline(ownerInfo))
-  }, [ownerInfo])
-  
+  const fetchNotifications = async () => {
+    try {
+      if (ownerInfo) {
+        const userId = ownerInfo?._id;
+        const result = await getNotificationsCall(userId).unwrap();
+        console.log(result);
+        if (result.error) {
+          generateError(result.error);
+        } else {
+          setOwnerNotification(result.notifications);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      generateError(error.message);
+    }
+  };
+
+  useEffect(() => {
+    const handleNewNotification = async (notifications) => {
+      try {
+        console.log(notifications);
+        setOwnerNotification(notifications);
+      } catch (error) {
+        console.error(error);
+        generateError(error.message);
+      }
+    };
+    socket?.on("newNotification", handleNewNotification);
+    return () => {
+      socket?.off("newNotification", handleNewNotification);
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [ownerInfo]);
+
+  useEffect(() => {
+    dispatch(setOwnerOnline(ownerInfo));
+  }, [ownerInfo]);
+
+  useEffect(() => {
+    const notread = ownerNotification.filter((not) => not.read === false);
+    if (notread.length > 0) {
+      setUnread(true);
+    } else {
+      setUnread(false);
+    }
+  }, [ownerNotification]);
 
   return (
     <div>
@@ -73,7 +130,15 @@ const OwnerHeader = ({ sidebarOpen, setSidebarOpen }) => {
                     to="/owner/notifications"
                     className={`bg-White rounded p-2 text-coolblue border-1 border-grey`}
                   >
-                    <IoNotifications size={20} />
+                    {unread ? (
+                      <img
+                        className="h-8 mt-1"
+                        src="https://res.cloudinary.com/dn6anfym7/image/upload/v1704261832/dreamHome/icons/icons8-notification_ttmanm.gif"
+                        alt="notification Bell"
+                      />
+                    ) : (
+                      <VscBell size={20} />
+                    )}
                   </NavLink>
                   <NavLink
                     className={` flex gap-2 items-center text-sm font-semibold border border-gray-500 hover:shadow-2xl hover:drop-shadow-2xl hover:bg-blue-100 p-2 rounded leading-6 hover:text-white `}

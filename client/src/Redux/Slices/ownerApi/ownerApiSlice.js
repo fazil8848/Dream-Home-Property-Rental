@@ -154,6 +154,19 @@ const ownerApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    addNotificationOwner: builder.mutation({
+      query: (data) => ({
+        url: `${OWNER_URL}/addNotificationOwner`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+    getNotificationsOwner: builder.mutation({
+      query: (id) => ({
+        url: `${OWNER_URL}/getNotificationsOwner/${id}`,
+        method: `GET`,
+      }),
+    }),
   }),
 });
 
@@ -181,4 +194,6 @@ export const {
   useCancelEnquiryMutation,
   useGetBookingsOwnerMutation,
   useGoogleRegisterOwnerMutation,
+  useAddNotificationOwnerMutation,
+  useGetNotificationsOwnerMutation,
 } = ownerApiSlice;

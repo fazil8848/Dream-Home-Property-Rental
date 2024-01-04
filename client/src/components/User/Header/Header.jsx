@@ -6,21 +6,28 @@ import { FiLogOut } from "react-icons/fi";
 import { BiLogIn } from "react-icons/bi";
 import { BsFillBuildingsFill } from "react-icons/bs";
 import { BsFillChatQuoteFill } from "react-icons/bs";
-import { useLogoutMutation } from "../../../Redux/Slices/userApi/usersApiSlice";
+import {
+  useGetNotificationsMutation,
+  useLogoutMutation,
+} from "../../../Redux/Slices/userApi/usersApiSlice";
 import { logout } from "../../../Redux/Slices/authSlice";
 import { generateError } from "../../Dependencies/toast";
+import { VscBell } from "react-icons/vsc";
 import {
   setUserOffline,
   setUserOnline,
 } from "../../../Redux/Slices/chatSlices/userChatSlice";
-import { IoNotifications } from "react-icons/io5";
+import { useSocket } from "../../../Context/SocketContext";
 
 const Header = () => {
+  const { socket, notification, setNotification } = useSocket();
   const { userInfo } = useSelector((state) => state.user);
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [logoutCall] = useLogoutMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [getNotificationsCall] = useGetNotificationsMutation();
+  const [unread, setUnread] = useState(false);
 
   const logoutHandlder = async () => {
     try {
@@ -37,9 +44,51 @@ const Header = () => {
     }
   };
 
+  const fetchNotifications = async () => {
+    try {
+      if (userInfo) {
+        const userId = userInfo?._id;
+        const result = await getNotificationsCall(userId).unwrap();
+        if (result.error) {
+          generateError(result.error);
+        } else {
+          setNotification(result.notifications);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      generateError(error.message);
+    }
+  };
+
+  useEffect(() => {
+    const handleNewNotification = async (notifications) => {
+      try {
+        console.log(notifications);
+        setNotification(notifications);
+      } catch (error) {
+        console.error(error);
+        generateError(error.message);
+      }
+    };
+    socket?.on("newNotification", handleNewNotification);
+    return () => {
+      socket?.off("newNotification", handleNewNotification);
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [userInfo]);
+
   useEffect(() => {
     dispatch(setUserOnline(userInfo));
   }, [userInfo]);
+
+  useEffect(() => {
+    const notread = notification.filter((not) => not.read === false);
+    setUnread(notread.length > 0);
+  }, [notification]);
 
   return (
     <div>
@@ -110,7 +159,15 @@ const Header = () => {
                   to="/notifications"
                   className={`bg-White rounded p-2 text-coolblue border-1 border-grey`}
                 >
-                  <IoNotifications size={20} />
+                  {unread ? (
+                    <img
+                      className="h-6"
+                      src="https://res.cloudinary.com/dn6anfym7/image/upload/v1704261832/dreamHome/icons/icons8-notification_ttmanm.gif"
+                      alt="notification Bell"
+                    />
+                  ) : (
+                    <VscBell size={20} />
+                  )}
                 </NavLink>
                 <NavLink
                   to="/profile"

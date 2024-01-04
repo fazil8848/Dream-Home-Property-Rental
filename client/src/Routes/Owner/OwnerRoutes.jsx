@@ -14,6 +14,7 @@ import ChatPage from "../../Pages/Owner/ChatPage/ChatPage";
 import EnquiryListingPage from "../../Pages/Owner/EnquiryListingPage/EnquiryListingPage";
 import BookingManagement from "../../Pages/Owner/BookingManagement/BookingManagement";
 import VideoCallpageOwner from "../../Pages/Owner/VideoCallPage/VideoCallpage";
+import NotificationPage from "../../Pages/Owner/NotificationPage/NotificationPage";
 
 const OwnerRoutes = () => {
   return (
@@ -39,6 +40,7 @@ const OwnerRoutes = () => {
           <Route path="enquiries" element={<EnquiryListingPage />} />
           <Route path="bookings" element={<BookingManagement />} />
           <Route path="videocall/:roomID" element={<VideoCallpageOwner />} />
+          <Route path="notifications" element={<NotificationPage />} />
         </Route>
       </Route>
     </Routes>

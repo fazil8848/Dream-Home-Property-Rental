@@ -1,5 +1,3 @@
-// SocketContext.jsx
-
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import io from "socket.io-client";
@@ -17,6 +15,8 @@ export const useSocket = () => {
 export const SocketContextProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [notification, setNotification] = useState([]);
+  const [ownerNotification, setOwnerNotification] = useState([]);
   const { userOnline } = useSelector((state) => state.chat);
   const { ownerOnline } = useSelector((state) => state.chat);
 
@@ -44,7 +44,14 @@ export const SocketContextProvider = ({ children }) => {
 
   return (
     <SocketContext.Provider
-      value={{ socket, onlineUsers }}
+      value={{
+        socket,
+        onlineUsers,
+        notification,
+        setNotification,
+        ownerNotification,
+        setOwnerNotification,
+      }}
     >
       {children}
     </SocketContext.Provider>

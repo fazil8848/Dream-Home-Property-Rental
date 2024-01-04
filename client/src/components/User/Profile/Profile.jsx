@@ -206,7 +206,7 @@ const UserProfile = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-blue-gray-50 xl:px-40 py-10 p-10">
+      <div className="lg:h-screen h-[120vh] bg-blue-gray-50 xl:px-40 py-10 p-10">
         <div className="h-[60vh] grid grid-cols-5 gap-8">
           <div className="col-span-5 xl:col-span-3 h-full ">
             <div className="rounded-md border border-stroke bg-white shadow-default  h-full">

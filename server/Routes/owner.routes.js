@@ -25,6 +25,10 @@ import {
 } from "../controllers/owner.controller.js";
 import { uploadImage } from "../middleware/cloudinaryConfig.js";
 import { updateMessageStatus } from "../controllers/user.controller.js";
+import {
+  addNotificationOwner,
+  getNotificationsOwner,
+} from "../controllers/notification.controller.js";
 
 const router = express.Router();
 
@@ -36,6 +40,7 @@ router.get("/getConversations", getConversations);
 router.get("/getClickedUser/:userId", getClickedUser);
 router.get("/getEnquiries", getEnquiries);
 router.get("/getBookingsOwner", getBookingsOwner);
+router.get("/getNotificationsOwner/:userId", getNotificationsOwner);
 
 // ------------ = POST = ------------
 router.post("/signup", ownerSignup);
@@ -50,6 +55,7 @@ router.post("/sendMessage", sendMessage);
 router.post("/getConversationMessages", getMessages);
 router.post("/checkPassOwner", checkPassOwner);
 router.post("/cancelEnquiry", cancelEnquiry);
+router.post("/addNotificationOwner", addNotificationOwner);
 
 // ------------ = PUT = ------------
 router.put("/verifyOwner/:id", verifyOwner);

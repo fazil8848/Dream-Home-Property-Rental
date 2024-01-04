@@ -181,6 +181,19 @@ export const usersApiSclice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    getNotifications: builder.mutation({
+      query: (id) => ({
+        url: `${USERS_URL}/getNotifications/${id}`,
+        method: `GET`,
+      }),
+    }),
+    markNotificationAsRead: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/markNotificationAsRead`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -212,4 +225,6 @@ export const {
   useDeleteReviewMutation,
   useGoogleRegisterMutation,
   useAddNotificationMutation,
+  useGetNotificationsMutation,
+  useMarkNotificationAsReadMutation,
 } = usersApiSclice;

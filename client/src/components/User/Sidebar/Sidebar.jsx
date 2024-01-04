@@ -1,4 +1,3 @@
-import * as React from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -30,6 +29,9 @@ import { TbLogout2 } from "react-icons/tb";
 import { BiLogIn } from "react-icons/bi";
 import { BsFillBuildingsFill, BsFillChatQuoteFill } from "react-icons/bs";
 import { IoNotifications } from "react-icons/io5";
+import { useSocket } from "../../../Context/SocketContext";
+import { useEffect } from "react";
+import { VscBell } from "react-icons/vsc";
 
 const drawerWidth = 240;
 
@@ -84,6 +86,8 @@ export default function Sidebar() {
   const [logoutCall] = useLogoutMutation();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
+  const { notification } = useSocket();
+  const [unread, setUnread] = useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -107,6 +111,13 @@ export default function Sidebar() {
       generateError(err?.data?.message || err.error);
     }
   };
+
+  useEffect(() => {
+    const notread = notification.filter((not) => not.read === false);
+    if (notread) {
+      setUnread(true);
+    }
+  }, [notification]);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -141,7 +152,15 @@ export default function Sidebar() {
                 <BsFillChatQuoteFill size={28} className="text-black" />
               </NavLink>
               <NavLink to="/notifications" className={`text-black`}>
-                <IoNotifications size={28} />
+                {unread ? (
+                  <img
+                    className="h-8"
+                    src="https://res.cloudinary.com/dn6anfym7/image/upload/v1704261832/dreamHome/icons/icons8-notification_ttmanm.gif"
+                    alt="notification Bell"
+                  />
+                ) : (
+                  <VscBell size={28} />
+                )}
               </NavLink>
             </div>
           )}

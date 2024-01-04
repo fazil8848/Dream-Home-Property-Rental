@@ -16,6 +16,7 @@ import ReservationManagement from "../../Pages/User/ReservationManagement/Reserv
 import ForOwners from "../../Pages/User/ForOwners/ForOwners.jsx";
 import BlogsPage from "../../Pages/User/BlogsPage/BlogsPage.jsx";
 import VideoCallpage from "../../Pages/User/VideoCallPage/VideoCallpage.jsx";
+import NotificationPage from "../../Pages/User/NotificationPage/NotificationPage.jsx";
 
 const UserRouter = () => {
   return (
@@ -41,6 +42,7 @@ const UserRouter = () => {
           />
           <Route path="reservations" element={<BookingCompletedPage />} />
           <Route path="videocall/:roomID" element={<VideoCallpage />} />
+          <Route path="notifications" element={<NotificationPage />} />
         </Route>
       </Route>
     </Routes>

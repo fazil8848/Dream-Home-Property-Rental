@@ -28,11 +28,7 @@ export default function VideoCall() {
     );
 
     setLink(
-      window.location.protocol +
-        "//" +
-        window.location.host +
-        "/owner" +
-        window.location.pathname +
+      "http://localhost:3000/owner/videocall/6551e295fa910977a5e6bc35/" +
         "?roomID=" +
         roomID
     );
@@ -67,7 +63,7 @@ export default function VideoCall() {
         reciever: roomID,
         link,
       };
-      const result = await sendNotificationCall(data).unwrap();
+      await sendNotificationCall(data).unwrap();
     } catch (error) {
       console.log(error.message);
     }
@@ -77,7 +73,5 @@ export default function VideoCall() {
     sendNotification();
   }, [link]);
 
-  return (
-    <div ref={myMeeting} style={{ width: "100vw", height: "100vh" }}></div>
-  );
+  return <div ref={myMeeting} style={{ width: "90vw", height: "90vh" }}></div>;
 }

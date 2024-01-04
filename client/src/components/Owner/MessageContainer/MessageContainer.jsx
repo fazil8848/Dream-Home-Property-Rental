@@ -12,6 +12,8 @@ import {
 } from "../../../Redux/Slices/ownerApi/ownerApiSlice";
 import { useSocket } from "../../../Context/SocketContext";
 import { setGlobalOwnerConversations } from "../../../Redux/Slices/chatSlices/userChatSlice";
+import { Link } from "react-router-dom";
+import { MdVideoCall } from "react-icons/md";
 
 const MessageContainer = ({ messages, setMessages }) => {
   const dispatch = useDispatch();
@@ -71,12 +73,12 @@ const MessageContainer = ({ messages, setMessages }) => {
       }
     };
 
-    socket.on("newMessage", handleNewMessage);
-    socket.on("messageRead", handleReadMessage);
+    socket?.on("newMessage", handleNewMessage);
+    socket?.on("messageRead", handleReadMessage);
 
     return () => {
-      socket.off("newMessage", handleNewMessage);
-      socket.off("messageRead", handleReadMessage);
+      socket?.off("newMessage", handleNewMessage);
+      socket?.off("messageRead", handleReadMessage);
     };
   }, [socket, allConversations, selectedChat]);
 
@@ -118,7 +120,7 @@ const MessageContainer = ({ messages, setMessages }) => {
             </Typography>
           </div>
           <div>
-            <Link to={`/videocall/${ownerId}`} className="h-full">
+            <Link to={`/owner/videocall/${ownerId}`} className="h-full">
               <MdVideoCall size={30} />
             </Link>
           </div>
