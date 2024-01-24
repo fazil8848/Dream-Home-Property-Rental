@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useAddNotificationOwnerMutation } from "../../../Redux/Slices/ownerApi/ownerApiSlice";
 
+
 export function getUrlParams(url = window.location.href) {
   let urlStr = url.split("?")[1];
   return new URLSearchParams(urlStr);
@@ -27,11 +28,7 @@ export default function VideoCall() {
       ownerInfo.name
     );
 
-    setLink(
-      "http://localhost:3000/videocall/6551e295fa910977a5e6bc35" +
-        "?roomID=" +
-        roomID
-    );
+    setLink("/videocall/" + roomID + "?roomID=" + roomID);
 
     const zp = ZegoUIKitPrebuilt.create(kitToken);
     zp.joinRoom({
@@ -70,7 +67,7 @@ export default function VideoCall() {
   };
 
   useEffect(() => {
-    sendNotification();
+    if (roomID !== ownerInfo._id) sendNotification();
   }, [link]);
 
   return (

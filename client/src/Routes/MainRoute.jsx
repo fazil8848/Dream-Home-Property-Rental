@@ -14,7 +14,7 @@ const MainRouter = () => {
         <Route path="/admin/*" element={<AdminRouter />} />
         <Route path="/owner/*" element={<OwnerRoutes />} />
         <Route path="/*" element={<UserRouter />} />
-        <Route path="/user/verifyUser/:id" element={<Verification />} />
+        <Route path="/verifyUser/:id" element={<Verification />} />
         <Route path="/owner/verifyUser/:id" element={<VerificationOwner />} />
       </Routes>
     </PayPalScriptProvider>

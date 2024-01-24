@@ -11,29 +11,28 @@ const generateError = (err) => {
   });
 };
 
-
 const Verification = () => {
   const [verifyUser, { isLoading }] = useVerifyUserMutation();
   const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useDispatch();
-  const [msg,setMsg] = useState(false)
+  const [msg, setMsg] = useState(false);
 
-
+  console.log("------------------------");
   useEffect(() => {
     const verify = async () => {
       try {
         const res = await verifyUser(id).unwrap();
-        console.log('');
-
+        if (res.error) {
+          generateError("Verification Failed");
+        }
         setTimeout(() => {
-          setMsg(true)
+          setMsg(true);
         }, 2000);
 
         setTimeout(() => {
-          navigate('/login')
+          navigate("/login");
         }, 4000);
-        
       } catch (err) {
         generateError(err?.data?.message || err.error);
       }
@@ -42,7 +41,7 @@ const Verification = () => {
     verify();
   }, [id, verifyUser, dispatch]);
   return (
-    <div >
+    <div>
       <VerificationSpinner msg={msg} />
     </div>
   );
